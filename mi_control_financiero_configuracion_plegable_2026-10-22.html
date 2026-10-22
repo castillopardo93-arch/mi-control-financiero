@@ -545,8 +545,8 @@ function attachInstallmentImpliedUF(){
   if(field.value.trim()&&field.dataset.autoCalculated!=='1')return;
   const debt=db.debts.find(x=>x.id===formType.context?.id);
   const mode=read('contractualQuotaMode');
-  const quotaCurrency=(mode.startsWith('Manual')?read('contractualQuotaOverrideCurrency'):'')||debt?.contractualQuotaCurrency||debt?.currency||'CLP';
-  const quota=Number((mode.startsWith('Manual')?read('contractualQuotaOverride'):'')||debt?.contractualQuota||0);
+  const quotaCurrency=read('contractualQuotaOverrideCurrency')||debt?.contractualQuotaCurrency||debt?.currency||'CLP';
+  const quota=Number(read('contractualQuotaOverride')||debt?.contractualQuota||0);
   const paidCurrency=read('paidCurrencyManual')||'CLP';
   const paid=Number(read('paidAmountManual')||0);
   if(paidCurrency==='CLP'&&quotaCurrency==='UF'&&paid>0&&quota>0){
