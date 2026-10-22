@@ -682,7 +682,7 @@ function mcfOpenAssistant(){
  const modal=document.getElementById('mcfAssistantDialog');if(!modal)return;modal.hidden=false;document.body.style.overflow='hidden';
  const page=mcfGetActivePage();document.getElementById('mcfAiContext').textContent='Pestaña actual: '+page.name;
  const status=document.getElementById('mcfAiConnectionStatus');
- status.textContent=MCF_AI_ASSISTANT_ENDPOINT?(navigator.onLine?'IA en línea configurada':'Sin conexión a internet'):'Ayuda integrada disponible · IA en línea por configurar';
+ status.textContent=MCF_AI_ASSISTANT_ENDPOINT?(navigator.onLine?'IA en línea configurada':'Sin conexión a internet'):(navigator.onLine?'Ayuda integrada activa · abre ChatGPT para IA generativa':'Sin conexión: ayuda integrada disponible');
  mcfRenderSuggestions();document.getElementById('mcfAssistantClose').focus();
 }
 function mcfCloseAssistant(){const modal=document.getElementById('mcfAssistantDialog');if(modal)modal.hidden=true;document.body.style.overflow='';document.getElementById('mcfAssistantOpen')?.focus();}
@@ -699,37 +699,7 @@ function mcfLocalAnswer(question,page){
  else if(/(mejora|recomend|modific|agregar|añadir|futuro|propuesta)/i.test(q))answer='Buena idea. Escríbela en «Enviar una idea para futuras modificaciones» y pulsa «Guardar propuesta». Por ahora queda guardada solo en este dispositivo; puedes exportarla y compartir el archivo para incorporarla en una próxima versión.';
  return answer;
 }
-document.getElementById('mcfAssistantOpen')?.addEventListener('click',mcfOpenAssistant);
-document.getElementById('mcfAssistantClose')?.addEventListener('click',mcfCloseAssistant);
-document.getElementById('mcfAssistantDialog')?.addEventListener('click',e=>{if(e.target.id==='mcfAssistantDialog')mcfCloseAssistant()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('mcfAssistantDialog')?.hidden)mcfCloseAssistant()});
-document.getElementById('mcfAiClearChat')?.addEventListener('click',()=>{document.getElementById('mcfAiMessages').innerHTML='';mcfAddAiMessage('Conversación limpiada. ¿Qué necesitas consultar?')});
-document.getElementById('mcfAiAskForm')?.addEventListener('submit',async e=>{
- e.preventDefault();const input=document.getElementById('mcfAiQuestion'),button=document.getElementById('mcfAiAskButton'),question=input.value.trim();if(!question)return;
- const page=mcfGetActivePage();mcfAddAiMessage(question,'user');input.value='';button.disabled=true;button.textContent='Consultando…';
- try{
-  if(MCF_AI_ASSISTANT_ENDPOINT&&navigator.onLine){
-   const response=await fetch(MCF_AI_ASSISTANT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,context:{page:page.name,app:'Mi Control Financiero'}})});
-   if(!response.ok)throw new Error('El servicio de IA respondió con un error HTTP '+response.status+'.');
-   const data=await response.json();const answer=String(data.answer||data.response||'').trim();if(!answer)throw new Error('El servicio de IA no entregó una respuesta.');mcfAddAiMessage(answer);
-  }else{
-   const answer=!navigator.onLine?'Ahora no hay conexión de red. Puedo mostrarte ayuda integrada local; cuando se configure un servicio de IA seguro y haya internet, esta consulta podrá recibir una respuesta generada.\n\n'+mcfLocalAnswer(question,page):mcfLocalAnswer(question,page)+'\n\nEsta es una respuesta de ayuda integrada, no una respuesta generada por IA en línea.';
-   mcfAddAiMessage(answer);
-  }
- }catch(err){mcfAddAiMessage('No se pudo consultar la IA en línea: '+err.message+'\nPuedes usar la ayuda integrada y guardar una propuesta.');}
- finally{button.disabled=false;button.textContent='Consultar';}
-});
-document.getElementById('mcfAiSuggestionForm')?.addEventListener('submit',e=>{
- e.preventDefault();const input=document.getElementById('mcfAiSuggestion'),textValue=input.value.trim();if(!textValue)return;
- const list=mcfLoadSuggestions();const page=mcfGetActivePage();
- list.push({text:textValue,page:page.name,date:new Date().toISOString(),id:uid()});
- try{localStorage.setItem(MCF_AI_SUGGESTIONS_KEY,JSON.stringify(list));input.value='';document.getElementById('mcfAiSuggestionStatus').textContent='Propuesta guardada en este navegador.';mcfRenderSuggestions();}catch(err){document.getElementById('mcfAiSuggestionStatus').textContent='No se pudo guardar. Exporta o copia la propuesta antes de cerrar.';}
-});
-document.getElementById('mcfAiExportSuggestions')?.addEventListener('click',()=>{
- const list=mcfLoadSuggestions();if(!list.length){document.getElementById('mcfAiSuggestionStatus').textContent='No hay propuestas para exportar.';return;}
- download('propuestas-mi-control-financiero-'+today()+'.json',JSON.stringify(list,null,2),'application/json');
- document.getElementById('mcfAiSuggestionStatus').textContent='Se preparó la descarga de las propuestas guardadas.';
-});
+
 
 </script>
 <!-- Asistente transversal: visible en todas las pestañas -->
@@ -739,9 +709,49 @@ document.getElementById('mcfAiExportSuggestions')?.addEventListener('click',()=>
   <div class="mcf-ai-head"><div class="mcf-ai-head-icon" aria-hidden="true">✦</div><div class="mcf-ai-title-wrap"><h2 id="mcfAiTitle">Ayuda y asistente IA</h2><p id="mcfAiConnectionStatus">Ayuda integrada disponible · IA en línea por configurar</p></div><button id="mcfAssistantClose" type="button" class="mcf-ai-close" aria-label="Cerrar ayuda">×</button></div>
   <div class="mcf-ai-context" id="mcfAiContext">Pestaña actual: Inicio</div>
   <div class="mcf-ai-messages" id="mcfAiMessages" aria-live="polite"><div class="mcf-ai-message assistant">Puedes consultar cómo usar esta sección o guardar una idea para futuras mejoras. La ayuda integrada responde consultas frecuentes sin enviar tus datos financieros a internet.</div></div>
-  <form id="mcfAiAskForm" class="mcf-ai-ask"><label for="mcfAiQuestion">¿Qué duda tienes?</label><textarea id="mcfAiQuestion" rows="2" maxlength="1200" placeholder="Ej.: ¿Cómo filtro los gastos de alimentación de este mes?" required></textarea><div class="mcf-ai-actions"><button class="btn primary" type="submit" id="mcfAiAskButton">Consultar</button><button class="btn" type="button" id="mcfAiClearChat">Limpiar conversación</button></div></form>
+  <form id="mcfAiAskForm" class="mcf-ai-ask"><label for="mcfAiQuestion">¿Qué duda tienes?</label><textarea id="mcfAiQuestion" rows="2" maxlength="1200" placeholder="Ej.: ¿Cómo filtro los gastos de alimentación de este mes?" required></textarea><div class="mcf-ai-actions"><button class="btn primary" type="submit" id="mcfAiAskButton">Consultar ayuda</button><button class="btn" type="button" id="mcfAiOpenOnline">Abrir ChatGPT</button><button class="btn" type="button" id="mcfAiClearChat">Limpiar conversación</button></div><p class="muted" style="font-size:11px;margin:0">«Consultar ayuda» utiliza la guía integrada. «Abrir ChatGPT» abre una pestaña aparte; no envía tus movimientos ni tu pregunta automáticamente.</p></form>
   <details class="mcf-ai-suggestion-box"><summary>Enviar una idea para futuras modificaciones</summary><p class="muted">Las propuestas se guardan en este navegador. No se envían automáticamente ni aparecen en otros dispositivos.</p><form id="mcfAiSuggestionForm"><label for="mcfAiSuggestion">Propuesta o mejora que te gustaría incorporar</label><textarea id="mcfAiSuggestion" rows="3" maxlength="1500" placeholder="Ej.: agregar comparación entre meses por categoría…" required></textarea><div class="mcf-ai-actions"><button class="btn primary" type="submit">Guardar propuesta</button><button class="btn" type="button" id="mcfAiExportSuggestions">Exportar propuestas</button></div></form><div id="mcfAiSuggestionStatus" class="mcf-ai-suggestion-status" aria-live="polite"></div><div id="mcfAiSuggestionList" class="mcf-ai-suggestion-list"></div></details>
   <p class="mcf-ai-privacy">Privacidad: la ayuda integrada usa solo la pregunta y la pestaña actual. Para obtener respuestas generadas por una IA en línea se debe conectar un servicio seguro; no se debe poner una clave privada dentro de esta página.</p>
  </section>
 </div>
+<script>
+(function bindAssistantAfterMarkup(){
+ const $=id=>document.getElementById(id);
+ $('mcfAssistantOpen')?.addEventListener('click',mcfOpenAssistant);
+ $('mcfAssistantClose')?.addEventListener('click',mcfCloseAssistant);
+ $('mcfAssistantDialog')?.addEventListener('click',e=>{if(e.target.id==='mcfAssistantDialog')mcfCloseAssistant()});
+ $('mcfAiOpenOnline')?.addEventListener('click',()=>{
+  if(!navigator.onLine){mcfAddAiMessage('No hay conexión a internet. Revisa la conexión y vuelve a intentarlo.');return;}
+  const opened=window.open('https://chatgpt.com/','_blank');
+  if(!opened) location.href='https://chatgpt.com/';
+  else mcfAddAiMessage('ChatGPT se abrió en otra pestaña. Para cuidar tu privacidad, copia allí tu pregunta y no incluyas información financiera sensible. Esta página no envía tus movimientos.');
+ });
+ $('mcfAiClearChat')?.addEventListener('click',()=>{const box=$('mcfAiMessages');if(box)box.innerHTML='';mcfAddAiMessage('Conversación limpiada. ¿Qué necesitas consultar?')});
+ $('mcfAiAskForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const input=$('mcfAiQuestion'),button=$('mcfAiAskButton'),question=(input?.value||'').trim();if(!question)return;
+  const page=mcfGetActivePage();mcfAddAiMessage(question,'user');input.value='';button.disabled=true;button.textContent='Consultando…';
+  try{
+   if(MCF_AI_ASSISTANT_ENDPOINT&&navigator.onLine){
+    const response=await fetch(MCF_AI_ASSISTANT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,context:{page:page.name,app:'Mi Control Financiero'}})});
+    if(!response.ok)throw new Error('El servicio de IA respondió con HTTP '+response.status+'.');
+    const data=await response.json(),answer=String(data.answer||data.response||'').trim();if(!answer)throw new Error('El servicio de IA no entregó una respuesta.');mcfAddAiMessage(answer);
+   }else{
+    mcfAddAiMessage(mcfLocalAnswer(question,page)+'\n\nEsta es ayuda integrada de la aplicación, no una respuesta generada por IA. Para consultar una IA generativa, pulsa «Abrir ChatGPT».');
+   }
+  }catch(err){mcfAddAiMessage('No se pudo consultar el servicio de IA: '+err.message+' Puedes usar la ayuda integrada o abrir ChatGPT en otra pestaña.');}
+  finally{button.disabled=false;button.textContent='Consultar ayuda';}
+ });
+ $('mcfAiSuggestionForm')?.addEventListener('submit',e=>{
+  e.preventDefault();const input=$('mcfAiSuggestion'),textValue=(input?.value||'').trim();if(!textValue)return;
+  const list=mcfLoadSuggestions(),page=mcfGetActivePage();list.push({text:textValue,page:page.name,date:new Date().toISOString(),id:uid()});
+  try{localStorage.setItem(MCF_AI_SUGGESTIONS_KEY,JSON.stringify(list));input.value='';$('mcfAiSuggestionStatus').textContent='Propuesta guardada en este navegador.';mcfRenderSuggestions();}
+  catch(err){$('mcfAiSuggestionStatus').textContent='No se pudo guardar; copia la propuesta antes de cerrar.';}
+ });
+ $('mcfAiExportSuggestions')?.addEventListener('click',()=>{
+  const list=mcfLoadSuggestions();if(!list.length){$('mcfAiSuggestionStatus').textContent='No hay propuestas para exportar.';return;}
+  download('propuestas-mi-control-financiero-'+today()+'.json',JSON.stringify(list,null,2),'application/json');$('mcfAiSuggestionStatus').textContent='Se preparó la descarga de las propuestas.';
+ });
+})();
+</script>
 </body></html>
