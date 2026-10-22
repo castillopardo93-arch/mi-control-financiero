@@ -43,6 +43,28 @@
 .home-dash-pie-note{margin:13px 0 0;line-height:1.45}
 @media(max-width:1000px){.home-dash-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.home-dash-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.home-dash-visuals{grid-template-columns:1fr}}
 @media(max-width:700px){.home-dashboard-heading{align-items:flex-start;flex-direction:row;gap:8px}.home-dashboard-heading .btn{flex-shrink:0}.home-dashboard-card{padding:12px}.home-dash-filters{grid-template-columns:1fr 1fr;gap:10px}.home-dash-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.home-dash-pie-layout{grid-template-columns:1fr;gap:16px}.home-pie-chart{width:min(72vw,220px)}.home-pie-legend{width:100%}.home-dash-chart-header{align-items:flex-start}}
+
+/* Ayuda/IA transversal en todas las pestañas */
+.mcf-ai-fab{position:fixed;right:18px;bottom:18px;z-index:40;display:flex;align-items:center;justify-content:center;gap:5px;width:54px;height:54px;border:0;border-radius:50%;background:var(--green);color:#fff;box-shadow:0 8px 24px rgba(15,55,43,.26);font-weight:800}
+.mcf-ai-fab span{font-size:19px;color:var(--gold)}.mcf-ai-fab small{font-size:11px;letter-spacing:.03em}
+.mcf-ai-backdrop{position:fixed;inset:0;z-index:60;background:rgba(13,28,24,.38);display:flex;align-items:flex-end;justify-content:flex-end;padding:20px}
+.mcf-ai-backdrop[hidden]{display:none!important}
+.mcf-ai-panel{width:min(440px,100%);max-height:min(780px,calc(100dvh - 40px));display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 60px rgba(0,0,0,.2);overflow:hidden;color:var(--ink)}
+.mcf-ai-head{display:flex;align-items:center;gap:11px;padding:16px;border-bottom:1px solid var(--line)}
+.mcf-ai-head-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:var(--mint);color:var(--green);font-size:22px;flex-shrink:0}
+.mcf-ai-title-wrap{flex:1;min-width:0}.mcf-ai-title-wrap h2{font-size:16px;margin:0 0 3px}.mcf-ai-title-wrap p{font-size:11px;line-height:1.35;color:var(--muted);margin:0}
+.mcf-ai-close{border:0;background:transparent;color:var(--muted);font-size:26px;width:34px;height:34px;border-radius:9px}
+.mcf-ai-context{padding:8px 16px;background:#f5f8f6;color:var(--muted);font-size:12px;border-bottom:1px solid var(--line)}
+.mcf-ai-messages{padding:14px 16px;overflow:auto;min-height:100px;max-height:230px;display:flex;flex-direction:column;gap:9px}
+.mcf-ai-message{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.5}
+.mcf-ai-message.assistant{align-self:flex-start;background:#f0f5f2;border:1px solid #e3ebe6}.mcf-ai-message.user{align-self:flex-end;background:var(--green);color:#fff}
+.mcf-ai-ask{padding:0 16px 14px;display:grid;gap:7px}.mcf-ai-ask label,.mcf-ai-suggestion-box label{font-size:12px;font-weight:750}
+.mcf-ai-ask textarea,.mcf-ai-suggestion-box textarea{width:100%;resize:vertical;min-height:66px;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;color:var(--ink);font:inherit;font-size:13px}
+.mcf-ai-actions{display:flex;gap:8px;flex-wrap:wrap}.mcf-ai-actions .btn{font-size:12px;padding:8px 10px}
+.mcf-ai-suggestion-box{border-top:1px solid var(--line);padding:12px 16px;overflow:auto;max-height:220px}.mcf-ai-suggestion-box summary{font-size:13px;font-weight:750;cursor:pointer}.mcf-ai-suggestion-box p{font-size:11px;line-height:1.4;margin:8px 0}
+#mcfAiSuggestionForm{display:grid;gap:7px}.mcf-ai-suggestion-status{font-size:11px;color:var(--muted);margin-top:8px}.mcf-ai-suggestion-list{font-size:11px;color:var(--muted);max-height:80px;overflow:auto;margin-top:5px}
+.mcf-ai-privacy{font-size:10px;line-height:1.45;color:var(--muted);padding:10px 16px;margin:0;background:#fafbfa;border-top:1px solid var(--line)}
+@media(max-width:700px){.mcf-ai-fab{right:14px;bottom:calc(82px + env(safe-area-inset-bottom));width:48px;height:48px}.mcf-ai-backdrop{padding:0;align-items:stretch;justify-content:stretch}.mcf-ai-panel{width:100%;height:100%;max-height:100dvh;border-radius:0;border:0}.mcf-ai-messages{flex:1;max-height:none}.mcf-ai-suggestion-box{max-height:28dvh}}
 </style></head><body>
 <div class="app"><aside class="sidebar"><div class="brand"><div class="brandmark">M</div><div><strong>Mi Control</strong><small>Financiero</small></div></div><div><div class="nav-label">Principal</div><nav class="nav" id="sideNav"><button class="active" data-page="home"><span class="ico">▦</span>Inicio</button><button data-page="movements"><span class="ico">↔</span>Movimientos</button><button data-page="debts"><span class="ico">▤</span>Mis deudas</button><button data-page="receivables"><span class="ico">↗</span>Dinero por cobrar</button><button data-page="checklist"><span class="ico">☑</span>Lista de chequeo</button></nav></div><div><div class="nav-label">Organización</div><nav class="nav"><button data-page="budgets"><span class="ico">◉</span>Presupuestos</button><button data-page="reports"><span class="ico">▥</span>Informes</button><button data-page="indicators"><span class="ico">📈</span>Indicadores económicos</button><button data-page="amortization"><span class="ico">🧮</span>Amortización de créditos</button><button data-page="settings"><span class="ico">⚙</span>Configuración</button></nav></div><div class="side-note"><strong>Almacenamiento personal</strong><br>Los registros permanecen en este navegador hasta que conectes tu propio Google Drive desde Configuración.</div></aside>
 <main><div class="topbar"><div><div class="eyebrow" id="todayLabel">TU ESPACIO FINANCIERO</div><h1 id="pageTitle">Resumen general</h1></div><div class="top-actions"><select class="month-select" id="periodSelect" aria-label="Período"></select><button class="btn primary" id="quickAdd">＋ Nuevo movimiento</button></div></div><div class="content">
@@ -298,7 +320,7 @@ function renderHomeDashboard(){
  }
 }
 
-function renderHome(){const period=document.getElementById('periodSelect')?.value||'';const ym=periodKeyFromLabel(period);const ms=db.movements.filter(m=>String(m.date||'').slice(0,7)===ym);const inc=ms.filter(m=>m.type==='Ingreso'&&m.status==='Pagado'),exp=ms.filter(m=>m.type==='Gasto'&&m.status==='Pagado');const iCLP=sumCurrency(inc,'CLP',m=>m.amount),iUF=sumCurrency(inc,'UF',m=>m.amount),eCLP=sumCurrency(exp,'CLP',m=>m.amount),eUF=sumCurrency(exp,'UF',m=>m.amount);document.getElementById('homeIncome').textContent=dualMoney(iCLP,iUF);document.getElementById('homeExpense').textContent=dualMoney(eCLP,eUF);document.getElementById('homeBalance').textContent=dualMoney(iCLP-eCLP,iUF-eUF);document.getElementById('homeDebt').textContent=dualMoney(sumCurrency(db.debts,'CLP',d=>debtOutstanding(d)),sumCurrency(db.debts,'UF',d=>debtOutstanding(d)));document.getElementById('homeReceivable').textContent=dualMoney(sumCurrency(db.receivables,'CLP',r=>remaining(r)),sumCurrency(db.receivables,'UF',r=>remaining(r)));const upcoming=db.tasks.filter(t=>!t.done).sort((a,b)=>String(a.dueDate||'9999').localeCompare(String(b.dueDate||'9999'))).slice(0,5);document.getElementById('homeTasks').innerHTML=upcoming.length?'<div class="list">'+upcoming.map(t=>`<div class="list-item"><div class="list-copy"><strong>${esc(t.title)}</strong><small>${esc(t.dueDate||'sin fecha')}</small></div>${t.dueDate&&t.dueDate<today()?'<span class="pill red">Vencida</span>':'<span class="pill warn">Pendiente</span>'}</div>`).join('')+'</div>':'<div class="empty">No hay compromisos pendientes registrados.</div>';const recent=[...db.movements].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,6);document.getElementById('homeRecent').innerHTML=rows(['Fecha','Tipo','Descripción','Monto','Estado'],recent.map(m=>`<tr><td>${esc(m.date)}</td><td>${esc(m.type)}</td><td>${esc(m.title)}</td><td>${moneyWithUfEquivalent(m.amount,m.currency,m.ufValueAtOperation,m.ufRateDate)}</td><td><span class="pill ${m.status==='Pendiente'?'warn':''}">${esc(m.status)}</span></td></tr>`));const budget=db.budgets.find(b=>b.scope==='General');document.getElementById('homeBudgetCopy').textContent=budget?`${money(budget.amount,budget.currency)} límite mensual`:'Aún no configurado.'renderHomeDashboard();}
+function renderHome(){const period=document.getElementById('periodSelect')?.value||'';const ym=periodKeyFromLabel(period);const ms=db.movements.filter(m=>String(m.date||'').slice(0,7)===ym);const inc=ms.filter(m=>m.type==='Ingreso'&&m.status==='Pagado'),exp=ms.filter(m=>m.type==='Gasto'&&m.status==='Pagado');const iCLP=sumCurrency(inc,'CLP',m=>m.amount),iUF=sumCurrency(inc,'UF',m=>m.amount),eCLP=sumCurrency(exp,'CLP',m=>m.amount),eUF=sumCurrency(exp,'UF',m=>m.amount);document.getElementById('homeIncome').textContent=dualMoney(iCLP,iUF);document.getElementById('homeExpense').textContent=dualMoney(eCLP,eUF);document.getElementById('homeBalance').textContent=dualMoney(iCLP-eCLP,iUF-eUF);document.getElementById('homeDebt').textContent=dualMoney(sumCurrency(db.debts,'CLP',d=>debtOutstanding(d)),sumCurrency(db.debts,'UF',d=>debtOutstanding(d)));document.getElementById('homeReceivable').textContent=dualMoney(sumCurrency(db.receivables,'CLP',r=>remaining(r)),sumCurrency(db.receivables,'UF',r=>remaining(r)));const upcoming=db.tasks.filter(t=>!t.done).sort((a,b)=>String(a.dueDate||'9999').localeCompare(String(b.dueDate||'9999'))).slice(0,5);document.getElementById('homeTasks').innerHTML=upcoming.length?'<div class="list">'+upcoming.map(t=>`<div class="list-item"><div class="list-copy"><strong>${esc(t.title)}</strong><small>${esc(t.dueDate||'sin fecha')}</small></div>${t.dueDate&&t.dueDate<today()?'<span class="pill red">Vencida</span>':'<span class="pill warn">Pendiente</span>'}</div>`).join('')+'</div>':'<div class="empty">No hay compromisos pendientes registrados.</div>';const recent=[...db.movements].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,6);document.getElementById('homeRecent').innerHTML=rows(['Fecha','Tipo','Descripción','Monto','Estado'],recent.map(m=>`<tr><td>${esc(m.date)}</td><td>${esc(m.type)}</td><td>${esc(m.title)}</td><td>${moneyWithUfEquivalent(m.amount,m.currency,m.ufValueAtOperation,m.ufRateDate)}</td><td><span class="pill ${m.status==='Pendiente'?'warn':''}">${esc(m.status)}</span></td></tr>`));const budget=db.budgets.find(b=>b.scope==='General');document.getElementById('homeBudgetCopy').textContent=budget?`${money(budget.amount,budget.currency)} límite mensual`:'Aún no configurado.';renderHomeDashboard();}
 function renderReports(){const inc=db.movements.filter(m=>m.type==='Ingreso'&&m.status==='Pagado'),exp=db.movements.filter(m=>m.type==='Gasto'&&m.status==='Pagado');const iCLP=sumCurrency(inc,'CLP',m=>m.amount),iUF=sumCurrency(inc,'UF',m=>m.amount),eCLP=sumCurrency(exp,'CLP',m=>m.amount),eUF=sumCurrency(exp,'UF',m=>m.amount);document.getElementById('reportIncome').textContent=dualMoney(iCLP,iUF);document.getElementById('reportExpense').textContent=dualMoney(eCLP,eUF);document.getElementById('reportBalance').textContent=dualMoney(iCLP-eCLP,iUF-eUF);const cats={};db.movements.filter(m=>m.type==='Gasto'&&m.status==='Pagado'&&m.currency==='CLP').forEach(m=>cats[m.category]=(cats[m.category]||0)+Number(m.amount));const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]);const max=sorted[0]?.[1]||1;document.getElementById('categoryReport').innerHTML=sorted.length?sorted.map(([name,amount])=>`<div style="display:grid;grid-template-columns:minmax(80px,1fr) 2fr auto;gap:12px;align-items:center;margin:12px 0"><span>${esc(name)}</span><div class="progress"><span style="width:${amount/max*100}%"></span></div><strong>${money(amount)}</strong></div>`).join(''):'<div class="empty">Agrega gastos pagados para ver categorías.</div>'}
 
 function readEconomicCache(){try{const value=JSON.parse(localStorage.getItem(ECONOMIC_CACHE_KEY)||'null');return value&&value.uf&&value.usd&&value.eur&&value.utm&&value.ipc&&value.copper?value:null}catch(e){return null}}
@@ -583,4 +605,108 @@ document.getElementById('page-settings')?.addEventListener('click', (event) => {
   btn.setAttribute('aria-expanded', String(!expanded));
   content.hidden = expanded;
 });
-</script></body></html>
+
+const MCF_AI_ASSISTANT_ENDPOINT = '';
+const MCF_AI_SUGGESTIONS_KEY = 'mcf_future_feature_suggestions_v1';
+function mcfGetActivePage(){
+ const page=document.querySelector('.page.active');
+ const names={'page-home':'Inicio','page-movements':'Movimientos','page-debts':'Mis deudas','page-receivables':'Dinero por cobrar','page-checklist':'Lista de chequeo','page-budgets':'Presupuestos','page-reports':'Informes','page-indicators':'Indicadores económicos','page-amortization':'Amortización de créditos','page-settings':'Configuración','page-settingsLists':'Listas y opciones','page-form':'Nuevo registro'};
+ return {id:page?.id||'page-home',name:names[page?.id]||'Aplicación'};
+}
+function mcfAddAiMessage(text,role='assistant'){
+ const box=document.getElementById('mcfAiMessages');if(!box)return;
+ const item=document.createElement('div');item.className='mcf-ai-message '+role;item.textContent=String(text||'');box.appendChild(item);box.scrollTop=box.scrollHeight;
+}
+function mcfLoadSuggestions(){
+ try{const x=JSON.parse(localStorage.getItem(MCF_AI_SUGGESTIONS_KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}
+}
+function mcfRenderSuggestions(){
+ const box=document.getElementById('mcfAiSuggestionList'),status=document.getElementById('mcfAiSuggestionStatus');if(!box)return;
+ const list=mcfLoadSuggestions();
+ box.innerHTML=list.length?'<strong>'+list.length+' propuesta(s) guardada(s) en este dispositivo</strong><ol style="padding-left:20px;margin:6px 0">'+list.slice(-5).reverse().map(x=>'<li style="margin:4px 0">'+esc(x.text)+' <span>· '+esc(x.page)+' · '+esc(x.date)+'</span></li>').join('')+'</ol>':'Aún no has guardado propuestas.';
+ if(status&&!status.textContent)status.textContent='';
+}
+function mcfPageGuidance(page){
+ const tips={
+  'page-home':'Inicio: el dashboard permite filtrar movimientos por fecha inicial/final y categoría. Los indicadores de ingresos y gastos cuentan solo movimientos pagados; el histórico por tipo cuenta todos los registros. La torta muestra gastos pagados de la moneda seleccionada.',
+  'page-movements':'Movimientos: registra cada ingreso o gasto con su fecha, categoría, moneda y estado. Solo los movimientos marcados como Pagado se suman al balance de caja; Pendiente se conserva para seguimiento.',
+  'page-debts':'Mis deudas: registra capital, moneda, cuotas y condiciones conocidas. Contrasta cualquier simulación con el contrato del acreedor y registra los pagos una sola vez.',
+  'page-receivables':'Dinero por cobrar: registra el monto y los abonos recibidos. Usa notas para guardar referencias del acuerdo y verifica que los abonos no se dupliquen como movimientos.',
+  'page-checklist':'Lista de chequeo: sirve para recordar pagos y tareas. Marcar una tarea como completada no registra automáticamente un ingreso o gasto.',
+  'page-budgets':'Presupuestos: compara límites mensuales con gastos pagados. Revisa que el presupuesto use la moneda y la categoría correctas.',
+  'page-reports':'Informes: resume los movimientos registrados y permite exportar CSV o respaldar los datos. Guarda una copia antes de restaurar un respaldo.',
+  'page-indicators':'Indicadores económicos: son referencias informativas. Verifica fecha, fuente y condiciones oficiales antes de usar un valor para un pago contractual.',
+  'page-amortization':'Amortización de créditos: ingresa capital, tasa, periodicidad y cantidad de cuotas. El resultado es una estimación matemática, no reemplaza la tabla oficial del acreedor.',
+  'page-settings':'Configuración: revisa las tarjetas una a una. Cada flecha contrae solamente su propia tarjeta. Mantén respaldos recientes antes de cambiar datos o restaurar copias.',
+  'page-settingsLists':'Listas y opciones: añadir o quitar opciones afecta a los nuevos registros; no modifica el texto histórico guardado en movimientos anteriores.',
+  'page-form':'Nuevo registro: verifica fecha, moneda, monto, categoría y estado antes de guardar. Un registro Pendiente no cuenta como pagado en los indicadores de caja.'
+ };
+ return tips[page.id]||'Describe la operación que estás intentando realizar y revisaremos los pasos disponibles en esta sección.';
+}
+function mcfOpenAssistant(){
+ const modal=document.getElementById('mcfAssistantDialog');if(!modal)return;modal.hidden=false;document.body.style.overflow='hidden';
+ const page=mcfGetActivePage();document.getElementById('mcfAiContext').textContent='Pestaña actual: '+page.name;
+ const status=document.getElementById('mcfAiConnectionStatus');
+ status.textContent=MCF_AI_ASSISTANT_ENDPOINT?(navigator.onLine?'IA en línea configurada':'Sin conexión a internet'):'Ayuda integrada disponible · IA en línea por configurar';
+ mcfRenderSuggestions();document.getElementById('mcfAssistantClose').focus();
+}
+function mcfCloseAssistant(){const modal=document.getElementById('mcfAssistantDialog');if(modal)modal.hidden=true;document.body.style.overflow='';document.getElementById('mcfAssistantOpen')?.focus();}
+function mcfLocalAnswer(question,page){
+ const q=String(question||'').toLocaleLowerCase('es-CL');
+ let answer=mcfPageGuidance(page);
+ if(/(gr[aá]fico|torta|porcentaje|dashboard|filtro|fecha)/i.test(q))answer='Dashboard y gráficos: en Inicio elige «Fecha desde» y «Fecha hasta», después selecciona una categoría o «Todas las categorías». Los totales consideran ingresos/gastos pagados; el gráfico de torta reparte los gastos pagados por categoría y moneda para ese rango.';
+ else if(/(categor[ií]a|medio de pago|lista|desplegable)/i.test(q))answer='Para modificar las opciones, abre Configuración y despliega «Listas y opciones». Añade o elimina categorías o medios de pago allí. Esto no reescribe los movimientos históricos.';
+ else if(/(drive|respaldo|sincron|copia)/i.test(q))answer='Antes de restaurar una copia, exporta un respaldo actual por seguridad. La sincronización de Drive es una copia separada de los datos locales; evita hacer cambios simultáneos desde dos dispositivos.';
+ else if(/(presupuesto|l[ií]mite)/i.test(q))answer='En Presupuestos define el importe límite, la moneda y, si corresponde, la categoría. Los indicadores comparan el límite con gastos marcados como Pagado durante el mes correspondiente.';
+ else if(/(deuda|cuota|amortiz|inter[eé]s|cr[eé]dito)/i.test(q))answer='Para deudas o amortizaciones, confirma primero monto, moneda, tasa, frecuencia y número de cuotas. La amortización es estimativa; contrástala con la tabla del acreedor y evita registrar el mismo pago dos veces.';
+ else if(/(uf|utm|d[oó]lar|euro|ipc|cobre|indicador)/i.test(q))answer='En Indicadores económicos puedes consultar los valores de referencia y usar el conversor. Comprueba siempre la fecha del valor y confirma con la fuente oficial si afecta un contrato o pago.';
+ else if(/(ingreso|gasto|movimiento|pagado|pendiente)/i.test(q))answer='En Movimientos registra cada operación con tipo, fecha, categoría, moneda y estado. Los movimientos Pendiente se conservan para seguimiento, pero no se incorporan a los totales de caja marcados como Pagado.';
+ else if(/(mejora|recomend|modific|agregar|añadir|futuro|propuesta)/i.test(q))answer='Buena idea. Escríbela en «Enviar una idea para futuras modificaciones» y pulsa «Guardar propuesta». Por ahora queda guardada solo en este dispositivo; puedes exportarla y compartir el archivo para incorporarla en una próxima versión.';
+ return answer;
+}
+document.getElementById('mcfAssistantOpen')?.addEventListener('click',mcfOpenAssistant);
+document.getElementById('mcfAssistantClose')?.addEventListener('click',mcfCloseAssistant);
+document.getElementById('mcfAssistantDialog')?.addEventListener('click',e=>{if(e.target.id==='mcfAssistantDialog')mcfCloseAssistant()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('mcfAssistantDialog')?.hidden)mcfCloseAssistant()});
+document.getElementById('mcfAiClearChat')?.addEventListener('click',()=>{document.getElementById('mcfAiMessages').innerHTML='';mcfAddAiMessage('Conversación limpiada. ¿Qué necesitas consultar?')});
+document.getElementById('mcfAiAskForm')?.addEventListener('submit',async e=>{
+ e.preventDefault();const input=document.getElementById('mcfAiQuestion'),button=document.getElementById('mcfAiAskButton'),question=input.value.trim();if(!question)return;
+ const page=mcfGetActivePage();mcfAddAiMessage(question,'user');input.value='';button.disabled=true;button.textContent='Consultando…';
+ try{
+  if(MCF_AI_ASSISTANT_ENDPOINT&&navigator.onLine){
+   const response=await fetch(MCF_AI_ASSISTANT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,context:{page:page.name,app:'Mi Control Financiero'}})});
+   if(!response.ok)throw new Error('El servicio de IA respondió con un error HTTP '+response.status+'.');
+   const data=await response.json();const answer=String(data.answer||data.response||'').trim();if(!answer)throw new Error('El servicio de IA no entregó una respuesta.');mcfAddAiMessage(answer);
+  }else{
+   const answer=!navigator.onLine?'Ahora no hay conexión de red. Puedo mostrarte ayuda integrada local; cuando se configure un servicio de IA seguro y haya internet, esta consulta podrá recibir una respuesta generada.\n\n'+mcfLocalAnswer(question,page):mcfLocalAnswer(question,page)+'\n\nEsta es una respuesta de ayuda integrada, no una respuesta generada por IA en línea.';
+   mcfAddAiMessage(answer);
+  }
+ }catch(err){mcfAddAiMessage('No se pudo consultar la IA en línea: '+err.message+'\nPuedes usar la ayuda integrada y guardar una propuesta.');}
+ finally{button.disabled=false;button.textContent='Consultar';}
+});
+document.getElementById('mcfAiSuggestionForm')?.addEventListener('submit',e=>{
+ e.preventDefault();const input=document.getElementById('mcfAiSuggestion'),textValue=input.value.trim();if(!textValue)return;
+ const list=mcfLoadSuggestions();const page=mcfGetActivePage();
+ list.push({text:textValue,page:page.name,date:new Date().toISOString(),id:uid()});
+ try{localStorage.setItem(MCF_AI_SUGGESTIONS_KEY,JSON.stringify(list));input.value='';document.getElementById('mcfAiSuggestionStatus').textContent='Propuesta guardada en este navegador.';mcfRenderSuggestions();}catch(err){document.getElementById('mcfAiSuggestionStatus').textContent='No se pudo guardar. Exporta o copia la propuesta antes de cerrar.';}
+});
+document.getElementById('mcfAiExportSuggestions')?.addEventListener('click',()=>{
+ const list=mcfLoadSuggestions();if(!list.length){document.getElementById('mcfAiSuggestionStatus').textContent='No hay propuestas para exportar.';return;}
+ download('propuestas-mi-control-financiero-'+today()+'.json',JSON.stringify(list,null,2),'application/json');
+ document.getElementById('mcfAiSuggestionStatus').textContent='Se preparó la descarga de las propuestas guardadas.';
+});
+
+</script>
+<!-- Asistente transversal: visible en todas las pestañas -->
+<button id="mcfAssistantOpen" class="mcf-ai-fab" type="button" aria-label="Abrir ayuda y asistente IA" title="Ayuda y asistente IA"><span aria-hidden="true">✦</span><small>IA</small></button>
+<div id="mcfAssistantDialog" class="mcf-ai-backdrop" hidden>
+ <section class="mcf-ai-panel" role="dialog" aria-modal="true" aria-labelledby="mcfAiTitle">
+  <div class="mcf-ai-head"><div class="mcf-ai-head-icon" aria-hidden="true">✦</div><div class="mcf-ai-title-wrap"><h2 id="mcfAiTitle">Ayuda y asistente IA</h2><p id="mcfAiConnectionStatus">Ayuda integrada disponible · IA en línea por configurar</p></div><button id="mcfAssistantClose" type="button" class="mcf-ai-close" aria-label="Cerrar ayuda">×</button></div>
+  <div class="mcf-ai-context" id="mcfAiContext">Pestaña actual: Inicio</div>
+  <div class="mcf-ai-messages" id="mcfAiMessages" aria-live="polite"><div class="mcf-ai-message assistant">Puedes consultar cómo usar esta sección o guardar una idea para futuras mejoras. La ayuda integrada responde consultas frecuentes sin enviar tus datos financieros a internet.</div></div>
+  <form id="mcfAiAskForm" class="mcf-ai-ask"><label for="mcfAiQuestion">¿Qué duda tienes?</label><textarea id="mcfAiQuestion" rows="2" maxlength="1200" placeholder="Ej.: ¿Cómo filtro los gastos de alimentación de este mes?" required></textarea><div class="mcf-ai-actions"><button class="btn primary" type="submit" id="mcfAiAskButton">Consultar</button><button class="btn" type="button" id="mcfAiClearChat">Limpiar conversación</button></div></form>
+  <details class="mcf-ai-suggestion-box"><summary>Enviar una idea para futuras modificaciones</summary><p class="muted">Las propuestas se guardan en este navegador. No se envían automáticamente ni aparecen en otros dispositivos.</p><form id="mcfAiSuggestionForm"><label for="mcfAiSuggestion">Propuesta o mejora que te gustaría incorporar</label><textarea id="mcfAiSuggestion" rows="3" maxlength="1500" placeholder="Ej.: agregar comparación entre meses por categoría…" required></textarea><div class="mcf-ai-actions"><button class="btn primary" type="submit">Guardar propuesta</button><button class="btn" type="button" id="mcfAiExportSuggestions">Exportar propuestas</button></div></form><div id="mcfAiSuggestionStatus" class="mcf-ai-suggestion-status" aria-live="polite"></div><div id="mcfAiSuggestionList" class="mcf-ai-suggestion-list"></div></details>
+  <p class="mcf-ai-privacy">Privacidad: la ayuda integrada usa solo la pregunta y la pestaña actual. Para obtener respuestas generadas por una IA en línea se debe conectar un servicio seguro; no se debe poner una clave privada dentro de esta página.</p>
+ </section>
+</div>
+</body></html>
