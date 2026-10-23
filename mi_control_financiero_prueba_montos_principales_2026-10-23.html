@@ -146,19 +146,19 @@
 
 <script>
 'use strict';
-const KEY='mcf_test_montos_principales_20261023_isolated';
+const KEY='mcf_test_uf_sii_20261023_isolated';
 const DRIVE_CLIENT_ID='958721214858-1a7uuk2mul7p8onc35gg7v6a2v6b5hap.apps.googleusercontent.com';
 const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
 const DRIVE_BACKUP_NAME='Mi Control Financiero - respaldo (v9 modos de cuota).json';
-const DRIVE_AUTO_KEY='mcf_test_montos_drive_auto_isolated';
-const DRIVE_SESSION_KEY='mcf_test_montos_drive_session_isolated';
-const DRIVE_ARMED_KEY='mcf_test_montos_drive_armed_isolated';
-const APP_PAGE_KEY='mcf_test_montos_last_page_isolated';
+const DRIVE_AUTO_KEY='mcf_test_uf_sii_drive_auto_isolated';
+const DRIVE_SESSION_KEY='mcf_test_uf_sii_drive_session_isolated';
+const DRIVE_ARMED_KEY='mcf_test_uf_sii_drive_armed_isolated';
+const APP_PAGE_KEY='mcf_test_uf_sii_last_page_isolated';
 const UF_API_BASE='https://indicadores.cl/api/v1/uf.json';
 const UF_SOURCE='SII vía indicadores.cl';
 const ECONOMIC_API='https://indicadores.cl/api/v1/hoy.json';
 const ECONOMIC_FALLBACK_API='https://mindicador.cl/api';
-const ECONOMIC_CACHE_KEY='mcf_test_montos_economic_cache_isolated';
+const ECONOMIC_CACHE_KEY='mcf_test_uf_sii_economic_cache_isolated';
 let economicData=null,economicFetchInProgress=null,economicDataStale=false,economicRefreshing=false;
 let ufFetchInProgress=null;
 let driveAccessToken=null, driveTokenClient=null, driveSyncArmed=false, driveFileId=null, driveUploadTimer=null, driveLastModified=null, driveAuthMode='manual', driveInteractiveRetry=false;
@@ -276,7 +276,7 @@ document.getElementById('newMovement').onclick=()=>showForm('movement');document
 function debtPaid(d){return (d.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function receivablePaid(r){return (r.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function remaining(item){return Math.max(0,Number(item.amount||0)-(item.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0))}
 function rows(headers,body){if(!body.length)return '<div class="empty">Todavía no hay registros.</div>';return '<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+body.join('')+'</tbody></table></div>'}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-const ATTACHMENT_DB_NAME='mcf_test_montos_attachments_isolated';
+const ATTACHMENT_DB_NAME='mcf_test_uf_sii_attachments_isolated';
 let attachmentDBPromise=null;
 function openAttachmentDB(){if(!('indexedDB' in window))return Promise.reject(new Error('Este navegador no permite almacenar los adjuntos de forma segura.'));if(!attachmentDBPromise){attachmentDBPromise=new Promise((resolve,reject)=>{const req=indexedDB.open(ATTACHMENT_DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('blobs'))d.createObjectStore('blobs')};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('No se pudo abrir el almacenamiento de adjuntos.'))})}return attachmentDBPromise}
 async function storeAttachmentBlob(id,blob){const d=await openAttachmentDB();return new Promise((resolve,reject)=>{const tx=d.transaction('blobs','readwrite');tx.objectStore('blobs').put(blob,id);tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('No se pudo guardar un archivo adjunto.'))})}
