@@ -585,7 +585,7 @@ async function connectGoogleDrive(silent=false){
    driveTokenClient=window.google.accounts.oauth2.initTokenClient({client_id:DRIVE_CLIENT_ID,scope:DRIVE_SCOPE,callback:async(response)=>{
     const wasSilent=driveAuthMode==='silent',wasQuiet=driveAuthMode==='quiet';
     if(response.error||!response.access_token){
-     if(wasQuiet)driveInteractiveRetry=true;
+     if(wasQuiet||wasSilent)driveInteractiveRetry=true;
      driveAccessToken=null;driveSyncArmed=false;renderDriveUi();
      driveStatus(wasSilent?'Google no pudo reconectarse en silencio. Pulsa «Conectar Google Drive» para autorizar esta sesión.':wasQuiet?'Google necesita una autorización adicional. Pulsa «Conectar Google Drive» otra vez para abrir la autorización de Google.':'Google no concedió acceso a Drive. '+(response.error_description||response.error||''),'error');return
     }
@@ -608,7 +608,7 @@ async function connectGoogleDrive(silent=false){
      }
     }catch(err){driveStatus(err.message,'error')}
    },error_callback:(error)=>{
-    if(driveAuthMode==='quiet')driveInteractiveRetry=true;
+    if(driveAuthMode==='quiet'||driveAuthMode==='silent')driveInteractiveRetry=true;
     if(driveAuthMode==='silent')driveStatus('Google Drive no pudo reconectarse automáticamente. Pulsa «Conectar Google Drive» para autorizar de nuevo. '+(error?.message||error?.type||''),'error');
     else if(driveAuthMode==='quiet')driveStatus('No se pudo reconectar sin mostrar una ventana. Si Google necesita una autorización adicional, pulsa «Conectar Google Drive» otra vez. '+(error?.message||error?.type||''),'error');
     else driveStatus('No se pudo completar la autorización de Google. '+(error?.message||error?.type||''),'error')
