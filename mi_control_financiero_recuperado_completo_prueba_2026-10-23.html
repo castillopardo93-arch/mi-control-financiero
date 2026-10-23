@@ -151,6 +151,7 @@ const DRIVE_BACKUP_NAME='Mi Control Financiero - respaldo (v9 modos de cuota).js
 const DRIVE_AUTO_KEY='mcf_mortgage_v10_implied_uf_drive_auto_v1';
 const DRIVE_SESSION_KEY='mcf_mortgage_v10_implied_uf_drive_session_v1';
 const DRIVE_ARMED_KEY='mcf_mortgage_v10_implied_uf_drive_armed_v1';
+const APP_PAGE_KEY='mcf_app_last_open_page_v1';
 const UF_API_BASE='https://mindicador.cl/api/uf';
 const UF_SOURCE='mindicador.cl';
 const ECONOMIC_API='https://indicadores.cl/api/v1/hoy.json';
@@ -172,7 +173,7 @@ function configOptions(listName){ensureSettings();return db.settings[listName]||
 function save(skipDrive=false){try{localStorage.setItem(KEY,JSON.stringify(db));if(!skipDrive)scheduleDriveBackup();return true}catch(e){toast('No se pudo guardar. Puede faltar espacio disponible en el navegador.');return false}}
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.add('hidden'),3500)}
 const names={home:'Resumen general',movements:'Movimientos',debts:'Mis deudas financieras',personalDebts:'Mis deudas personales',receivables:'Dinero por cobrar',checklist:'Lista de chequeo',budgets:'Presupuestos',reports:'Informes',indicators:'Indicadores económicos',amortization:'Amortización de créditos',settings:'Configuración',settingsLists:'Listas y opciones',form:'Nuevo registro'};
-function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page||(page==='settingsLists'&&b.dataset.page==='settings')));document.getElementById('pageTitle').textContent=names[page]||'Mi Control Financiero';if(page!=='form')previousPage=page;window.scrollTo({top:0,behavior:'smooth'});if(page!=='form')render();if(page==='indicators'&&(!economicData||Date.now()-new Date(economicData.fetchedAt).getTime()>30*60*1000))refreshEconomicIndicators({silent:true})}
+function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page||(page==='settingsLists'&&b.dataset.page==='settings')));document.getElementById('pageTitle').textContent=names[page]||'Mi Control Financiero';if(page!=='form'){previousPage=page;try{localStorage.setItem(APP_PAGE_KEY,page)}catch(e){}}window.scrollTo({top:0,behavior:'smooth'});if(page!=='form')render();if(page==='indicators'&&(!economicData||Date.now()-new Date(economicData.fetchedAt).getTime()>30*60*1000))refreshEconomicIndicators({silent:true})}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
 const field=(label,name,type='text',opts=null,required=false,extra={})=>({label,name,type,opts,required,...extra});
 function isoParts(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?{y:Number(m[1]),m:Number(m[2]),d:Number(m[3])}:null}
@@ -740,6 +741,7 @@ document.getElementById('saveThemeSettings').addEventListener('click',()=>{db.se
 document.getElementById('resetThemeSettings').addEventListener('click',()=>{db.settings.theme={primary:'#173b35',background:'#f5f8f6',accent:'#e9c66b',card:'#ffffff'};if(save()){applyPersonalization();toast('Colores originales restaurados.')}});
 
 economicData=readEconomicCache();economicDataStale=!!economicData;fillPeriods();document.getElementById('todayLabel').textContent='MEJORAS EN PRUEBA · ALMACENAMIENTO SEPARADO';render();renderDriveUi();renderUFUI();refreshCurrentUF({silent:true,force:true});refreshEconomicIndicators({silent:true});applyPersonalization();
+try{const savedPage=localStorage.getItem(APP_PAGE_KEY);if(savedPage&&savedPage!=='form'&&document.getElementById('page-'+savedPage))go(savedPage)}catch(e){}
 if(localStorage.getItem(DRIVE_SESSION_KEY)==='true'){connectGoogleDrive(true)}
 </script>
 <script id="recovered-independent-settings-arrows">
