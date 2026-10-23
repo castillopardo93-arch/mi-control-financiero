@@ -816,9 +816,9 @@ try{const hashPage=decodeURIComponent((location.hash||'').slice(1));const savedP
     if(!page||page.dataset.recoveredArrowsReady==='1')return;
     page.dataset.recoveredArrowsReady='1';
     const intro=page.querySelector(':scope > .section-head p');
-    if(intro)intro.textContent='Prueba de flechas independientes: cada flecha contrae solo su tarjeta.';
+    if(intro)intro.textContent='Todos los apartados comienzan contraídos. Pulsa la flecha para abrir cada uno.';
     const cards=Array.from(page.children).filter(el=>el.classList&&el.classList.contains('card'));
-    cards.forEach((card,index)=>{
+    cards.forEach(card=>{
       let header=Array.from(card.children).find(el=>el.classList&&el.classList.contains('section-head'));
       const preserved=[];
       if(!header&&card.classList.contains('settings-entry')){
@@ -839,13 +839,15 @@ try{const hashPage=decodeURIComponent((location.hash||'').slice(1));const savedP
       const contentNodes=Array.from(card.children).filter(el=>el!==header&&!preserved.includes(el));
       const titleNode=header.querySelector('h2,h3,strong');
       const title=titleNode?(titleNode.textContent||'').trim():'Información y privacidad';
+      // Cada panel inicia cerrado en cada carga de la aplicación.
+      contentNodes.forEach(node=>{node.hidden=true});
       const toggle=document.createElement('button');
       toggle.type='button';
       toggle.className='recovery-setting-arrow';
-      toggle.setAttribute('aria-expanded','true');
-      toggle.setAttribute('aria-label','Contraer '+title);
-      toggle.title='Contraer '+title;
-      toggle.innerHTML='<span aria-hidden="true">▾</span>';
+      toggle.setAttribute('aria-expanded','false');
+      toggle.setAttribute('aria-label','Expandir '+title);
+      toggle.title='Expandir '+title;
+      toggle.innerHTML='<span aria-hidden="true">▸</span>';
       header.appendChild(toggle);
       toggle.addEventListener('click',function(){
         const expanded=toggle.getAttribute('aria-expanded')==='true';
