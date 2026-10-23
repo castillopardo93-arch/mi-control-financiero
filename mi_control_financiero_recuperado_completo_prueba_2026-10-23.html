@@ -461,13 +461,30 @@ async function fetchUFForDate(isoDate,{force=false}={}){
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error('Fecha inválida para consultar la UF.');
  const cached=db.settings?.ufHistory?.[date];
  if(!force&&cached&&Number.isFinite(Number(cached.value))&&Number(cached.value)>0)return cached;
- const [y,m,d]=date.split('-');
- const response=await fetch(`${UF_API_BASE}/${d}-${m}-${y}`,{cache:'no-store'});
- if(!response.ok)throw new Error('No se pudo consultar la UF para '+formatISODate(date)+'. Código HTTP '+response.status+'.');
- const payload=await response.json();const series=Array.isArray(payload.serie)?payload.serie:[];
- const item=series.find(x=>String(x.fecha||'').slice(0,10)===date)||null;
- if(!item||!Number.isFinite(Number(item.valor))||Number(item.valor)<=0)throw new Error('La fuente no devolvió un valor UF publicado para '+formatISODate(date)+'.');
- const entry=recordUF(date,Number(item.valor));persistUFSettings();
+ const [y,m,d]=date.split('-');let series=[],exactError=null;
+ try{
+  const response=await fetch(`${UF_API_BASE}/${d}-${m}-${y}`,{cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const payload=await response.json();series=Array.isArray(payload.serie)?payload.serie:[];
+ }catch(err){exactError=err}
+ let item=series.find(x=>String(x.fecha||'').slice(0,10)===date)||null;
+ if(!item){
+  try{
+   const yearResponse=await fetch(`${UF_API_BASE}/${y}`,{cache:'no-store'});
+   if(!yearResponse.ok)throw new Error('HTTP '+yearResponse.status);
+   const yearPayload=await yearResponse.json();const yearSeries=Array.isArray(yearPayload.serie)?yearPayload.serie:[];
+   const eligible=yearSeries.filter(x=>{const day=String(x.fecha||'').slice(0,10);return day&&day<=date&&Number.isFinite(Number(x.valor))&&Number(x.valor)>0}).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
+   item=eligible[0]||null;
+  }catch(err){if(!exactError)exactError=err}
+ }
+ if(!item||!Number.isFinite(Number(item.valor))||Number(item.valor)<=0){
+  throw new Error('No se encontró un valor UF histórico para '+formatISODate(date)+(exactError?' ('+exactError.message+')':'. Comprueba la fecha e inténtalo nuevamente.'));
+ }
+ const actualDate=String(item.fecha||'').slice(0,10);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(actualDate))throw new Error('La fuente devolvió una fecha histórica no válida.');
+ const entry=recordUF(actualDate,Number(item.valor));
+ if(actualDate!==date)db.settings.ufHistory[date]={...entry,requestedDate:date};
+ persistUFSettings();
  return entry;
 }
 async function refreshCurrentUF({silent=false,force=true}={}){
