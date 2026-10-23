@@ -143,6 +143,8 @@ const DRIVE_CLIENT_ID='958721214858-1a7uuk2mul7p8onc35gg7v6a2v6b5hap.apps.google
 const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
 const DRIVE_BACKUP_NAME='Mi Control Financiero - respaldo (v9 modos de cuota).json';
 const DRIVE_AUTO_KEY='mcf_mortgage_v10_implied_uf_drive_auto_v1';
+const DRIVE_SESSION_KEY='mcf_mortgage_v10_implied_uf_drive_session_v1';
+const DRIVE_ARMED_KEY='mcf_mortgage_v10_implied_uf_drive_armed_v1';
 const UF_API_BASE='https://mindicador.cl/api/uf';
 const UF_SOURCE='mindicador.cl';
 const ECONOMIC_API='https://indicadores.cl/api/v1/hoy.json';
@@ -150,7 +152,7 @@ const ECONOMIC_FALLBACK_API='https://mindicador.cl/api';
 const ECONOMIC_CACHE_KEY='mcf_consolidated_preview_economic_cache_v1';
 let economicData=null,economicFetchInProgress=null,economicDataStale=false,economicRefreshing=false;
 let ufFetchInProgress=null;
-let driveAccessToken=null, driveTokenClient=null, driveSyncArmed=false, driveFileId=null, driveUploadTimer=null, driveLastModified=null;
+let driveAccessToken=null, driveTokenClient=null, driveSyncArmed=false, driveFileId=null, driveUploadTimer=null, driveLastModified=null, driveAuthMode='manual';
 let driveAutoEnabled=localStorage.getItem(DRIVE_AUTO_KEY)!=='false';
 const money = (amount, currency='CLP') => { const val=Number(amount||0); if(currency==='UF') return val.toLocaleString('es-CL',{minimumFractionDigits:2,maximumFractionDigits:4})+' UF'; return val.toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}); };
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}; const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36); let previousPage='home', formType=null;
@@ -545,7 +547,7 @@ async function uploadBackupToDrive(silent=false, confirmOverwrite=false){
  const meta=await uploadDriveResumable(payload,existing);
  driveFileId=meta.id||(existing&&existing.id)||null;driveLastModified=meta.modifiedTime||new Date().toISOString();
  if(!driveFileId)throw new Error('Google Drive no devolvió el identificador de la copia.');
- driveSyncArmed=true;
+ driveSyncArmed=true;localStorage.setItem(DRIVE_ARMED_KEY,'true');localStorage.setItem(DRIVE_SESSION_KEY,'true');
  const when=new Date().toLocaleString('es-CL');
  driveStatus('Respaldo guardado en tu Google Drive el '+when+'. Los siguientes cambios se cargarán automáticamente mientras esta sesión siga autorizada.', 'info');
  if(!silent)toast('Respaldo guardado en Google Drive.');
@@ -561,18 +563,42 @@ async function validateBackupObject(parsed){
  if(!next||!Array.isArray(next.movements)||!Array.isArray(next.debts)||!Array.isArray(next.receivables))throw new Error('El archivo de Drive no parece ser una copia válida de Mi Control Financiero.');
  return await restoreAttachmentBlobs({...emptyData(),...next,settings:{...emptyData().settings,...(next.settings||{})}});
 }
-async function connectGoogleDrive(){
- if(!window.google?.accounts?.oauth2){driveStatus('No se pudo cargar la autorización de Google. Comprueba tu conexión, desactiva bloqueadores para esta página o vuelve a intentarlo.', 'error');return}
+async function connectGoogleDrive(silent=false){
+ if(!window.google?.accounts?.oauth2){driveStatus(silent?'Google Drive no pudo reconectarse automáticamente. Pulsa «Conectar Google Drive» para autorizar de nuevo.':'No se pudo cargar la autorización de Google. Comprueba tu conexión, desactiva bloqueadores para esta página o vuelve a intentarlo.', 'error');return}
  try{
   if(!driveTokenClient){
    driveTokenClient=window.google.accounts.oauth2.initTokenClient({client_id:DRIVE_CLIENT_ID,scope:DRIVE_SCOPE,callback:async(response)=>{
-    if(response.error||!response.access_token){driveAccessToken=null;driveSyncArmed=false;renderDriveUi();driveStatus('Google no concedió acceso a Drive. '+(response.error_description||response.error||''),'error');return}
-    driveAccessToken=response.access_token;driveSyncArmed=false;driveStatus('Conectado. Comprobando si ya existe una copia en Drive…');
-    try{const found=await findDriveBackup();if(found){driveSyncArmed=false;driveStatus('Conectado. Se encontró una copia en Drive modificada el '+(found.modifiedTime||'en una fecha desconocida')+'. Puedes cargarla o decidir reemplazarla con «Respaldar ahora».','info')}else{driveSyncArmed=false;driveStatus('Conectado. Aún no existe una copia de Mi Control Financiero en Drive. Pulsa «Respaldar ahora» para crearla.','info')}}catch(err){driveStatus(err.message,'error')}
-   },error_callback:(error)=>{driveStatus('No se pudo completar la autorización de Google. '+(error?.message||error?.type||''),'error')}})
+    const wasSilent=driveAuthMode==='silent';
+    if(response.error||!response.access_token){
+     driveAccessToken=null;driveSyncArmed=false;renderDriveUi();
+     driveStatus(wasSilent?'Google no pudo reconectarse en silencio. Pulsa «Conectar Google Drive» para autorizar esta sesión.':'Google no concedió acceso a Drive. '+(response.error_description||response.error||''),'error');return
+    }
+    driveAccessToken=response.access_token;
+    localStorage.setItem(DRIVE_SESSION_KEY,'true');
+    driveSyncArmed=localStorage.getItem(DRIVE_ARMED_KEY)==='true';
+    driveStatus(wasSilent?'Google Drive reconectado automáticamente. Comprobando la copia…':'Conectado. Comprobando si ya existe una copia en Drive…','info');
+    try{
+     const found=await findDriveBackup();
+     if(found){
+      driveFileId=found.id;driveLastModified=found.modifiedTime||null;
+      if(driveSyncArmed){
+       driveStatus((wasSilent?'Google Drive reconectado automáticamente. ':'Conectado. ')+'Se encontró la copia modificada el '+(found.modifiedTime||'en una fecha desconocida')+'. El respaldo automático seguirá activo mientras Drive esté autorizado.','info')
+      }else{
+       driveStatus((wasSilent?'Google Drive reconectado automáticamente. ':'Conectado. ')+'Se encontró una copia en Drive modificada el '+(found.modifiedTime||'en una fecha desconocida')+'. Puedes cargarla o usar «Respaldar ahora» para establecer el respaldo automático.','info')
+      }
+     }else{
+      driveSyncArmed=false;localStorage.setItem(DRIVE_ARMED_KEY,'false');
+      driveStatus((wasSilent?'Google Drive reconectado automáticamente, pero ':'Conectado. ')+'aún no existe una copia de prueba en Drive. Pulsa «Respaldar ahora» para crearla.','info')
+     }
+    }catch(err){driveStatus(err.message,'error')}
+   },error_callback:(error)=>{
+    if(driveAuthMode==='silent')driveStatus('Google Drive no pudo reconectarse automáticamente. Pulsa «Conectar Google Drive» para autorizar de nuevo. '+(error?.message||error?.type||''),'error');
+    else driveStatus('No se pudo completar la autorización de Google. '+(error?.message||error?.type||''),'error')
+   }})
   }
-  driveTokenClient.requestAccessToken();
- }catch(err){driveStatus('No se pudo iniciar la conexión con Google. '+err.message,'error')}
+  driveAuthMode=silent?'silent':'manual';
+  driveTokenClient.requestAccessToken(silent?{prompt:''}:{});
+ }catch(err){driveStatus(silent?'No se pudo iniciar la reconexión automática de Google Drive. Pulsa «Conectar Google Drive» para autorizar de nuevo. '+err.message:'No se pudo iniciar la conexión con Google. '+err.message,'error')}
 }
 async function restoreBackupFromDrive(){
  try{
@@ -581,7 +607,7 @@ async function restoreBackupFromDrive(){
   const response=await driveFetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(file.id)+'?alt=media');
   const parsed=await response.json();const restored=await validateBackupObject(parsed);
   db=restored;ensureSettings();if(!save(true))return;applyPersonalization();render();driveSyncArmed=true;driveFileId=file.id;driveLastModified=file.modifiedTime||null;
-  driveStatus('Copia cargada desde Google Drive. Los siguientes cambios se respaldarán automáticamente en esta sesión.','info');toast('Copia de Google Drive cargada.');
+  localStorage.setItem(DRIVE_SESSION_KEY,'true');localStorage.setItem(DRIVE_ARMED_KEY,'true');driveStatus('Copia cargada desde Google Drive. Los siguientes cambios se respaldarán automáticamente mientras Drive esté autorizado.','info');toast('Copia de Google Drive cargada.');
  }catch(err){driveStatus(err.message||'No se pudo cargar la copia de Drive.','error')}
 }
 document.getElementById('ufRefreshBtn').addEventListener('click',()=>refreshCurrentUF({silent:false,force:true}));
@@ -590,7 +616,7 @@ document.getElementById('physicalBackupBtn').addEventListener('click',async()=>{
 document.getElementById('driveConnectBtn').addEventListener('click',connectGoogleDrive);
 document.getElementById('driveBackupBtn').addEventListener('click',async()=>{try{await uploadBackupToDrive(false,true)}catch(err){driveStatus(err.message||'No se pudo guardar el respaldo.','error')}});
 document.getElementById('driveRestoreBtn').addEventListener('click',restoreBackupFromDrive);
-document.getElementById('driveDisconnectBtn').addEventListener('click',()=>{driveAccessToken=null;driveTokenClient=null;driveSyncArmed=false;clearTimeout(driveUploadTimer);renderDriveUi();toast('Se desconectó Drive en esta sesión. Los datos locales no se modificaron.')});
+document.getElementById('driveDisconnectBtn').addEventListener('click',()=>{driveAccessToken=null;driveTokenClient=null;driveSyncArmed=false;localStorage.removeItem(DRIVE_SESSION_KEY);localStorage.setItem(DRIVE_ARMED_KEY,'false');clearTimeout(driveUploadTimer);renderDriveUi();toast('Se desconectó Drive en esta sesión. Los datos locales no se modificaron.')});
 document.getElementById('driveAutoBackup').addEventListener('change',e=>{driveAutoEnabled=e.target.checked;localStorage.setItem(DRIVE_AUTO_KEY,String(driveAutoEnabled));renderDriveUi();toast(driveAutoEnabled?'Respaldo automático activado.':'Respaldo automático desactivado.')});
 document.getElementById('exportJson').onclick=async()=>{try{const envelope=await backupEnvelope();download('mi-control-financiero-respaldo-completo-'+today()+'.json',JSON.stringify(envelope,null,2),'application/json')}catch(err){toast(err.message||'No se pudo crear el respaldo completo.')}};document.getElementById('exportCsv').onclick=()=>{const all=db.movements;const csv=[['Fecha','Tipo','Descripción','Categoría','Monto','Moneda','Estado','Medio','Notas'],...all.map(m=>[m.date,m.type,m.title,m.category,m.amount,m.currency,m.status,m.method,m.notes])].map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');download('movimientos-'+today()+'.csv','\ufeff'+csv,'text/csv;charset=utf-8')};
 document.getElementById('importJson').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const parsed=await parsedBackupFile(await file.text());const next=parsed.data||parsed;if(!next||!Array.isArray(next.movements)||!Array.isArray(next.debts)||!Array.isArray(next.receivables))throw new Error('El archivo no corresponde a una copia válida.');if(!confirm('Esto reemplazará los datos locales actuales. ¿Continuar?'))return;db=await restoreAttachmentBlobs({...emptyData(),...next,settings:{...emptyData().settings,...(next.settings||{})}});ensureSettings();driveSyncArmed=false;if(!save(true))return;applyPersonalization();render();renderDriveUi();toast('Copia restaurada localmente, incluidos los adjuntos. Google Drive no se modificó; revisa los datos antes de respaldar allí.');}catch(err){toast(err.message||'No se pudo leer la copia.')}finally{e.target.value=''}});
@@ -700,6 +726,7 @@ document.getElementById('saveThemeSettings').addEventListener('click',()=>{db.se
 document.getElementById('resetThemeSettings').addEventListener('click',()=>{db.settings.theme={primary:'#173b35',background:'#f5f8f6',accent:'#e9c66b',card:'#ffffff'};if(save()){applyPersonalization();toast('Colores originales restaurados.')}});
 
 economicData=readEconomicCache();economicDataStale=!!economicData;fillPeriods();document.getElementById('todayLabel').textContent='MEJORAS EN PRUEBA · ALMACENAMIENTO SEPARADO';render();renderDriveUi();renderUFUI();refreshCurrentUF({silent:true,force:true});refreshEconomicIndicators({silent:true});applyPersonalization();
+if(localStorage.getItem(DRIVE_SESSION_KEY)==='true'){connectGoogleDrive(true)}
 </script>
 <script id="recovered-independent-settings-arrows">
 (function(){
