@@ -10,6 +10,12 @@
 .amort-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.amort-summary .card{min-width:0}.amort-summary .amount{font-size:clamp(17px,2vw,24px)}
 .amort-help{font-size:12px;color:var(--muted);line-height:1.5}.attachment-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.attachment-link{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;color:var(--text)}.attachment-link:hover{background:var(--surface-soft)}
 @media(max-width:760px){.amort-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Estado visual del botón de Google Drive: rojo desconectado y verde conectado. */
+.btn.drive-connect-disconnected,
+.btn.drive-connect-disconnected:disabled{background:#b42318!important;color:#fff!important;border-color:#b42318!important;opacity:1!important;cursor:pointer!important}
+.btn.drive-connect-connected,
+.btn.drive-connect-connected:disabled{background:#16803c!important;color:#fff!important;border-color:#16803c!important;opacity:1!important;cursor:not-allowed!important}
 </style>
 <style id="recovered-settings-arrows-style">
 #page-settings > .recovery-settings-card{position:relative}
@@ -409,10 +415,18 @@ function handleAction(action,id){const find=(list)=>list.find(x=>x.id===id);if(a
 document.body.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;if(b.type==='checkbox'&&b.dataset.action==='toggleTask')return;handleAction(b.dataset.action,b.dataset.id)});document.body.addEventListener('change',e=>{const el=e.target;if(el.matches('[data-action="toggleTask"]')){const t=db.tasks.find(x=>x.id===el.dataset.id);if(t){t.done=el.checked;save();renderTasks();renderHome();toast(t.done?'Tarea completada.':'Tarea reabierta.')}}});
 function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function driveStatus(message, kind='info'){
- const box=document.getElementById('driveStatus'),pill=document.getElementById('driveStatusPill');
+ const box=document.getElementById('driveStatus'),pill=document.getElementById('driveStatusPill'),connectBtn=document.getElementById('driveConnectBtn');
  if(box){box.textContent=message;box.className='notice '+(kind==='error'?'':'info')}
- if(pill){pill.textContent=driveAccessToken?'Conectado':'No conectado';pill.className='pill'+(kind==='error'?' red':driveAccessToken?'':' warn')}
  const connected=!!driveAccessToken;
+ if(pill){pill.textContent=connected?'Conectado':'No conectado';pill.className='pill'+(kind==='error'?' red':connected?'':' warn')}
+ if(connectBtn){
+  connectBtn.disabled=connected;
+  connectBtn.classList.toggle('drive-connect-connected',connected);
+  connectBtn.classList.toggle('drive-connect-disconnected',!connected);
+  connectBtn.textContent=connected?'Google Drive conectado':'Conectar Google Drive';
+  connectBtn.title=connected?'Drive está conectado. Para cambiar de cuenta, pulsa «Desconectar sesión» primero.':'Pulsa para autorizar la conexión con Google Drive.';
+  connectBtn.setAttribute('aria-label',connected?'Google Drive conectado; botón bloqueado':'Conectar Google Drive');
+ }
  ['driveBackupBtn','driveRestoreBtn','driveDisconnectBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=!connected});
  const auto=document.getElementById('driveAutoBackup');if(auto){auto.checked=driveAutoEnabled}
 }
