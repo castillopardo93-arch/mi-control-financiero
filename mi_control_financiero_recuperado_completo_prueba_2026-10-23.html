@@ -460,7 +460,9 @@ async function fetchUFForDate(isoDate,{force=false}={}){
  const date=String(isoDate||today()).slice(0,10);
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error('Fecha inválida para consultar la UF.');
  const cached=db.settings?.ufHistory?.[date];
- if(!force&&cached&&Number.isFinite(Number(cached.value))&&Number(cached.value)>0)return cached;
+ // No reutilizar una entrada guardada bajo una fecha antigua si su fecha real corresponde a hoy o al futuro.
+ const cachedDate=String(cached?.date||'').slice(0,10);
+ if(!force&&cached&&/^\d{4}-\d{2}-\d{2}$/.test(cachedDate)&&cachedDate<=date&&Number.isFinite(Number(cached.value))&&Number(cached.value)>0)return cached;
  const [y,m,d]=date.split('-');let series=[],exactError=null;
  try{
   const response=await fetch(`${UF_API_BASE}/${d}-${m}-${y}`,{cache:'no-store'});
