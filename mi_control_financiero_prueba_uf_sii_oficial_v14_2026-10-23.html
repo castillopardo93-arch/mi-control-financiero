@@ -853,6 +853,7 @@ async function refreshEconomicIndicators({silent=false}={}){
    renderIndicators();if(!silent)toast('Indicadores económicos actualizados. La UF se verificó con la fuente oficial del SII.');return economicData;
   }catch(err){economicData=economicData||readEconomicCache();attachOfficialUfToEconomicData(economicData,ufCurrent());economicDataStale=!!economicData;renderIndicators();if(!silent)toast('No se pudieron actualizar todos los indicadores. Se conserva la última consulta si existe.');return economicData}
   finally{economicFetchInProgress=null;economicRefreshing=false;if(btn)btn.disabled=false;renderIndicators()}
+ })();return economicFetchInProgress;
 }
 function economicRates(){const d=economicData;if(!d)return null;const rates={CLP:1};if(d.uf?.value>0)rates.UF=Number(d.uf.value);if(d.usd?.value>0)rates.USD=Number(d.usd.value);if(d.eur?.value>0)rates.EUR=Number(d.eur.value);if(d.utm?.value>0)rates.UTM=Number(d.utm.value);if(d.copper?.value>0&&d.usd?.value>0)rates.COPPER=Number(d.copper.value)*Number(d.usd.value);return rates}
 function economicUnitLabel(unit){return ({CLP:'CLP',UF:'UF',USD:'USD',EUR:'EUR',UTM:'UTM',COPPER:'libras de cobre'})[unit]||unit}
