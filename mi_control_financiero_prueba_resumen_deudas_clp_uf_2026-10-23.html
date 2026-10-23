@@ -809,59 +809,62 @@ economicData=readEconomicCache();economicDataStale=!!economicData;fillPeriods();
 try{const hashPage=decodeURIComponent((location.hash||'').slice(1));const savedPage=(hashPage&&document.getElementById('page-'+hashPage)?hashPage:null)||sessionStorage.getItem(APP_PAGE_KEY)||localStorage.getItem(APP_PAGE_KEY);if(savedPage&&savedPage!=='form'&&document.getElementById('page-'+savedPage))go(savedPage)}catch(e){}
 /* Copia aislada: no se abre ni se conecta Google Drive. */
 </script>
-<script id="recovered-independent-settings-arrows">
+<script id="recovered-independent-settings-arrows-v2">
 (function(){
-  function initRecoveredSettingsArrows(){
+  function initSettingsCollapse(){
     const page=document.getElementById('page-settings');
-    if(!page||page.dataset.recoveredArrowsReady==='1')return;
-    page.dataset.recoveredArrowsReady='1';
+    if(!page || page.dataset.settingsCollapseVersion==='2')return;
+    page.dataset.settingsCollapseVersion='2';
     const intro=page.querySelector(':scope > .section-head p');
-    if(intro)intro.textContent='Todos los apartados comienzan contraídos. Pulsa la flecha para abrir cada uno.';
+    if(intro)intro.textContent='Los apartados empiezan cerrados. Pulsa la flecha para abrir solo el que necesites.';
     const cards=Array.from(page.children).filter(el=>el.classList&&el.classList.contains('card'));
     cards.forEach(card=>{
+      // Remove any arrow left by an earlier version before building the current controls.
+      card.querySelectorAll(':scope > .section-head > .recovery-setting-arrow, :scope > .recovery-settings-header > .recovery-setting-arrow').forEach(btn=>btn.remove());
+      card.classList.add('recovery-settings-card');
       let header=Array.from(card.children).find(el=>el.classList&&el.classList.contains('section-head'));
       const preserved=[];
-      if(!header&&card.classList.contains('settings-entry')){
+      if(!header && card.classList.contains('settings-entry')){
         header=document.createElement('div');
         header.className='recovery-settings-header';
-        const symbol=Array.from(card.children).find(el=>el.classList.contains('entry-symbol'));
-        const copy=Array.from(card.children).find(el=>el.classList.contains('entry-copy'));
-        if(symbol){header.appendChild(symbol);preserved.push(symbol)}
-        if(copy){header.appendChild(copy);preserved.push(copy)}
+        const symbol=Array.from(card.children).find(el=>el.classList&&el.classList.contains('entry-symbol'));
+        const copy=Array.from(card.children).find(el=>el.classList&&el.classList.contains('entry-copy'));
+        if(symbol){header.appendChild(symbol);preserved.push(symbol);}
+        if(copy){header.appendChild(copy);preserved.push(copy);}
         card.insertBefore(header,card.firstChild);
       }else if(!header){
         header=document.createElement('div');
         header.className='section-head recovery-settings-header';
-        header.innerHTML='<div><h3 style="margin:0">Información y privacidad</h3><p>Almacenamiento, privacidad y uso de datos.</p></div>';
+        header.innerHTML='<div><h3 style="margin:0">Información y privacidad</h3><p>Almacenamiento y privacidad de los datos.</p></div>';
         card.insertBefore(header,card.firstChild);
+      }else{
+        header.classList.add('recovery-settings-header');
       }
-      card.classList.add('recovery-settings-card');
       const contentNodes=Array.from(card.children).filter(el=>el!==header&&!preserved.includes(el));
-      const titleNode=header.querySelector('h2,h3,strong');
-      const title=titleNode?(titleNode.textContent||'').trim():'Información y privacidad';
-      // Cada panel inicia cerrado en cada carga de la aplicación.
-      contentNodes.forEach(node=>{node.hidden=true});
+      // Always start closed, independent of previous visibility state in the page.
+      contentNodes.forEach(node=>{node.hidden=true;});
       const toggle=document.createElement('button');
       toggle.type='button';
       toggle.className='recovery-setting-arrow';
       toggle.setAttribute('aria-expanded','false');
-      toggle.setAttribute('aria-label','Expandir '+title);
-      toggle.title='Expandir '+title;
+      toggle.setAttribute('aria-label','Expandir '+((header.querySelector('h2,h3,strong')?.textContent||'apartado').trim()));
+      toggle.title=toggle.getAttribute('aria-label');
       toggle.innerHTML='<span aria-hidden="true">▸</span>';
       header.appendChild(toggle);
       toggle.addEventListener('click',function(){
-        const expanded=toggle.getAttribute('aria-expanded')==='true';
-        contentNodes.forEach(node=>{node.hidden=expanded});
-        toggle.setAttribute('aria-expanded',String(!expanded));
-        toggle.setAttribute('aria-label',(expanded?'Expandir ':'Contraer ')+title);
-        toggle.title=(expanded?'Expandir ':'Contraer ')+title;
+        const wasOpen=toggle.getAttribute('aria-expanded')==='true';
+        contentNodes.forEach(node=>{node.hidden=wasOpen;});
+        toggle.setAttribute('aria-expanded',String(!wasOpen));
+        const label=(header.querySelector('h2,h3,strong')?.textContent||'apartado').trim();
+        toggle.setAttribute('aria-label',(wasOpen?'Expandir ':'Contraer ')+label);
+        toggle.title=toggle.getAttribute('aria-label');
         const icon=toggle.querySelector('span');
-        if(icon)icon.textContent=expanded?'▸':'▾';
+        if(icon)icon.textContent=wasOpen?'▸':'▾';
       });
     });
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initRecoveredSettingsArrows,{once:true});
-  else initRecoveredSettingsArrows();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initSettingsCollapse,{once:true});
+  else initSettingsCollapse();
 })();
 </script>
 </body></html>
