@@ -11,3 +11,5 @@ No publicar cambios en `index.html` hasta que el usuario pruebe y autorice la fo
 - `mi_control_financiero_revision_tecnica_movil_v39_2026-10-24.html`: versión de prueba v39 para validar recuperación de respaldo JSON en almacenamiento aislado, con Google Drive deshabilitado.
 - `respaldo_mi_control_financiero_v39_2026-10-24.html`: respaldo idéntico de v39.
 - `INFORME_PRUEBA_RECUPERACION_V39.md`: alcance, aislamiento y límites de la prueba de recuperación.
+
+VERIFICAR QUE NO SE REPITA EN NINGUN ARCHIVO LA VERSION CORRELATIVA DE LAS VERSIONES NO PUEDEN HABER 2 O MAS VERSIONES QUE CONTENGAN EL MISMO NUMEOR CORRELATIVO
