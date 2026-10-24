@@ -856,19 +856,11 @@ function debtSummaryCardsHTML(d,capitalSolicitado){
   return convert(p.amount,from,currency,rate);
  };
  const payments=Array.isArray(d.payments)?d.payments:[];
- // La misma transacción puede guardarse en d.payments y en la cuota, con metadatos normalizados distintos. Deduplicar por los datos originales del pago.
- const paymentKey=p=>[String(p.date||''),String(Number(p.amount||0)),String(p.currency||currency)].join('|');
- let paymentSources=payments.slice();
- const existingKeys=new Set(paymentSources.map(paymentKey));
- rows.forEach(i=>(Array.isArray(i.paymentRecords)?i.paymentRecords:[]).forEach(p=>{
-  if(p.method!=='Pago registrado en la cuota')return;
-  const key=paymentKey(p);if(existingKeys.has(key))return;
-  existingKeys.add(key);paymentSources.push(p);
- }));
+ // Evitar doble conteo: si existe historial general de pagos, esa es la fuente única del total.
+ // Los registros de cuotas solo se usan como respaldo cuando no hay historial general.
+ let paymentSources=payments.length?payments.slice():[];
  if(!paymentSources.length){
-  rows.forEach(i=>(Array.isArray(i.paymentRecords)?i.paymentRecords:[]).forEach(p=>{
-   const key=paymentKey(p);if(existingKeys.has(key))return;existingKeys.add(key);paymentSources.push(p);
-  }));
+  rows.forEach(i=>(Array.isArray(i.paymentRecords)?i.paymentRecords:[]).forEach(p=>paymentSources.push(p)));
  }
  let totalAbonos=0,hasPaymentRecords=paymentSources.length>0,paidValid=true;
  for(const p of paymentSources){
