@@ -701,7 +701,8 @@ function ensureNextRollingInstallment(d){
  const charges=Math.min(totalQuota,Math.max(0,Number(d.monthlyCharges||last.charges||0)));
  const amount=precisionRound(Math.max(0,totalQuota-charges),d.currency||'CLP');
  const rate=ufCurrent();
- const next={id:uid(),number:nextNumber,dueDate,amount,charges,interest:null,principal:null,balanceBefore:null,balanceAfter:null,paid:false,paidAmount:0,historicalAssumed:false,notRequired:false,contractualQuotaMode:'automatic',contractualQuotaAtRecord:Number(d.contractualQuota||0),contractualQuotaCurrencyAtRecord:d.contractualQuotaCurrency||d.currency||'CLP',ufValueAtOperation:d.currency==='UF'&&rate?Number(rate.value)||null:null,ufRateDate:d.currency==='UF'&&rate?rate.date||null:null,ufRateSource:d.currency==='UF'&&rate?rate.source||UF_SOURCE:null,notes:'Cuota siguiente generada automáticamente al registrar el pago de la cuota anterior',attachments:[],paymentRecords:[]};
+ const adminCharge=d.adminChargeEnabled==='Sí'?Math.max(0,Number(d.adminChargeReference||0)):0;
+ const next={id:uid(),number:nextNumber,dueDate,amount,charges,adminCharge,interest:null,principal:null,balanceBefore:null,balanceAfter:null,paid:false,paidAmount:0,historicalAssumed:false,notRequired:false,contractualQuotaMode:'automatic',contractualQuotaAtRecord:Number(d.contractualQuota||0),contractualQuotaCurrencyAtRecord:d.contractualQuotaCurrency||d.currency||'CLP',ufValueAtOperation:d.currency==='UF'&&rate?Number(rate.value)||null:null,ufRateDate:d.currency==='UF'&&rate?rate.date||null:null,ufRateSource:d.currency==='UF'&&rate?rate.source||UF_SOURCE:null,notes:'Cuota siguiente generada automáticamente al registrar el pago de la cuota anterior',attachments:[],paymentRecords:[]};
  d.installments.push(next);d.installments.sort((a,b)=>Number(a.number)-Number(b.number));
  d.currentInstallmentNumber=nextNumber;d.currentDueDate=dueDate;
  return true;
