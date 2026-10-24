@@ -21,9 +21,9 @@ export default {
   if (!env.DB) return json({error:'Almacenamiento no configurado.'},503,allowed);
   const ipHash = await digest((request.headers.get('CF-Connecting-IP') || 'unknown') + ':' + (env.RATE_LIMIT_SALT || 'configure-a-secret'));
   try {
-   const count = await env.DB.prepare("SELECT count FROM rate_limits WHERE ip_hash=? AND window_start > datetime('now','-1 hour')").bind(ipHash).first();
+   const count = await env.DB.prepare("SELECT count FROM rate_limits WHERE id=? AND window_start > datetime('now','-1 hour')").bind(ipHash).first();
    if (count && count.count >= 30) return json({error:'Límite temporal alcanzado. Inténtalo más tarde.'},429,allowed);
-   await env.DB.prepare("INSERT INTO rate_limits(ip_hash,count,window_start) VALUES(?,1,datetime('now')) ON CONFLICT(ip_hash) DO UPDATE SET count=CASE WHEN window_start <= datetime('now','-1 hour') THEN 1 ELSE count+1 END, window_start=CASE WHEN window_start <= datetime('now','-1 hour') THEN datetime('now') ELSE window_start END").bind(ipHash).run();
+   await env.DB.prepare("INSERT INTO rate_limits(id,count,window_start) VALUES(?,1,datetime('now')) ON CONFLICT(id) DO UPDATE SET count=CASE WHEN window_start <= datetime('now','-1 hour') THEN 1 ELSE count+1 END, window_start=CASE WHEN window_start <= datetime('now','-1 hour') THEN datetime('now') ELSE window_start END").bind(ipHash).run();
    const body = await request.json();
    if (route === '/proposals') {
     const type = String(body.type || 'mejora').slice(0,30), proposal = String(body.proposal || '').trim(), contact = String(body.contact || '').trim();
