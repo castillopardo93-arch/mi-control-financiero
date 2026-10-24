@@ -841,7 +841,7 @@ function debtSummaryCardsHTML(d,capitalSolicitado){
    const q=installmentQuotaData(d,i),rate=rateFor(i);
    const quota=convert(q.amount,q.currency||currency,currency,rate);
    if(quota===null){contractualTotal=null;break}
-   contractualTotal+=Math.max(0,quota-installmentServiceCostsInDebtCurrency(d,i));
+   contractualTotal+=Math.max(0,quota);
   }
  }else if(Number(d.contractualQuota||0)>0&&Number(d.totalInstallments||0)>0){
   const qCurrency=d.contractualQuotaCurrency||currency,rate=Number(d.ufValueAtOperation||ufCurrent()?.value||0);
@@ -898,7 +898,7 @@ function debtSummaryCardsHTML(d,capitalSolicitado){
   hasInstallmentAllocation=true;
   const q=installmentQuotaData(d,i),quotaRaw=convert(q.amount,q.currency||currency,currency,rateFor(i));
   if(quotaRaw===null){contractualPaidValid=false;continue}
-  const service=installmentServiceCostsInDebtCurrency(d,i),contractualQuota=Math.max(0,quotaRaw-service),totalDue=contractualQuota+service;
+  const service=installmentServiceCostsInDebtCurrency(d,i),contractualQuota=Math.max(0,quotaRaw),totalDue=contractualQuota+service;
   contractualPaid+=Math.min(rowPaid,contractualQuota)+Math.max(0,rowPaid-totalDue);
  }
  if(!hasInstallmentAllocation)contractualPaid=totalAbonos===null?0:totalAbonos;
