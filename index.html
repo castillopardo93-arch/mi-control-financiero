@@ -292,7 +292,7 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 
 
 <div class="app"><aside class="sidebar"><div class="brand"><div class="brandmark" id="brandMark">M</div><img id="brandLogoImage" class="brand-image hidden" alt="Logotipo personalizado"><div><strong id="brandUserName">Mi Control</strong><small>Financiero</small></div></div><div><div class="nav-label">Principal</div><nav class="nav" id="sideNav"><button class="active" data-page="home"><span class="ico">▦</span>Inicio</button><button data-page="movements"><span class="ico">↔</span>Movimientos</button><button data-page="debts"><span class="ico">▤</span>Mis deudas financieras</button><button data-page="personalDebts"><span class="ico">♧</span>Deudas personales</button><button data-page="receivables"><span class="ico">↗</span>Dinero por cobrar</button><button data-page="checklist"><span class="ico">☑</span>Lista de chequeo</button></nav></div><div><div class="nav-label">Organización</div><nav class="nav"><button data-page="budgets"><span class="ico">◉</span>Presupuestos</button><button data-page="reports"><span class="ico">▥</span>Informes</button><button data-page="indicators"><span class="ico">📈</span>Indicadores económicos</button><button data-page="amortization"><span class="ico">🧮</span>Amortización de créditos</button><button data-page="movementHistory"><span class="ico">◷</span>Historial</button><button data-page="settings"><span class="ico">⚙</span>Configuración</button></nav></div><div class="side-note"><strong>Almacenamiento personal</strong><br>Los registros permanecen en este navegador hasta que conectes tu propio Google Drive desde Configuración.</div></aside>
-<main><div class="topbar"><div><div class="eyebrow" id="todayLabel">TU ESPACIO FINANCIERO</div><h1 id="pageTitle">Resumen general</h1></div><div class="top-actions"><img id="brandAvatar" class="brand-avatar hidden" alt="Foto del usuario"><div class="period-clock-cards"><div class="period-card"><select class="month-select" id="periodSelect" aria-label="Período financiero"></select></div><div class="clock-card" aria-label="Fecha y hora actual"><div class="clock-date" id="currentDate">Cargando fecha…</div><div class="clock-time" id="currentTime" aria-live="off">--:--:--</div></div></div></div></div><div class="content">
+<main><div class="topbar"><div><div class="eyebrow" id="todayLabel">TU ESPACIO FINANCIERO</div><h1 id="pageTitle">Resumen general</h1></div><div class="top-actions"><button class="btn small" id="shareAppBtn" type="button" aria-label="Compartir Mi Control Financiero" title="Compartir la aplicación"><span aria-hidden="true">↗</span> Compartir app</button><img id="brandAvatar" class="brand-avatar hidden" alt="Foto del usuario"><div class="period-clock-cards"><div class="period-card"><select class="month-select" id="periodSelect" aria-label="Período financiero"></select></div><div class="clock-card" aria-label="Fecha y hora actual"><div class="clock-date" id="currentDate">Cargando fecha…</div><div class="clock-time" id="currentTime" aria-live="off">--:--:--</div></div></div></div></div><div class="content">
 <section class="page active" id="page-home">
 
 
@@ -1747,5 +1747,36 @@ try{const hashPage=decodeURIComponent((location.hash||'').slice(1));const savedP
  document.getElementById('openDriveFolderBtn')?.addEventListener('click',()=>{
   window.open('https://drive.google.com/drive/search?q='+encodeURIComponent('Mi Control Financiero - respaldo.json'),'_blank','noopener,noreferrer');
  });
+
+document.getElementById('shareAppBtn')?.addEventListener('click',async()=>{
+ const shareData={
+  title:'Mi Control Financiero',
+  text:'Te comparto Mi Control Financiero, una aplicación web para organizar tus finanzas personales.',
+  url:'https://castillopardo93-arch.github.io/mi-control-financiero/'
+ };
+ try{
+  if(navigator.share && (!navigator.canShare || navigator.canShare(shareData))){
+   await navigator.share(shareData);
+  }else if(navigator.clipboard && window.isSecureContext){
+   await navigator.clipboard.writeText(shareData.url);
+   toast('Enlace de Mi Control Financiero copiado. Ya puedes compartirlo.');
+  }else{
+   window.prompt('Copia este enlace para compartir Mi Control Financiero:',shareData.url);
+  }
+ }catch(err){
+  if(err && err.name==='AbortError') return;
+  try{
+   if(navigator.clipboard && window.isSecureContext){
+    await navigator.clipboard.writeText(shareData.url);
+    toast('Enlace copiado. Ya puedes compartirlo.');
+   }else{
+    window.prompt('Copia este enlace para compartir Mi Control Financiero:',shareData.url);
+   }
+  }catch(_){
+   window.prompt('Copia este enlace para compartir Mi Control Financiero:',shareData.url);
+  }
+ }
+});
+
 </script>
 </body></html>
