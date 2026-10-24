@@ -856,7 +856,8 @@ function debtSummaryCardsHTML(d,capitalSolicitado){
   return convert(p.amount,from,currency,rate);
  };
  const payments=Array.isArray(d.payments)?d.payments:[];
- const paymentKey=p=>[String(p.date||''),String(Number(p.amount||0)),String(p.currency||currency),String(Number(p.normalizedAmount??'')),String(p.normalizedCurrency||'')].join('|');
+ // La misma transacción puede guardarse en d.payments y en la cuota, con metadatos normalizados distintos. Deduplicar por los datos originales del pago.
+ const paymentKey=p=>[String(p.date||''),String(Number(p.amount||0)),String(p.currency||currency)].join('|');
  let paymentSources=payments.slice();
  const existingKeys=new Set(paymentSources.map(paymentKey));
  rows.forEach(i=>(Array.isArray(i.paymentRecords)?i.paymentRecords:[]).forEach(p=>{
