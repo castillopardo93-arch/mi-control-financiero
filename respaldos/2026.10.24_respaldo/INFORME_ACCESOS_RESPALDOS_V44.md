@@ -10,7 +10,7 @@ Fecha: 24-10-2026
 
 ## Cambios
 1. En la tarjeta de Google Drive se agregó **Abrir respaldo en Google Drive**. Si la sesión está autorizada y se encuentra el archivo v44, abre la vista web directa del archivo; de lo contrario abre Google Drive para localizarlo.
-2. En la tarjeta de respaldo físico/local se agregó **Guardar en ubicación local…**, que inicia la generación de una copia completa y, cuando el navegador lo permite, abre el selector para elegir dónde guardarla. En navegadores que descargan directamente, se debe ubicar el archivo en Descargas o moverlo desde el explorador de archivos. Por restricciones de seguridad web, el botón no puede abrir por sí solo una carpeta local arbitraria ya existente.
+2. En la tarjeta **Almacenamiento del navegador** se agregó **Guardar / elegir ubicación local…**, que inicia la generación de una copia completa y, cuando el navegador lo permite, abre el selector para elegir dónde guardarla. En navegadores que descargan directamente, se debe ubicar el archivo en Descargas o moverlo desde el explorador de archivos. Por restricciones de seguridad web, el botón no puede abrir por sí solo una carpeta local arbitraria ya existente.
 3. Se conservaron las funciones existentes de respaldo/restauración y el comportamiento de respaldo automático de v43.
 
 ## Pruebas pendientes
