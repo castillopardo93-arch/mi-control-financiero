@@ -79,6 +79,9 @@
 .debt-card-v22 .installment-table{margin-top:8px}
 @media(max-width:650px){.debt-card-v22{padding:14px;border-radius:14px}.debt-card-head{align-items:stretch;gap:11px}.debt-title-wrap{flex-basis:100%}.debt-balance{width:100%;text-align:left}.debt-card-actions{gap:6px}.debt-card-actions .btn{font-size:11px;padding:8px 9px}.debt-last-payment{align-items:flex-start;gap:7px 10px}.debt-last-payment-amount{margin-left:0;width:100%}.debt-last-payment-detail{grid-template-columns:repeat(7,minmax(105px,1fr));gap:8px 10px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto}.debt-last-payment-difference{grid-column:auto}.debt-card-details summary{padding:11px 12px}}
 /* v42: prueba aislada de Google Drive; tarjeta visible */
+/* v44: mostrar siempre la tarjeta de almacenamiento local, sin plegarla */
+#page-settings > #localStorageCard{display:block!important;visibility:visible!important;opacity:1!important}
+#page-settings > #localStorageCard > .section-head{display:flex!important;visibility:visible!important}
 </style>
 <style id="recovered-settings-arrows-style">
 #page-settings > .recovery-settings-card{position:relative}
@@ -1508,7 +1511,7 @@ try{const hashPage=decodeURIComponent((location.hash||'').slice(1));const savedP
     page.dataset.settingsCollapseVersion='2';
     const intro=page.querySelector(':scope > .section-head p');
     if(intro)intro.textContent='Los apartados empiezan cerrados. Pulsa la flecha para abrir solo el que necesites.';
-    const cards=Array.from(page.children).filter(el=>el.classList&&el.classList.contains('card'));
+    const cards=Array.from(page.children).filter(el=>el.classList&&el.classList.contains('card')&&el.id!=='localStorageCard');
     cards.forEach(card=>{
       // Remove any arrow left by an earlier version before building the current controls.
       card.querySelectorAll(':scope > .section-head > .recovery-setting-arrow, :scope > .recovery-settings-header > .recovery-setting-arrow').forEach(btn=>btn.remove());
