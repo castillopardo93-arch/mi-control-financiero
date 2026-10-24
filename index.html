@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><script src="https://accounts.google.com/gsi/client"></script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173b35">
-<title>Mi Control Financiero · revisión técnica móvil v54</title>
+<title>Mi Control Financiero</title>
 <style>
 /* Resumen de deudas financieras: saldos independientes por moneda */
 .debt-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 12px}
@@ -38,7 +38,7 @@
 #driveConnectBtn.drive-connect-connected,
 #driveConnectBtn.drive-connect-connected:disabled{background:#16803c!important;color:#fff!important;border-color:#16803c!important;opacity:1!important;cursor:not-allowed!important}
 .uf-test-banner{padding:9px 14px;background:#fff2d8;border-bottom:1px solid #e9c66b;color:#654914;font:700 12px/1.4 system-ui,Arial,sans-serif;text-align:center}
-/* Alertas de vencimiento - copia de prueba */
+/* Alertas de vencimiento */
 .alert-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
 .alert-metric{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px}
 .alert-metric strong{display:block;font-size:26px;line-height:1.2;margin:5px 0}
@@ -78,8 +78,8 @@
 
 .debt-card-v22 .installment-table{margin-top:8px}
 @media(max-width:650px){.debt-card-v22{padding:14px;border-radius:14px}.debt-card-head{align-items:stretch;gap:11px}.debt-title-wrap{flex-basis:100%}.debt-balance{width:100%;text-align:left}.debt-card-actions{gap:6px}.debt-card-actions .btn{font-size:11px;padding:8px 9px}.debt-last-payment{align-items:flex-start;gap:7px 10px}.debt-last-payment-amount{margin-left:0;width:100%}.debt-last-payment-detail{grid-template-columns:repeat(7,minmax(105px,1fr));gap:8px 10px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto}.debt-last-payment-difference{grid-column:auto}.debt-card-details summary{padding:11px 12px}}
-/* v42: prueba aislada de Google Drive; tarjeta visible */
-/* v54: mostrar siempre la tarjeta de almacenamiento local, sin plegarla */
+/* Google Drive: tarjeta visible */
+/* Mostrar siempre la tarjeta de almacenamiento local, sin plegarla */
 #page-settings > #localStorageCard{display:block!important;visibility:visible!important;opacity:1!important}
 #page-settings > #localStorageCard > .section-head{display:flex!important;visibility:visible!important}
 </style>
@@ -206,7 +206,7 @@
 <style id="debt-chart-v19-style">.debt-chart-panel{margin-top:12px;padding:16px;border:1px solid #d7e6dd;border-radius:14px;background:#f7fbf8}.debt-chart-panel[hidden],[data-chart-custom][hidden]{display:none!important}.debt-chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.debt-chart-heading h4{margin:0 0 4px;font-size:15px}.debt-chart-filters{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:14px 0}.debt-chart-filters label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted)}.debt-chart-filters select,.debt-chart-filters input{max-width:190px;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff;color:var(--ink);font:inherit}.debt-chart-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.debt-chart-stat{padding:10px 12px;border:1px solid #e0ebe4;border-radius:10px;background:#fff;min-width:0}.debt-chart-stat span{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.debt-chart-stat strong{font-size:15px;overflow-wrap:anywhere}.debt-chart-plot{width:100%;overflow:hidden;border:1px solid #e3ece6;border-radius:12px;background:#fff}.debt-chart-plot svg{display:block;width:100%;height:auto;min-height:180px}.debt-chart-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5}.debt-chart-empty{padding:20px;text-align:center;background:#fff;border:1px dashed #cbd9d0;border-radius:10px;color:var(--muted)}@media(max-width:560px){.debt-chart-summary{grid-template-columns:1fr}.debt-chart-filters label,.debt-chart-filters select,.debt-chart-filters input{width:100%;max-width:none}.debt-chart-panel{padding:11px}}</style>
 
 <style id="mobile-friendly-v54">
-/* Ajustes de comodidad móvil: mantienen la funcionalidad y los datos de prueba aislados */
+/* Ajustes de comodidad móvil para la aplicación oficial */
 html{-webkit-text-size-adjust:100%;scroll-padding-top:14px}
 button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipulation}
 @media(max-width:700px){
@@ -274,11 +274,11 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 </style>
 
 </head><body>
-<div class="uf-test-banner">COPIA DE PRUEBA v54 · ÚLTIMO PAGO EN UNA SOLA LÍNEA · GOOGLE DRIVE VISIBLE · DISEÑO MÓVIL v54 · DATOS AISLADOS · NO INGRESES DATOS REALES</div>
+
 <div class="app"><aside class="sidebar"><div class="brand"><div class="brandmark" id="brandMark">M</div><img id="brandLogoImage" class="brand-image hidden" alt="Logotipo personalizado"><div><strong id="brandUserName">Mi Control</strong><small>Financiero</small></div></div><div><div class="nav-label">Principal</div><nav class="nav" id="sideNav"><button class="active" data-page="home"><span class="ico">▦</span>Inicio</button><button data-page="movements"><span class="ico">↔</span>Movimientos</button><button data-page="debts"><span class="ico">▤</span>Mis deudas financieras</button><button data-page="personalDebts"><span class="ico">♧</span>Deudas personales</button><button data-page="receivables"><span class="ico">↗</span>Dinero por cobrar</button><button data-page="checklist"><span class="ico">☑</span>Lista de chequeo</button></nav></div><div><div class="nav-label">Organización</div><nav class="nav"><button data-page="budgets"><span class="ico">◉</span>Presupuestos</button><button data-page="reports"><span class="ico">▥</span>Informes</button><button data-page="indicators"><span class="ico">📈</span>Indicadores económicos</button><button data-page="amortization"><span class="ico">🧮</span>Amortización de créditos</button><button data-page="movementHistory"><span class="ico">◷</span>Historial</button><button data-page="settings"><span class="ico">⚙</span>Configuración</button></nav></div><div class="side-note"><strong>Almacenamiento personal</strong><br>Los registros permanecen en este navegador hasta que conectes tu propio Google Drive desde Configuración.</div></aside>
 <main><div class="topbar"><div><div class="eyebrow" id="todayLabel">TU ESPACIO FINANCIERO</div><h1 id="pageTitle">Resumen general</h1></div><div class="top-actions"><img id="brandAvatar" class="brand-avatar hidden" alt="Foto del usuario"><div class="period-clock-cards"><div class="period-card"><select class="month-select" id="periodSelect" aria-label="Período financiero"></select></div><div class="clock-card" aria-label="Fecha y hora actual"><div class="clock-date" id="currentDate">Cargando fecha…</div><div class="clock-time" id="currentTime" aria-live="off">--:--:--</div></div></div></div></div><div class="content">
 <section class="page active" id="page-home">
-<div class="home-test-note"><strong>VERSIÓN DE PRUEBA.</strong> Esta copia conserva el almacenamiento de prueba y no reemplaza la app oficial. Usa datos de prueba, no movimientos reales.</div>
+
 
 <div class="home-welcome">
  <div><div class="eyebrow">RESUMEN DEL PERÍODO</div><h2>Tu situación financiera</h2><p>Lo esencial primero; el detalle está disponible cuando lo necesites.</p></div>
@@ -429,7 +429,7 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
   <label class="setting"><span><strong>Compromisos atrasados</strong><p>Mostrar pendientes vencidos en Inicio y un recordatorio diario.</p></span><input type="checkbox" id="alertOverdueEnabled" checked></label>
   <div class="inline-actions"><button class="btn primary" type="button" id="requestNotificationPermissionBtn">Activar notificaciones</button><button class="btn" type="button" id="testNotificationBtn">Enviar notificación de prueba</button></div>
  </div>
- <div class="notice info" style="margin-top:12px">En esta versión de prueba, los avisos del navegador funcionan al abrir la app o mientras permanezca abierta. Para recibir notificaciones con la app cerrada todavía falta configurar notificaciones push.</div>
+ <div class="notice info" style="margin-top:12px">Los avisos del navegador funcionan al abrir la app o mientras permanezca abierta. Para recibir notificaciones con la app cerrada todavía falta configurar notificaciones push.</div>
 </div>
 <div class="card" id="profileSettingsCard" style="margin-top:14px"><div class="section-head" style="margin-top:0"><div><h3 style="margin:0">Identidad y perfil</h3><p>Personaliza el nombre visible, el logotipo y la foto del usuario en esta copia.</p></div></div><div class="form-grid"><div class="field"><label for="profileNameInput">Nombre visible del usuario</label><input id="profileNameInput" type="text" maxlength="60" placeholder="Ej. Mi espacio financiero"></div><div class="field"><label for="profileLogoInput">Logotipo de la aplicación</label><input id="profileLogoInput" type="file" accept="image/*"><small class="muted">Se ajusta automáticamente para usar una imagen liviana.</small></div><div class="field"><label for="profilePhotoInput">Foto del usuario</label><input id="profilePhotoInput" type="file" accept="image/*"><small class="muted">La foto se guarda en esta copia local y en los respaldos.</small></div><div class="field"><label>Vista previa</label><div class="inline-actions" style="align-items:center"><img id="profileLogoPreview" class="brand-image hidden" alt="Vista previa del logo"><img id="profilePhotoPreview" class="brand-avatar hidden" alt="Vista previa de la foto"><span id="profilePreviewName" class="muted">Mi Control Financiero</span></div></div></div><div class="inline-actions" style="margin-top:14px"><button class="btn primary" id="saveProfileSettings" type="button">Guardar identidad</button><button class="btn" id="clearProfileImages" type="button">Quitar logo y foto</button></div></div>
 <div class="card" id="themeSettingsCard" style="margin-top:14px"><div class="section-head" style="margin-top:0"><div><h3 style="margin:0">Colores de la interfaz</h3><p>Los colores se aplican a esta copia y se conservan al volver a abrirla.</p></div></div><div class="form-grid"><div class="field"><label for="themePrimaryInput">Color principal</label><input id="themePrimaryInput" type="color" value="#173b35"></div><div class="field"><label for="themeBackgroundInput">Color de fondo</label><input id="themeBackgroundInput" type="color" value="#f5f8f6"></div><div class="field"><label for="themeAccentInput">Color de acento</label><input id="themeAccentInput" type="color" value="#e9c66b"></div><div class="field"><label for="themeCardInput">Color de tarjetas</label><input id="themeCardInput" type="color" value="#ffffff"></div></div><div class="inline-actions" style="margin-top:14px"><button class="btn primary" id="saveThemeSettings" type="button">Guardar colores</button><button class="btn" id="resetThemeSettings" type="button">Restablecer colores originales</button></div></div>
@@ -471,22 +471,22 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 <script>
 'use strict';
 const TEST_RECOVERY_MODE=false;
-const KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_isolated';
+const KEY='mcf_local_v2';
 const DRIVE_CLIENT_ID='958721214858-1a7uuk2mul7p8onc35gg7v6a2v6b5hap.apps.googleusercontent.com';
 const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
-const DRIVE_BACKUP_NAME='Mi Control Financiero - RESPALDO DE PRUEBA v54 GOOGLE DRIVE.json';
-const DRIVE_AUTO_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix';
-const BACKUP_LAST_MANUAL_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_backup_last_manual_v1';
-const BACKUP_LAST_MANUAL_KIND_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_backup_last_manual_kind_v1';
-const BACKUP_LAST_DRIVE_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_backup_last_drive_success_v1';
-const DRIVE_SESSION_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_drive_session_isolated';
-const DRIVE_ARMED_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_drive_armed_isolated';
-const APP_PAGE_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_last_page_isolated';
+const DRIVE_BACKUP_NAME='Mi Control Financiero - respaldo.json';
+const DRIVE_AUTO_KEY='mcf_drive_auto_backup_v1';
+const BACKUP_LAST_MANUAL_KEY='mcf_backup_last_manual_v1';
+const BACKUP_LAST_MANUAL_KIND_KEY='mcf_backup_last_manual_kind_v1';
+const BACKUP_LAST_DRIVE_KEY='mcf_backup_last_drive_success_v1';
+const DRIVE_SESSION_KEY='mcf_drive_session_v1';
+const DRIVE_ARMED_KEY='mcf_drive_armed_v1';
+const APP_PAGE_KEY='mcf_last_page_v1';
 const UF_API_BASE='https://indicadores.cl/api/v1/uf.json';
 const UF_SOURCE='SII Chile vía API de indicadores.cl';
 const ECONOMIC_API='https://indicadores.cl/api/v1/hoy.json';
 const ECONOMIC_FALLBACK_API='https://mindicador.cl/api';
-const ECONOMIC_CACHE_KEY='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_economic_cache_isolated';
+const ECONOMIC_CACHE_KEY='mcf_economic_indicators_cache_v1';
 let economicData=null,economicFetchInProgress=null,economicDataStale=false,economicRefreshing=false;
 let ufFetchInProgress=null;
 let driveAccessToken=null, driveTokenClient=null, driveSyncArmed=false, driveFileId=null, driveUploadTimer=null, driveLastModified=null, driveAuthMode='manual', driveInteractiveRetry=false;
@@ -614,7 +614,7 @@ document.getElementById('newMovement').onclick=()=>showForm('movement');document
 function debtPaid(d){return (d.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function receivablePaid(r){return (r.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function remaining(item){return Math.max(0,Number(item.amount||0)-(item.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0))}
 function rows(headers,body){if(!body.length)return '<div class="empty">Todavía no hay registros.</div>';return '<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+body.join('')+'</tbody></table></div>'}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-const ATTACHMENT_DB_NAME='mcf_test_uf_sii_v54_20261024_drive_auto_default_fix_attachments_isolated';
+const ATTACHMENT_DB_NAME='mcf_attachments_v1';
 let attachmentDBPromise=null;
 function openAttachmentDB(){if(!('indexedDB' in window))return Promise.reject(new Error('Este navegador no permite almacenar los adjuntos de forma segura.'));if(!attachmentDBPromise){attachmentDBPromise=new Promise((resolve,reject)=>{const req=indexedDB.open(ATTACHMENT_DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('blobs'))d.createObjectStore('blobs')};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('No se pudo abrir el almacenamiento de adjuntos.'))})}return attachmentDBPromise}
 async function storeAttachmentBlob(id,blob){const d=await openAttachmentDB();return new Promise((resolve,reject)=>{const tx=d.transaction('blobs','readwrite');tx.objectStore('blobs').put(blob,id);tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('No se pudo guardar un archivo adjunto.'))})}
@@ -846,8 +846,8 @@ function renderTasks(){const f=document.getElementById('taskFilter')?.value||'op
 function renderBudgets(){const month=document.getElementById('periodSelect')?.value||new Date().toLocaleDateString('es-CL',{month:'long',year:'numeric'});const ym=periodKeyFromLabel(month);const paid=db.movements.filter(m=>m.type==='Gasto'&&m.status==='Pagado'&&String(m.date||'').slice(0,7)===ym);document.getElementById('budgetList').innerHTML=db.budgets.length?db.budgets.map(b=>{const used=paid.filter(m=>m.currency===b.currency&&(b.scope==='General'||m.category.toLowerCase()===String(b.category||b.title).toLowerCase())).reduce((s,m)=>s+Number(m.amount),0);const pct=b.amount?Math.min(100,used/b.amount*100):0;return `<div class="card"><div class="stat-top">${esc(b.title)} <span class="pill">${esc(b.scope)}</span></div><div class="amount">${money(used,b.currency)}</div><div class="hint">de ${money(b.amount,b.currency)} utilizados</div><div class="progress"><span style="width:${pct}%;background:${used>b.amount?'#b94942':''}"></span></div><div class="progress-copy">${pct.toFixed(1)}% del límite${used>b.amount?' · Superado':''}</div><div style="margin-top:12px">${act('Eliminar','deleteBudget',b.id,'danger')}</div></div>`}).join(''):'<div class="card empty">Aún no hay presupuestos. Añade un presupuesto general o por categoría.</div>'}
 function sumCurrency(items,currency,amountFn){return items.filter(x=>x.currency===currency).reduce((sum,x)=>sum+Number(amountFn(x)||0),0)}function dualMoney(clp,uf){return `${money(clp,'CLP')} · ${money(uf,'UF')}`}
 
-const ALERT_PREFS_KEY='mcf-test-alert-prefs-20261024-v39';
-const ALERT_SENT_KEY='mcf-test-alert-sent-20261024-v39';
+const ALERT_PREFS_KEY='mcf_alert_prefs_v1';
+const ALERT_SENT_KEY='mcf_alert_sent_v1';
 function alertPrefs(){
  try{return {...{oneDayBefore:true,onDueDate:true,overdue:true},...(JSON.parse(localStorage.getItem(ALERT_PREFS_KEY)||'{}'))}}
  catch(e){return {oneDayBefore:true,onDueDate:true,overdue:true}}
@@ -926,7 +926,7 @@ function initAlertSettings(){
  });
  document.getElementById('testNotificationBtn')?.addEventListener('click',()=>{
   if(!('Notification' in window)||Notification.permission!=='granted'){toast('Primero activa las notificaciones del navegador.');return}
-  try{new Notification('Mi Control Financiero',{body:'Esta es una notificación de prueba desde la versión de prueba.'});toast('Se solicitó una notificación de prueba.')}
+  try{new Notification('Mi Control Financiero',{body:'Esta es una notificación de prueba.'});toast('Se solicitó una notificación de prueba.')}
   catch(e){toast('El navegador no permitió mostrar la notificación.')}
  });
 }
@@ -1355,7 +1355,7 @@ async function connectGoogleDrive(silent=false){
       }
      }else{
       driveSyncArmed=false;localStorage.setItem(DRIVE_ARMED_KEY,'false');
-      driveStatus((wasSilent?'Google Drive reconectado automáticamente, pero ':'Conectado. ')+'aún no existe una copia de prueba en Drive. Pulsa «Respaldar ahora» para crearla.','info')
+      driveStatus((wasSilent?'Google Drive reconectado automáticamente, pero ':'Conectado. ')+'aún no existe una copia en Drive. Pulsa «Respaldar ahora» para crearla.','info')
      }
     }catch(err){driveStatus(err.message,'error')}
    },error_callback:(error)=>{
@@ -1479,7 +1479,7 @@ function parseCartolaText(text){
  if(parsed.some((r,i)=>i>0&&r.number<=parsed[i-1].number))throw new Error('Los números de cuota deben estar en orden ascendente.');
  return parsed;
 }
-function importCartolaText(text){const parsed=parseCartolaText(text);cartolaValidationRows=parsed;document.getElementById('cartolaValidationSummary').innerHTML='<div class="notice info">Se cargaron '+parsed.length+' cuotas desde el archivo o la tabla pegada. Completa la tasa mensual y el capital inicial si no venían indicados por separado, y luego revisa la comparación. Estos datos permanecen solo en esta sesión de prueba.</div>';if(!(Number(document.getElementById('cartolaInitialCapital').value)>0)&&parsed[0].balance!=null)document.getElementById('cartolaInitialCapital').value=String(parsed[0].balance+parsed[0].capital);renderCartolaValidation()}
+function importCartolaText(text){const parsed=parseCartolaText(text);cartolaValidationRows=parsed;document.getElementById('cartolaValidationSummary').innerHTML='<div class="notice info">Se cargaron '+parsed.length+' cuotas desde el archivo o la tabla pegada. Completa la tasa mensual y el capital inicial si no venían indicados por separado, y luego revisa la comparación. Estos datos se usan solo para la comparación y no modifican tus registros.</div>';if(!(Number(document.getElementById('cartolaInitialCapital').value)>0)&&parsed[0].balance!=null)document.getElementById('cartolaInitialCapital').value=String(parsed[0].balance+parsed[0].capital);renderCartolaValidation()}
 function exportCartolaValidation(){if(!cartolaValidationRows.length)return;const c=cartolaCapitalCurrency(),q=cartolaQuotaCurrency(),ins=cartolaInsuranceCurrency();const data=[['Cuota','Vencimiento','Estado','Capital cartola ('+c+')','Capital sistema francés ('+c+')','Diferencia capital ('+c+')','Interés cartola ('+c+')','Interés sistema francés ('+c+')','Diferencia interés ('+c+')','Saldo cartola ('+c+')','Saldo sistema francés ('+c+')','Cuota total ('+q+')','Seguro desgravamen ('+ins+')','Seguro cesantía ('+ins+')','Total seguros ('+ins+')','Otros cargos/diferencia','Fecha pago'],...cartolaValidationRows.map(r=>[r.number,r.due,r.status,r.capital,r.model?.principal,r.modelCapitalDiff,r.interest,r.model?.interest,r.modelInterestDiff,r.balance,r.model?.balanceAfter,r.quota,r.insuranceLife??Number(document.getElementById('cartolaInsuranceLife').value||0),r.insuranceJob??Number(document.getElementById('cartolaInsuranceJob').value||0),(r.insuranceLife??Number(document.getElementById('cartolaInsuranceLife').value||0))+(r.insuranceJob??Number(document.getElementById('cartolaInsuranceJob').value||0)),r.other,r.paidDate])];const csv=data.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');download('validacion-cartola-anonimizada-'+today()+'.csv','\ufeff'+csv,'text/csv;charset=utf-8')}
 document.getElementById('recheckCartolaBtn').addEventListener('click',renderCartolaValidation);
 document.getElementById('exportCartolaValidationBtn').addEventListener('click',exportCartolaValidation);
@@ -1498,9 +1498,9 @@ document.getElementById('profileNameInput').addEventListener('input',()=>{const 
 document.getElementById('saveThemeSettings').addEventListener('click',()=>{db.settings.theme={primary:document.getElementById('themePrimaryInput').value,background:document.getElementById('themeBackgroundInput').value,accent:document.getElementById('themeAccentInput').value,card:document.getElementById('themeCardInput').value};if(save()){applyPersonalization();toast('Colores guardados en esta copia.')}});
 document.getElementById('resetThemeSettings').addEventListener('click',()=>{db.settings.theme={primary:'#173b35',background:'#f5f8f6',accent:'#e9c66b',card:'#ffffff'};if(save()){applyPersonalization();toast('Colores originales restaurados.')}});
 
-economicData=readEconomicCache();economicDataStale=!!economicData;fillPeriods();updateLiveClock();setInterval(updateLiveClock,1000);document.getElementById('todayLabel').textContent='PRUEBA GOOGLE DRIVE V54 · ALMACENAMIENTO SEPARADO';initAlertSettings();render();setInterval(renderAlerts,60000);renderDriveUi();renderBackupControl();setInterval(renderBackupControl,3600000);renderUFUI();refreshCurrentUF({silent:true,force:true});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){const current=ufCurrent();if(!current||current.date!==today()||Date.now()-new Date(current.fetchedAt||0).getTime()>6*60*60*1000)refreshCurrentUF({silent:true,force:true})}});setInterval(()=>{const current=ufCurrent();if(!current||current.date!==today()||Date.now()-new Date(current.fetchedAt||0).getTime()>6*60*60*1000)refreshCurrentUF({silent:true,force:true})},60*60*1000);refreshEconomicIndicators({silent:true});applyPersonalization();
+economicData=readEconomicCache();economicDataStale=!!economicData;fillPeriods();updateLiveClock();setInterval(updateLiveClock,1000);document.getElementById('todayLabel').textContent='Mi Control Financiero';initAlertSettings();render();setInterval(renderAlerts,60000);renderDriveUi();renderBackupControl();setInterval(renderBackupControl,3600000);renderUFUI();refreshCurrentUF({silent:true,force:true});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){const current=ufCurrent();if(!current||current.date!==today()||Date.now()-new Date(current.fetchedAt||0).getTime()>6*60*60*1000)refreshCurrentUF({silent:true,force:true})}});setInterval(()=>{const current=ufCurrent();if(!current||current.date!==today()||Date.now()-new Date(current.fetchedAt||0).getTime()>6*60*60*1000)refreshCurrentUF({silent:true,force:true})},60*60*1000);refreshEconomicIndicators({silent:true});applyPersonalization();
 try{const hashPage=decodeURIComponent((location.hash||'').slice(1));const savedPage=(hashPage&&document.getElementById('page-'+hashPage)?hashPage:null)||sessionStorage.getItem(APP_PAGE_KEY)||localStorage.getItem(APP_PAGE_KEY);if(savedPage&&savedPage!=='form'&&document.getElementById('page-'+savedPage))go(savedPage)}catch(e){}
-/* v54: prueba aislada de respaldo automático; defecto de inicialización corregido. */
+/* Inicialización del respaldo automático. */
 </script>
 <script id="recovered-independent-settings-arrows-v2">
 (function(){
@@ -1567,7 +1567,7 @@ try{const hashPage=decodeURIComponent((location.hash||'').slice(1));const savedP
 
  // Acceso aprobado para abrir Google Drive.
  document.getElementById('openDriveFolderBtn')?.addEventListener('click',()=>{
-  window.open('https://drive.google.com/drive/search?q='+encodeURIComponent('Mi Control Financiero - RESPALDO DE PRUEBA v54 GOOGLE DRIVE.json'),'_blank','noopener,noreferrer');
+  window.open('https://drive.google.com/drive/search?q='+encodeURIComponent('Mi Control Financiero - respaldo.json'),'_blank','noopener,noreferrer');
  });
 </script>
 </body></html>
