@@ -766,8 +766,27 @@ function installmentPaymentCLP(d,i){const list=installmentPaymentRecords(d,i);if
 function installmentPaidDisplay(d,i,mode){const list=installmentPaymentRecords(d,i);if(!list.length)return '—';if(mode==='uf'||mode==='clp'){const amount=installmentPaymentCLP(d,i);return amount===null?'—':money(amount,'CLP')}const groups={};for(const p of list){const cur=p.currency||'CLP';groups[cur]=(groups[cur]||0)+Number(p.amount||0)}return Object.entries(groups).map(([c,n])=>money(n,c)).join(' + ')}
 function installmentDatePaid(i){if(i.paidDate)return i.paidDate;const list=Array.isArray(i.paymentRecords)?i.paymentRecords:[];return list.length?(list[list.length-1].date||'—'):'—'}
 function installmentQuotaDisplay(d,i,mode){const q=installmentQuotaData(d,i),info=installmentRateInfo(d,i),rate=Number(info.value||0);if(mode==='clp'){const n=amountAsCLP(q.amount,q.currency,rate);return n===null?'—':money(n,'CLP')}return money(q.amount,q.currency)}
-function installmentUFDisplay(d,i){const q=installmentQuotaData(d,i);if(q.currency!=='UF')return '—';const dueMonth=String(i?.dueDate||'').slice(0,7),currentMonth=today().slice(0,7);if(!i?.paid&&!i?.historicalAssumed&&/^\\d{4}-\\d{2}$/.test(dueMonth)&&dueMonth>currentMonth)return '—';const info=installmentRateInfo(d,i),n=Number(info.value||0);return n>0?money(n,'CLP'):'—'}
-function installmentAppliedCLP(d,i){if(!d||!i||i.notRequired)return null;const q=installmentQuotaData(d,i),info=installmentRateInfo(d,i),rate=Number(info.value||0);if(q.currency==='UF'&&!(rate>0))return null;const applied=amountAsCLP(q.amount,q.currency,rate);return applied===null?null:Math.round(applied)}
+function installmentBeyondCurrentPending(d,i){
+ if(!d||!i||i.paid||i.historicalAssumed||i.notRequired)return false;
+ const rows=(d.installments||[]).filter(x=>x&&!x.notRequired).slice().sort((a,b)=>String(a.dueDate||'9999-12-31').localeCompare(String(b.dueDate||'9999-12-31'))||Number(a.number||0)-Number(b.number||0));
+ const pending=rows.find(x=>!x.paid&&!x.historicalAssumed);
+ if(!pending)return true;
+ const compare=(a,b)=>String(a?.dueDate||'9999-12-31').localeCompare(String(b?.dueDate||'9999-12-31'))||Number(a?.number||0)-Number(b?.number||0);
+ return compare(i,pending)>0;
+}
+function installmentUFDisplay(d,i){
+ const q=installmentQuotaData(d,i);
+ if(q.currency!=='UF'||installmentBeyondCurrentPending(d,i))return '—';
+ const info=installmentRateInfo(d,i),n=Number(info.value||0);
+ return n>0?money(n,'CLP'):'—';
+}
+function installmentAppliedCLP(d,i){
+ if(!d||!i||i.notRequired||installmentBeyondCurrentPending(d,i))return null;
+ const q=installmentQuotaData(d,i),info=installmentRateInfo(d,i),rate=Number(info.value||0);
+ if(q.currency==='UF'&&!(rate>0))return null;
+ const applied=amountAsCLP(q.amount,q.currency,rate);
+ return applied===null?null:Math.round(applied);
+}
 function installmentAppliedDisplay(d,i){const n=installmentAppliedCLP(d,i);return n===null?'—':money(n,'CLP')}
 function installmentTotalDueCLP(d,i){const base=installmentAppliedCLP(d,i);if(base===null)return null;if(d?.adminChargeEnabled!=='Sí')return base;const admin=Math.max(0,Number(i?.adminCharge??d.adminChargeReference??0));if(admin<=0)return base;const info=installmentRateInfo(d,i),adminCLP=amountAsCLP(admin,d.currency||'CLP',Number(info.value||0));return adminCLP===null?null:Math.round(base+adminCLP)}
 function installmentServiceCostsCLP(d,i){const service=installmentServiceCostsInDebtCurrency(d,i);if(service<=0)return 0;const info=installmentRateInfo(d,i);const converted=amountAsCLP(service,d.currency||'CLP',Number(info.value||0));return converted===null?null:Math.round(converted)}
