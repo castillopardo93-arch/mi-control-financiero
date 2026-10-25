@@ -1,5 +1,10 @@
 # Versiones aprobadas y publicadas
 
+## v129 — publicada y aprobada (25-10-2026)
+- Archivo canónico: [mi_control_financiero_version_129_2026-10-25.html](./mi_control_financiero_version_129_2026-10-25.html)
+- SHA del archivo: `b9d81c52e043f7e11453a7f9d01794d526dd3b92`
+- Aplicación oficial publicada: [index.html](../../index.html)
+
 Esta carpeta es el registro central de las versiones aprobadas y publicadas. No se crean copias de una misma versión: cada archivo que se incorpore aquí se traslada desde su ubicación anterior y se verifica su identidad.
 
 ## v120 — publicada y protegida (25-10-2026)
