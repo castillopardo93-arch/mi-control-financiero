@@ -1314,7 +1314,7 @@ function beginInlineInstallmentEdit(id){
  if(ufIdx>=0){const rate=Number(installmentRateInfo(d,ins).value||ins.ufValueAtOperation||ins.manualUfValue||0);cells[ufIdx].innerHTML=input('ufRate',rate>0?rate:'','number')+'<small style="display:block">CLP por UF</small>'}
  if(appliedIdx>=0){const applied=installmentAppliedCLP(d,ins);cells[appliedIdx].innerHTML=input('appliedCLP',applied===null?'':applied,'number')+'<small style="display:block">CLP</small>'}
  if(sIdx>=0)cells[sIdx].innerHTML=select('status',ins.notRequired?'No requerida':ins.paid?'Pagada':'Pendiente',[['Pendiente','Pendiente'],['Pagada','Pagada'],['No requerida','No requerida']]);
- if(aIdx>=0)cells[aIdx].innerHTML='<div class="inline-actions"><button type="button" class="btn primary" data-action="saveInlineInstallment" data-id="'+esc(id)+'">Guardar</button><button type="button" class="btn" data-action="cancelInlineInstallment" data-id="'+esc(id)+'">Cancelar</button></div>';
+ if(aIdx>=0){const extraApplied=appliedIdx<0?'<label style="display:block;margin-top:8px;font-size:12px">Valor aplicado CLP '+input('appliedCLP',installmentAppliedCLP(d,ins)??'','number')+'</label>':'';cells[aIdx].innerHTML=extraApplied+'<div class="inline-actions"><button type="button" class="btn primary" data-action="saveInlineInstallment" data-id="'+esc(id)+'">Guardar</button><button type="button" class="btn" data-action="cancelInlineInstallment" data-id="'+esc(id)+'">Cancelar</button></div>'}
  row.dataset.inlineEditing='1';row.dataset.originalHtml=JSON.stringify(originalHtml);
 }
 function finishInlineInstallmentEdit(id,commit){
