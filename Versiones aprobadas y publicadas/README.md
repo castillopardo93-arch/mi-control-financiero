@@ -2,6 +2,11 @@
 
 Esta carpeta es el registro central de las versiones aprobadas y publicadas. No se crean copias de una misma versión: cada archivo que se incorpore aquí se traslada desde su ubicación anterior y se verifica su identidad.
 
+## v120 — publicada y protegida (25-10-2026)
+- Archivo canónico: [mi_control_financiero_titulo_corregido_v120_2026-10-25.html](./mi_control_financiero_titulo_corregido_v120_2026-10-25.html)
+- SHA del archivo: `3f1cd5cc00d968f52a447edfee7f78d9b49b77df`
+- Aplicación oficial publicada: [index.html](../../index.html)
+
 ## v119 — publicada y protegida (25-10-2026)
 - Archivo canónico: [mi_control_financiero_diferencia_cero_neutra_v119_2026-10-25.html](./mi_control_financiero_diferencia_cero_neutra_v119_2026-10-25.html)
 - SHA del archivo: `87e96251224660d2cea12ca0af17b83a5924c2b1`
