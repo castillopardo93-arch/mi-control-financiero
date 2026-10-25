@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><script src="https://accounts.google.com/gsi/client"></script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173b35">
-<title>Mi Control Financiero · v115 de prueba</title>
+<title>Mi Control Financiero · v115 de prueba (corregida)</title>
 <style>
 /* Resumen de deudas financieras: saldos independientes por moneda */
 .debt-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 12px}
@@ -764,31 +764,7 @@ function installmentRate(i){return Number(i.ufValueAtOperation||i.manualUfValue|
 function amountAsCLP(amount,currency,rate){const n=Number(amount||0);if(currency==='CLP')return n;if(currency==='UF'&&Number(rate)>0)return n*Number(rate);return null}
 function installmentPaymentRecords(d,i){if(i.paidAmountRaw!==undefined&&i.paidAmountRaw!==null&&Number.isFinite(Number(i.paidAmountRaw))&&Number(i.paidAmountRaw)>=0)return [{date:i.paidDate||'',amount:Number(i.paidAmountRaw),currency:i.paidCurrencyRaw||'CLP',ufValueAtOperation:installmentRate(i)}];const list=Array.isArray(i.paymentRecords)?i.paymentRecords:[];if(list.length)return list.map(p=>({date:p.date||'',amount:Number(p.amount||0),currency:p.currency||d.currency||'CLP',ufValueAtOperation:Number(p.ufValueAtOperation||i.ufValueAtOperation||0)}));if(!i.historicalAssumed&&i.paid&&Number(i.paidAmount||0)>0)return [{date:i.paidDate||'',amount:Number(i.paidAmount),currency:d.currency||'CLP',ufValueAtOperation:installmentRate(i)}];return []}
 function installmentPaymentCLP(d,i){const list=installmentPaymentRecords(d,i);if(!list.length)return null;let total=0;for(const p of list){const x=amountAsCLP(p.amount,p.currency,p.ufValueAtOperation||installmentRate(i));if(x===null)return null;total+=x}return total}
-/* v115: autocompletar cuotas históricas solo en modalidad fija en pesos (CLP). */
-function autoFillPastFixedCLPPayments(){
- let changed=false;
- (db.debts||[]).forEach(d=>{
-  const mode=String(d.installmentDisplayMode||'');
-  const quotaCurrency=String(d.contractualQuotaCurrency||d.currency||'CLP');
-  if(!mode.startsWith('Pesos')||quotaCurrency!=='CLP')return;
-  const rows=(d.installments||[]).filter(i=>i&&!i.notRequired).slice().sort((a,b)=>String(a.dueDate||'9999-12-31').localeCompare(String(b.dueDate||'9999-12-31'))||Number(a.number||0)-Number(b.number||0));
-  const currentNumber=Number(d.currentInstallmentNumber||0);
-  const current=rows.find(i=>Number(i.number)===currentNumber&&!i.paid&&!i.historicalAssumed)||rows.find(i=>!i.paid&&!i.historicalAssumed);
-  if(!current)return;
-  const before=i=>String(i.dueDate||'9999-12-31').localeCompare(String(current.dueDate||'9999-12-31'))<0||(String(i.dueDate||'9999-12-31')===String(current.dueDate||'9999-12-31')&&Number(i.number||0)<Number(current.number||0));
-  rows.filter(i=>before(i)&&!i.paid&&!i.historicalAssumed&&!((i.paymentRecords||[]).length)&&!(Number(i.paidAmount||0)>0)&&!(Number(i.paidAmountRaw||0)>0)).forEach(i=>{
-   const q=installmentQuotaData(d,i);
-   if(q.currency!=='CLP'||!(Number(q.amount)>0))return;
-   const amount=precisionRound(Number(q.amount),'CLP');
-   i.paid=true;i.historicalAssumed=true;i.paidAmount=amount;i.paidAmountRaw=amount;i.paidCurrencyRaw='CLP';
-   i.paymentRecords=[{date:i.dueDate||'',amount, currency:'CLP',normalizedAmount:amount,normalizedCurrency:'CLP',method:'Pago histórico completado automáticamente (cuota fija en pesos)',autoFilledHistorical:true}];
-   i.notes=(i.notes?i.notes+' · ':'')+'Valor pagado completado automáticamente por cuota fija en pesos';
-   changed=true;
-  });
- });
- if(changed)save(true);
-}
-function installmentPaidDisplay(d,i,mode){const list=installmentPaymentRecords(d,i);if(!list.length)return '—';if(mode==='uf'||mode==='clp'){const amount=installmentPaymentCLP(d,i);return amount===null?'—':money(amount,'CLP')}const groups={};for(const p of list){const cur=p.currency||'CLP';groups[cur]=(groups[cur]||0)+Number(p.amount||0)}return Object.entries(groups).map(([c,n])=>money(n,c)).join(' + ')}
+function installmentPaidDisplay(d,i,mode){const list=installmentPaymentRecords(d,i);if(list.length){if(mode==='uf'||mode==='clp'){const amount=installmentPaymentCLP(d,i);return amount===null?'—':money(amount,'CLP')}const groups={};for(const p of list){const cur=p.currency||'CLP';groups[cur]=(groups[cur]||0)+Number(p.amount||0)}return Object.entries(groups).map(([c,n])=>money(n,c)).join(' + ')}/* v115: mostrar la cuota contractual como valor pagado solo en cuotas anteriores, fijas en CLP; sin cambiar el estado ni los pagos reales. */const quota=installmentQuotaData(d,i);if(quota.currency==='CLP'&&d.currency!=='UF'&&!i.notRequired&&!i.paid&&!i.historicalAssumed&&!installmentBeyondCurrentPending(d,i)){const rows=(d.installments||[]).filter(x=>x&&!x.notRequired).slice().sort((a,b)=>String(a.dueDate||'9999-12-31').localeCompare(String(b.dueDate||'9999-12-31'))||Number(a.number||0)-Number(b.number||0));const currentNumber=Number(d.currentInstallmentNumber||0);const current=rows.find(x=>Number(x.number)===currentNumber&&!x.paid&&!x.historicalAssumed)||rows.find(x=>!x.paid&&!x.historicalAssumed);const earlier=current&&(String(i.dueDate||'9999-12-31')<String(current.dueDate||'9999-12-31')||(String(i.dueDate||'9999-12-31')===String(current.dueDate||'9999-12-31')&&Number(i.number||0)<Number(current.number||0)));if(earlier&&Number(quota.amount)>0)return money(quota.amount,'CLP')}return '—'}
 function installmentDatePaid(i){if(i.paidDate)return i.paidDate;const list=Array.isArray(i.paymentRecords)?i.paymentRecords:[];return list.length?(list[list.length-1].date||'—'):'—'}
 function installmentQuotaDisplay(d,i,mode){const q=installmentQuotaData(d,i),info=installmentRateInfo(d,i),rate=Number(info.value||0);if(mode==='clp'){const n=amountAsCLP(q.amount,q.currency,rate);return n===null?'—':money(n,'CLP')}return money(q.amount,q.currency)}
 function installmentBeyondCurrentPending(d,i){
