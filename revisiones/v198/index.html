@@ -1333,9 +1333,6 @@ document.getElementById('newMovement').onclick=()=>showForm('movement');document
 function debtPaid(d){return (d.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function receivablePaid(r){return (r.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function remaining(item){return Math.max(0,Number(item.amount||0)-(item.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0))}
 function rows(headers,body){if(!body.length)return '<div class="empty">Todavía no hay registros.</div>';return '<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+body.join('')+'</tbody></table></div>'}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-const ATTACHMENT_DB_NAME='mcf_attachments_revision_v197';
-let attachmentDBPromise=null;
-function openAttachmentDB(){if(!('indexedDB' in window))return Promise.reject(new Error('Este navegador no permite almacenar los adjuntos de forma segura.'));if(!attachmentDBPromise){attachmentDBPromise=new Promise((resolve,reject)=>{const req=indexedDB.open(ATTACHMENT_DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('blobs'))d.createObjectStore('blobs')};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('No se pudo abrir el almacenamiento de adjuntos.'))})}return attachmentDBPromise}
 const cloudAttachmentMemory=new Map();
 async function storeAttachmentBlob(id,blob){cloudAttachmentMemory.set(id,blob);return true}
 async function loadAttachmentBlob(id){return cloudAttachmentMemory.get(id)||null}
