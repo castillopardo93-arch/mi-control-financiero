@@ -926,8 +926,19 @@ async function cloudWriteSnapshot(snapshot){
  const expected=cloudLastConfirmedModified;
  const existing=await findDriveBackup();
  if(!existing||existing.id!==driveFileId)throw new Error('El archivo de prueba fue movido, eliminado o sustituido; no se sobrescribirá.');
- if(expected&&existing.modifiedTime!==expected)throw new Error('Conflicto: la copia remota cambió desde otro lugar. No se sobrescribirá; descarga la copia de emergencia.');
  const envelope=await backupEnvelope(snapshot);
+ if(expected&&existing.modifiedTime!==expected){
+  // Un intento previo pudo haberse escrito en Drive aunque la lectura de confirmación fallara.
+  // Si el contenido ya es idéntico al cambio pendiente, se reconoce el resultado sin otro PATCH.
+  try{
+   await cloudVerifyRemote(existing.id,envelope);
+   cloudLastConfirmedModified=existing.modifiedTime||null;
+   driveFileId=existing.id;driveLastModified=existing.modifiedTime||null;
+   return;
+  }catch(_error){
+   throw new Error('Conflicto: Drive cambió desde otra sesión o no coincide con el cambio pendiente. No se sobrescribirá; descarga una copia de emergencia.');
+  }
+ }
  const meta=await uploadDriveResumable(JSON.stringify(envelope),existing);
  if(!meta?.id||meta.id!==existing.id)throw new Error('Google Drive no confirmó el archivo actualizado.');
  await cloudVerifyRemote(meta.id,envelope);
