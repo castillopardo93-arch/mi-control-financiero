@@ -964,7 +964,7 @@ window.addEventListener('beforeunload',event=>{
 document.getElementById('cloudConnectBtn')?.addEventListener('click',()=>connectGoogleDrive(false));
 document.getElementById('cloudCreateBtn')?.addEventListener('click',cloudCreateEmpty);
 document.getElementById('cloudRetryBtn')?.addEventListener('click',()=>{
- cloudLastError='';if(!driveAccessToken){cloudStatus('Reconecta Google Drive para reintentar.','error');return}
+ cloudLastError='';if(!driveAccessToken){cloudStatus('Reconecta Google Drive para reintentar.','error');connectGoogleDrive(false);return}
  cloudSchedule();
 });
 document.getElementById('cloudExportBtn')?.addEventListener('click',cloudExportEmergency);
