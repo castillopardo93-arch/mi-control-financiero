@@ -1166,7 +1166,7 @@ function openAttachmentDB(){if(!('indexedDB' in window))return Promise.reject(ne
 async function storeAttachmentBlob(id,blob){const d=await openAttachmentDB();return new Promise((resolve,reject)=>{const tx=d.transaction('blobs','readwrite');tx.objectStore('blobs').put(blob,id);tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('No se pudo guardar un archivo adjunto.'))})}
 async function loadAttachmentBlob(id){const d=await openAttachmentDB();return new Promise((resolve,reject)=>{const req=d.transaction('blobs','readonly').objectStore('blobs').get(id);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error||new Error('No se pudo leer un archivo adjunto.'))})}
 async function clearAttachmentBlobs(){const d=await openAttachmentDB();return new Promise((resolve,reject)=>{const tx=d.transaction('blobs','readwrite');tx.objectStore('blobs').clear();tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error||new Error('No se pudieron borrar los adjuntos.'))})}
-function allRecordsWithAttachments(data=db){const out=[];for(const key of ['movements','debts','receivables','tasks','budgets'])for(const rec of (data[key]||[])){out.push(rec);for(const nested of ['installments','payments'])for(const sub of (rec[nested]||[]))out.push(sub)}return out}
+function allRecordsWithAttachments(data=db){const out=[];for(const key of ['movements','debts','receivables','tasks','budgets'])for(const rec of (data[key]||[])){out.push(rec);if(rec.paymentRegistration)out.push(rec.paymentRegistration);for(const nested of ['installments','payments'])for(const sub of (rec[nested]||[]))out.push(sub)}return out}
 function attachmentLinks(list){if(!Array.isArray(list)||!list.length)return '';return '<div class="attachment-list">'+list.map(a=>`<button type="button" class="attachment-link" data-action="openAttachment" data-id="${esc(a.id)}" title="Abrir ${esc(a.name)}">📎 ${esc(String(a.name||'Archivo').length>34?String(a.name).slice(0,31)+'…':a.name||'Archivo')}</button>`).join('')+'</div>'}
 async function readAsDataURL(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result));r.onerror=()=>reject(r.error||new Error('No se pudo preparar un archivo para el respaldo.'));r.readAsDataURL(blob)})}
 function dataURLToBlob(dataUrl){const parts=String(dataUrl).split(',');if(parts.length<2)throw new Error('Un archivo adjunto del respaldo no tiene un formato válido.');const mime=(parts[0].match(/data:([^;]+)/)||[])[1]||'application/octet-stream';const raw=atob(parts[1]);const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new Blob([bytes],{type:mime})}
@@ -1588,8 +1588,119 @@ function renderReceivables(){
 }
 let taskViewMode='active',taskCalendarMonth=today().slice(0,7),taskSelectedDate='';
 function taskDateISO(date){return String(date.getFullYear()).padStart(4,'0')+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')}
-function taskNextDate(task){if(!task.dueDate||!task.repeat||task.repeat==='Sin repetición')return '';const p=task.dueDate.split('-').map(Number);if(p.length!==3||p.some(n=>!n))return '';const d=new Date(p[0],p[1]-1,p[2]);if(task.repeat==='Semanal')d.setDate(d.getDate()+7);else if(task.repeat==='Mensual'){const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+1);d.setDate(Math.min(day,new Date(d.getFullYear(),d.getMonth()+1,0).getDate()))}else if(task.repeat==='Anual'){const month=d.getMonth(),day=d.getDate();d.setDate(1);d.setFullYear(d.getFullYear()+1);d.setMonth(month);d.setDate(Math.min(day,new Date(d.getFullYear(),month+1,0).getDate()))}else return '';return taskDateISO(d)}
-function createNextRecurringTask(task){const nextDate=taskNextDate(task);if(!nextDate||db.tasks.some(t=>String(t.recurrenceFrom||'')===String(task.id)&&String(t.dueDate||'')===nextDate))return false;db.tasks.push({...task,id:uid(),dueDate:nextDate,done:false,status:'Pendiente',archived:false,completedAt:'',createdAt:new Date().toISOString(),recurrenceFrom:String(task.id),recurrenceInstanceDate:nextDate,attachments:[]});return true}
+/* v192 — Control de obligaciones por período, independiente de la casilla de tareas. */
+function checklistRootTask(task){
+ if(!task)return null;
+ const seen=new Set();let node=task;
+ while(node?.recurrenceFrom&&!seen.has(String(node.id))){
+  seen.add(String(node.id));const prev=(db.tasks||[]).find(x=>String(x.id)===String(node.recurrenceFrom));
+  if(!prev)break;node=prev;
+ }
+ return node||task;
+}
+function checklistRootId(task){return String(task?.recurrenceRootId||checklistRootTask(task)?.recurrenceRootId||checklistRootTask(task)?.id||task?.id||'')}
+function checklistDate(y,m,d){return String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
+function checklistUtcDate(iso){
+ const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ if(!m)return null;const dt=new Date(Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3])));
+ return dt.toISOString().slice(0,10)===iso?dt:null;
+}
+function checklistPeriodStart(task){
+ const iso=String(task?.dueDate||''),dt=checklistUtcDate(iso);
+ if(!dt)return '';
+ if(task.repeat==='Mensual')return iso.slice(0,7)+'-01';
+ if(task.repeat==='Anual')return iso.slice(0,4)+'-01-01';
+ if(task.repeat==='Semanal'){
+  dt.setUTCDate(dt.getUTCDate()-(dt.getUTCDay()+6)%7);
+  return dt.toISOString().slice(0,10);
+ }
+ return iso; // pago único: desde el vencimiento; anticipos por confirmación explícita
+}
+function checklistPeriodKey(task){
+ const iso=String(task?.dueDate||''),rep=task?.repeat||'Sin repetición';
+ if(rep==='Mensual')return 'M:'+iso.slice(0,7);
+ if(rep==='Anual')return 'A:'+iso.slice(0,4);
+ if(rep==='Semanal')return 'S:'+checklistPeriodStart(task);
+ return 'U:'+iso;
+}
+function checklistPeriodOpen(task,now=today()){return !!checklistPeriodStart(task)&&checklistPeriodStart(task)<=now}
+function checklistSeriesOccurrences(task){
+ const root=checklistRootId(task);
+ return (db.tasks||[]).filter(t=>checklistRootId(t)===root);
+}
+function taskNextDate(task){
+ const due=checklistUtcDate(task?.dueDate),repeat=String(task?.repeat||'');
+ if(!due||!['Semanal','Mensual','Anual'].includes(repeat))return '';
+ if(repeat==='Semanal'){due.setUTCDate(due.getUTCDate()+7);return due.toISOString().slice(0,10)}
+ const root=checklistRootTask(task)||task,anchor=checklistUtcDate(task.recurrenceAnchorDate||root?.recurrenceAnchorDate||root?.dueDate||task.dueDate)||due;
+ let year=due.getUTCFullYear(),month=due.getUTCMonth();
+ if(repeat==='Mensual'){month++;if(month>11){year++;month=0}}else year++;
+ const last=new Date(Date.UTC(year,month+1,0)).getUTCDate();
+ return checklistDate(year,month+1,Math.min(anchor.getUTCDate(),last));
+}
+function createNextRecurringTask(task){
+ const nextDate=taskNextDate(task);if(!nextDate)return false;
+ const root=checklistRootTask(task)||task,rootId=checklistRootId(task);
+ const until=String(task.repeatUntil||root.repeatUntil||'');
+ if(until&&nextDate>until)return false;
+ const cap=Number(task.repeatLimit||root.repeatLimit||0);
+ if(cap>0&&checklistSeriesOccurrences(task).length>=cap)return false;
+ const candidate={...task,dueDate:nextDate};
+ if((db.tasks||[]).some(t=>checklistRootId(t)===rootId&&checklistPeriodKey(t)===checklistPeriodKey(candidate)))return false;
+ const copy={...task,id:uid(),dueDate:nextDate,done:false,status:'Pendiente',archived:false,
+  createdAt:new Date().toISOString(),completedAt:'',recurrenceFrom:String(task.id),
+  recurrenceRootId:rootId,recurrenceAnchorDate:root.recurrenceAnchorDate||root.dueDate||task.dueDate,
+  recurrenceInstanceDate:nextDate,attachments:[]};
+ delete copy.paymentRegistration;delete copy.paymentRegistrationId;delete copy.linkedMovementId;
+ db.tasks.push(copy);return true;
+}
+async function registerChecklistPayment(context,values,files=[]){
+ const task=(db.tasks||[]).find(t=>String(t.id)===String(context?.id));
+ if(!task||task.type!=='Pago'||task.archived)throw new Error('El pago no existe o está archivado.');
+ if(task.done||task.paymentRegistration)throw new Error('Este período ya está completado. No se puede pagar dos veces.');
+ const rootId=checklistRootId(task),key=checklistPeriodKey(task);
+ if(!checklistUtcDate(task.dueDate))throw new Error('La obligación requiere una fecha de vencimiento válida.');
+ if(checklistSeriesOccurrences(task).some(t=>String(t.id)!==String(task.id)&&checklistPeriodKey(t)===key&&(t.done||t.paymentRegistration)))throw new Error('Este período de la serie ya tiene un pago registrado.');
+ const opened=checklistPeriodOpen(task);
+ if(!opened&&!context.advance)throw new Error('Este período aún no está habilitado. Usa la opción excepcional de pago anticipado.');
+ const reason=String(values.advanceReason||'').trim();
+ if(!opened&&reason.length<10)throw new Error('El pago anticipado requiere una justificación de al menos 10 caracteres.');
+ const paidDate=String(values.paymentDate||'');
+ if(!checklistUtcDate(paidDate)||paidDate>today())throw new Error('Selecciona la fecha real del pago, nunca una fecha futura.');
+ const amount=Number(values.amount),currency=String(values.currency||'');
+ if(!(amount>0)&&!(Number.isFinite(amount)))throw new Error('El monto pagado debe ser mayor que cero.');
+ if(!Number.isFinite(amount)||amount<=0)throw new Error('El monto debe ser positivo y válido.');
+ if(!['CLP','UF'].includes(currency))throw new Error('Selecciona una moneda admitida.');
+ const method=String(values.method||'').trim();
+ if(!method)throw new Error('Selecciona el medio de pago.');
+ const movement=values.createMovement==='Sí';
+ if(!['Sí','No'].includes(values.createMovement))throw new Error('Indica si también deseas registrar un gasto en Movimientos.');
+ if(movement&&(db.movements||[]).some(m=>String(m.checklistRootId||'')===rootId&&String(m.checklistPeriodKey||'')===key))throw new Error('Ya existe un movimiento vinculado a este período. Se evitó duplicarlo.');
+ const category=String(values.movementCategory||'').trim();
+ if(movement&&!configOptions('categories').includes(category))throw new Error('Selecciona una categoría válida para registrar el gasto.');
+ const summary='¿Confirmar pago de '+(task.title||'esta obligación')+' del '+task.dueDate+'?\n'+money(amount,currency)+' · '+paidDate+' · '+method+
+  (movement?'\nSe creará UN gasto adicional en Movimientos. Confirma que todavía no existe allí.':'\nNo se creará ningún gasto en Movimientos.')+
+  (!opened?'\nPAGO ANTICIPADO EXCEPCIONAL.':'');
+ if(!confirm(summary))return false;
+ const old=JSON.stringify(db);
+ const stored=await compressAndStoreFiles(files);
+ for(const item of stored)await storeAttachmentBlob(item.meta.id,item.blob);
+ const now=new Date().toISOString(),opId=uid();
+ task.done=true;task.status='Completada';task.completedAt=now;
+ task.paymentRegistration={id:opId,paidDate,amount,currency,method,notes:String(values.notes||'').trim(),
+  dueDate:task.dueDate,periodKey:key,recurrenceRootId:rootId,createdAt:now,advance:!opened,
+  advanceReason:!opened?reason:'',attachments:stored.map(x=>x.meta),movementId:null};
+ if(movement){
+  const id=uid();task.paymentRegistration.movementId=id;
+  db.movements.push({id,type:'Gasto',title:'Pago programado: '+(task.title||'Obligación'),amount,currency,
+   category,date:paidDate,method,status:'Pagado',notes:'Registro desde Lista de chequeo, período '+task.dueDate+(values.notes?' · '+String(values.notes).trim():''),createdAt:now,
+   sourceTaskId:String(task.id),checklistRootId:rootId,checklistPeriodKey:key,paymentRegistrationId:opId,
+   attachments:stored.map(x=>x.meta)});
+ }
+ createNextRecurringTask(task);
+ if(!save()){db=JSON.parse(old);throw new Error('No se pudo guardar. Se restauró el estado previo a este intento.')}
+ return true;
+}
 function renderTaskCategories(){const list=configOptions('taskCategories'),select=document.getElementById('taskCategoryFilter'),current=select?.value||'';if(select){select.innerHTML='<option value="">Todas las categorías</option>'+list.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');select.value=list.includes(current)?current:''}const chips=document.getElementById('taskCategoryChips');if(chips)chips.innerHTML=list.map((x,i)=>'<span class="task-category-chip">'+esc(x)+'<button type="button" data-task-category-remove="'+i+'" aria-label="Eliminar categoría '+esc(x)+'" title="Eliminar categoría">×</button></span>').join('')}
 function renderTaskCalendar(){const panel=document.getElementById('taskCalendarPanel');if(!panel)return;panel.hidden=taskViewMode!=='calendar';const [year,month]=taskCalendarMonth.split('-').map(Number),first=new Date(year,month-1,1),offset=(first.getDay()+6)%7,start=new Date(year,month-1,1-offset);const label=document.getElementById('taskCalendarLabel');if(label)label.textContent=first.toLocaleDateString('es-CL',{month:'long',year:'numeric'});const tasks=db.tasks.filter(t=>!t.archived&&t.dueDate),weekdays=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];let html='<div class="task-calendar-grid">'+weekdays.map(x=>'<div class="task-calendar-weekday">'+x+'</div>').join('');for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const iso=taskDateISO(d),same=d.getMonth()===month-1,dayTasks=tasks.filter(t=>t.dueDate===iso),classes=['task-calendar-day',same?'':'is-other',iso===today()?'is-today':'',iso===taskSelectedDate?'is-selected':''].filter(Boolean).join(' ');html+='<button type="button" class="'+classes+'" data-task-calendar-date="'+iso+'" aria-label="'+iso+', '+dayTasks.length+' tareas"><span class="task-calendar-day-number">'+d.getDate()+'</span><span class="task-calendar-dots">'+dayTasks.slice(0,8).map(t=>'<span class="task-calendar-dot '+(t.done?'done':t.dueDate<today()?'late':'')+'"></span>').join('')+'</span></button>'}html+='</div>';document.getElementById('taskCalendarGrid').innerHTML=html}
 function renderTasks(){renderTaskCategories();const tasks=db.tasks||[],active=tasks.filter(t=>!t.done&&!t.archived),done=tasks.filter(t=>t.done&&!t.archived),overdue=active.filter(t=>t.dueDate&&t.dueDate<today()),progress=active.filter(t=>(t.status||'Pendiente')==='En curso');const metric=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=String(v)};metric('taskMetricOpen',active.length-progress.length);metric('taskMetricProgress',progress.length);metric('taskMetricOverdue',overdue.length);metric('taskMetricDone',done.length);const base=tasks.filter(t=>!t.archived),pct=base.length?Math.round(base.filter(t=>t.done).length/base.length*100):0;metric('taskProgressText',pct+'% completado');document.getElementById('taskProgressBar').style.width=pct+'%';document.querySelectorAll('[data-task-view]').forEach(b=>b.classList.toggle('task-view-active',b.dataset.taskView===taskViewMode));renderTaskCalendar();const f=document.getElementById('taskFilter')?.value||'open',search=(document.getElementById('taskSearch')?.value||'').trim().toLocaleLowerCase(),category=document.getElementById('taskCategoryFilter')?.value||'',priority=document.getElementById('taskPriorityFilter')?.value||'';const list=tasks.filter(t=>{if(taskViewMode==='history'){if(!t.done&&!t.archived)return false}else if(t.archived||t.done)return false;if(taskViewMode!=='history'){if(f==='done'&&!t.done)return false;if(f==='open'&&t.done)return false;}if(category&&String(t.category||'')!==category)return false;if(priority&&String(t.priority||'Media')!==priority)return false;if(search&&!([t.title,t.type,t.category,t.notes,t.status].join(' ').toLocaleLowerCase().includes(search)))return false;if(taskViewMode==='calendar'&&taskSelectedDate&&t.dueDate!==taskSelectedDate)return false;if(taskViewMode==='calendar'&&!taskSelectedDate&&String(t.dueDate||'').slice(0,7)!==taskCalendarMonth)return false;return true}).sort((a,b)=>String(a.dueDate||'9999').localeCompare(String(b.dueDate||'9999')));const heading=document.getElementById('taskListHeading');heading.textContent=taskViewMode==='history'?'Historial de tareas':taskViewMode==='calendar'?(taskSelectedDate?'Tareas del '+taskSelectedDate:'Tareas del mes'):'Tareas activas';metric('taskListCount',list.length+' '+(list.length===1?'tarea':'tareas'));const target=document.getElementById('taskList');target.innerHTML=list.length?'<div class="list">'+list.map(t=>{const status=t.done?'Completada':(t.status||'Pendiente'),late=!!(t.dueDate&&t.dueDate<today()&&!t.done),priority=String(t.priority||'Media'),cls=priority==='Alta'?'task-priority-high':priority==='Baja'?'task-priority-low':'task-priority-medium';return '<div class="list-item task-item"><input class="check" type="checkbox" data-action="toggleTask" data-id="'+esc(t.id)+'" '+(t.done?'checked':'')+' '+(taskViewMode==='history'?'disabled':'')+'><div class="task-item-main"><strong style="'+(t.done?'text-decoration:line-through;color:var(--muted)':'')+'">'+esc(t.title)+'</strong><div class="task-item-meta"><span class="pill">'+esc(t.category||'Sin categoría')+'</span><span class="pill '+cls+'">Prioridad '+esc(priority.toLowerCase())+'</span><span class="pill">'+esc(status)+'</span>'+(t.repeat&&t.repeat!=='Sin repetición'?'<span class="pill">↻ '+esc(t.repeat)+'</span>':'')+(late?'<span class="pill red">Vencida</span>':'')+'</div><small>'+esc(t.type||'Tarea')+' · Vence: '+esc(t.dueDate||'sin fecha')+'</small>'+(t.amount?'<small>'+money(t.amount,t.currency)+'</small>':'')+(t.notes?'<small>'+esc(t.notes)+'</small>':'')+(t.done&&t.completedAt?'<small class="task-done-date">Completada: '+esc(String(t.completedAt).slice(0,10))+'</small>':'')+attachmentLinks(t.attachments)+'</div><div class="task-item-actions">'+(!t.done&&!t.archived?'<select aria-label="Estado de '+esc(t.title)+'" data-task-status="'+esc(t.id)+'"><option value="Pendiente" '+(status==='Pendiente'?'selected':'')+'>Pendiente</option><option value="En curso" '+(status==='En curso'?'selected':'')+'>En curso</option></select>':'')+act('Editar','editTask',t.id)+(t.archived?act('Restaurar','restoreTask',t.id):t.done?act('Archivar','archiveTask',t.id):'')+act('Eliminar','deleteTask',t.id,'danger')+'</div></div>'}).join('')+'</div>':'<div class="empty">No hay tareas para mostrar con estos filtros.</div>'}
