@@ -1683,7 +1683,26 @@ async function registerChecklistPayment(context,values,files=[]){
  const opened=checklistPeriodOpen(task);
  if(!opened&&!context.advance)throw new Error('Este período aún no está habilitado. Usa la opción excepcional de pago anticipado.');
  const reason=String(values.advanceReason||'').trim();
- if(!opened&&reason.length<10)throw new Error('El pago anticipado requiere una justificación de al menos 10 caracteres.');
+ if(!opened){
+  if(reason.length<10)throw new Error('El pago anticipado requiere una justificación de al menos 10 caracteres.');
+  // Máximo un período futuro abonado por adelantado a la vez.
+  if(checklistSeriesOccurrences(task).some(t=>String(t.id)!==String(task.id)&&t.paymentRegistration?.advance&&checklistPeriodStart(t)>today()))
+   throw new Error('Ya hay un período futuro pagado anticipadamente. No se permiten adelantos sucesivos hasta llegar al período.');
+  // Un solo período por delante: evita pagar enero, febrero y marzo por repetidos clics en noviembre.
+  const start=checklistPeriodStart(task),now=today(),rep=task.repeat;
+  if(rep==='Mensual'){
+   const p=now.slice(0,7).split('-').map(Number),future=checklistDate(p[1]===12?p[0]+1:p[0],p[1]===12?1:p[1]+1,1);
+   if(start>future)throw new Error('Solo se admite adelantar el período mensual inmediatamente siguiente.');
+  }else if(rep==='Anual'){
+   if(start>checklistDate(Number(now.slice(0,4))+1,1,1))throw new Error('Solo se admite adelantar el próximo año.');
+  }else if(rep==='Semanal'){
+   const current=checklistUtcDate(now);current.setUTCDate(current.getUTCDate()-(current.getUTCDay()+6)%7+7);
+   if(start>current.toISOString().slice(0,10))throw new Error('Solo se admite adelantar la semana inmediatamente siguiente.');
+  }else{
+   const limit=checklistUtcDate(now);limit.setUTCDate(limit.getUTCDate()+30);
+   if(start>limit.toISOString().slice(0,10))throw new Error('El anticipo de un pago único no puede exceder 30 días.');
+  }
+ }
  const paidDate=String(values.paymentDate||'');
  if(!checklistUtcDate(paidDate)||paidDate>today())throw new Error('Selecciona la fecha real del pago, nunca una fecha futura.');
  const amount=Number(values.amount),currency=String(values.currency||'');
