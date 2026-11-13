@@ -1903,7 +1903,7 @@ function mcfPdfReport(record,kind,asOf=new Date()){
   page.ops.push('0.83 0.88 0.85 RG 0.7 w 42 '+(pageH-100)+' m '+(pageW-42)+' '+(pageH-100)+' l S');
  }
  function section(title){
-  if(!page||page.y<157)newPage();
+  if(!page||page.y<(landscape?205:157))newPage();
   page.y-=9;
   page.ops.push('0.88 0.94 0.90 rg '+left+' '+(page.y-18)+' '+width+' 26 re f');
   at(left+9,page.y-10,title.toUpperCase(),10,true);
@@ -1948,7 +1948,7 @@ function mcfPdfReport(record,kind,asOf=new Date()){
   let seenHeader=-1;
   function showHeader(){
    if(!headers)return;
-   if(page.y<minimumY+62)newPage();
+   if(page.y<minimumY+(landscape?105:62))newPage();
    drawCells(headers,widths,{header:true});
    seenHeader=pages.length-1;
   }
