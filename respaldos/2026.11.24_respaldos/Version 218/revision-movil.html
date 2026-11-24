@@ -1,0 +1,1858 @@
+<!doctype html><meta charset=utf-8><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tarjeta hipotecaria · revisión móvil</title><style>body{font:16px system-ui;color:#173b35;margin:12px}main{display:flex;flex-wrap:wrap;gap:12px}figure{margin:0;max-width:100%}iframe{max-width:100%;border:0}figcaption{margin-bottom:6px}</style><h1>Tarjeta hipotecaria</h1><p>Vista de prueba con datos ficticios.</p><main><figure><figcaption>320 px</figcaption><iframe title="Vista 320" width="320" height="220" srcdoc="&lt;!doctype html&gt;&lt;meta charset=utf-8&gt;&lt;style&gt;
+/* Resumen de deudas financieras: saldos independientes por moneda */
+.debt-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 12px}
+.debt-summary-card{position:relative;isolation:isolate;overflow:hidden;padding:23px 25px;min-height:164px;border-radius:19px;box-shadow:0 8px 24px rgba(22,45,36,.07);background:linear-gradient(135deg,#fff 0%,#f8fbf9 100%);border:1px solid #dce8e1}
+.debt-summary-card:after{content:&quot;&quot;;position:absolute;z-index:-1;right:-32px;top:-44px;width:152px;height:152px;border-radius:50%;background:rgba(44,125,89,.07);pointer-events:none}
+.debt-summary-uf{background:linear-gradient(135deg,#fff 0%,#f7f9fe 100%);border-color:#dce5f5}
+.debt-summary-uf:after{background:rgba(56,101,175,.08)}
+.debt-summary-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.debt-summary-badge{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:33px;padding:0 11px;border-radius:10px;background:#e6f4ec;color:#226b4d;font-size:12px;font-weight:850;letter-spacing:.06em}
+.debt-summary-uf .debt-summary-badge{background:#e8effb;color:#2c5ca2}
+.debt-summary-kicker{font-size:12px;color:var(--muted);font-weight:650}
+.debt-summary-label{margin-top:16px;font-size:14px;font-weight:700;color:#33453d}
+.debt-summary-uf .debt-summary-label{color:#354867}
+.debt-summary-value{position:relative;z-index:1;font-size:clamp(27px,3vw,36px);font-weight:820;letter-spacing:-.045em;line-height:1.15;margin:7px 0 0;overflow-wrap:anywhere;color:#205f45}
+.debt-summary-uf .debt-summary-value{color:#2c5ca2}
+.debt-summary-foot{font-size:12px;line-height:1.45;color:var(--muted);margin-top:9px;max-width:440px}
+.debt-summary-subline{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;margin:0 0 16px;border:1px solid var(--line);border-radius:12px;background:#fafcfb;color:#4e6158;font-size:13px}
+.debt-summary-subline&gt;span{display:flex;align-items:center;gap:9px}
+.debt-summary-subline strong{font-size:16px;color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
+.debt-summary-subicon{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#edf3f0;color:#426b59;font-weight:800}
+@media(max-width:700px){.debt-summary-grid{grid-template-columns:1fr;gap:12px}.debt-summary-card{padding:20px 21px;min-height:146px}.debt-summary-value{font-size:30px}.debt-summary-subline{padding:10px 12px}}
+
+:root{--ink:#1d2d2a;--muted:#687873;--line:#dfe7e3;--paper:#f5f8f6;--card:#fff;--green:#173b35;--mint:#dceee7;--gold:#e9c66b;--red:#a43e38;--shadow:0 8px 28px rgba(24,53,44,.05)}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}.app{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr)}.sidebar{background:var(--green);color:#fff;padding:24px 15px;display:flex;flex-direction:column;gap:24px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brandmark{width:40px;height:40px;border-radius:13px;background:var(--gold);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:19px}.brand strong{display:block;font-size:16px}.brand small{color:#c6d9d2}.brand-image{width:40px;height:40px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;flex-shrink:0}.brand-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--line);display:inline-block;vertical-align:middle}.brand-avatar.hidden{display:none}.nav-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#a9c3ba;padding:0 12px;margin-bottom:7px}.nav{display:grid;gap:5px}.nav button{display:flex;align-items:center;gap:12px;border:0;background:transparent;color:#d9e6e1;text-align:left;padding:11px 12px;border-radius:10px;width:100%}.nav button:hover,.nav button.active{background:#2d564c;color:white}.nav .ico{width:22px;text-align:center;font-size:17px}.side-note{margin-top:auto;border:1px solid #41665b;background:#23483f;padding:13px;border-radius:12px;font-size:12px;color:#d0e0da}main{min-width:0;padding:28px clamp(16px,3vw,42px) 90px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.eyebrow{color:var(--muted);font-size:12px;margin-bottom:4px}.topbar h1{font-size:clamp(24px,3vw,32px);letter-spacing:-.04em;margin:0}.top-actions{display:flex;align-items:center;gap:9px}.period-clock-cards{width:min(650px,54vw);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;align-items:stretch}.period-card,.clock-card{min-width:0;min-height:70px;padding:11px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;justify-content:center}.period-card{align-items:center}.period-card .month-select{width:100%;min-width:0;border:0;background:transparent;padding:0 20px 0 0;font-size:clamp(15px,1.55vw,18px);font-weight:750;cursor:pointer}.clock-card{flex-direction:column;align-items:flex-start;gap:1px}.clock-date{font-size:clamp(10px,1vw,12px);line-height:1.25;color:var(--muted);text-transform:capitalize;overflow-wrap:anywhere}.clock-time{font-size:clamp(18px,1.9vw,24px);font-weight:800;line-height:1.2;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:var(--green);white-space:nowrap}@media(max-width:700px){.top-actions .period-clock-cards{width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.period-card,.clock-card{padding:10px 11px;min-height:66px}.period-card .month-select{font-size:15px}.clock-date{font-size:10px}.clock-time{font-size:clamp(16px,4vw,21px)}}.month-select,.btn,.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);padding:10px 12px}.btn{font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}.btn.soft{background:var(--mint);border-color:var(--mint)}.btn.danger{color:var(--red);background:#fff;border-color:#f0d2cf}.btn.small{padding:7px 10px;font-size:13px}.content{max-width:1320px;margin:auto}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:24px 0 13px}.section-head h2{margin:0;font-size:18px;letter-spacing:-.02em}.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.grid{display:grid;gap:14px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;gap:8px}.stat-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--mint);color:var(--green)}.amount{font-size:clamp(21px,2.2vw,29px);font-weight:760;letter-spacing:-.04em;margin:14px 0 5px;overflow-wrap:anywhere}.hint{font-size:12px;color:var(--muted)}.two-col{grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr)}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th{text-align:left;color:var(--muted);font-size:11px;font-weight:650;text-transform:uppercase;letter-spacing:.04em;padding:11px 9px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:13px 9px;border-bottom:1px solid #edf1ef;vertical-align:middle}tbody tr:last-child td{border-bottom:0}.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}.pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:20px;background:#edf3f0;color:#49645b;font-size:11px;font-weight:650;white-space:nowrap}.pill.warn{background:#fff2d8;color:#8b5c12}.pill.red{background:#fbe9e7;color:var(--red)}.progress{height:7px;background:#e9efec;border-radius:10px;overflow:hidden;margin:9px 0 5px}.progress span{display:block;height:100%;background:#5d9a80;border-radius:10px}.list{display:grid;gap:0}.list-item{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid #edf1ef}.list-item:last-child{border:0}.check{width:19px;height:19px;accent-color:var(--green)}.list-copy{flex:1;min-width:0}.list-copy strong{display:block;font-size:13px}.list-copy small{color:var(--muted);font-size:12px}.list-amount{font-size:13px;font-weight:700;white-space:nowrap}.page{display:none}.page.active{display:block}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.form-advanced{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfdfc}.form-advanced summary{cursor:pointer;font-size:13px;font-weight:750;color:var(--green);padding:3px 2px}.form-advanced-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}.form-advanced[open] summary{margin-bottom:4px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#51635d}.field input,.field select,.field textarea{width:100%;min-width:0}.field textarea{resize:vertical}.form-card{max-width:850px}.form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.notice{padding:13px 15px;border-radius:12px;background:#fff5dd;color:#755315;font-size:13px;border:1px solid #f1dfb5;margin:14px 0}.muted{color:var(--muted)}.mini-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.setting{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting p{margin:4px 0 0;color:var(--muted);font-size:13px}.mobile-nav{display:none}.toast{position:fixed;bottom:22px;right:22px;background:#173b35;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:20;max-width:calc(100vw - 32px)}.hidden{display:none!important}.field input[type=&quot;color&quot;]{height:44px;padding:4px;min-width:76px}.field input[type=&quot;file&quot;]{padding:8px;background:#fff}.debt-section+.divider{margin:22px 0}.brandmark.hidden{display:none!important}.inline-actions{display:flex;gap:6px;flex-wrap:wrap}.progress-copy{font-size:12px;color:var(--muted)}.installment-progress{display:flex;width:100%;height:11px;gap:3px;margin:10px 0 6px;overflow:hidden;border-radius:9px;background:#f0f2f1}.installment-progress .paid-segment{height:100%;background:#25834f;min-width:0;transition:width .15s ease}.installment-progress .pending-segment{height:100%;background:#cf4545;min-width:0;transition:width .15s ease}.installment-progress .neutral-segment{height:100%;background:#c5ceca;min-width:0}.progress-legend{display:inline-flex;align-items:center;gap:5px;margin-right:10px}.progress-dot{display:inline-block;width:8px;height:8px;border-radius:50%}.progress-dot.paid{background:#25834f}.progress-dot.pending{background:#cf4545}.progress-dot.neutral{background:#c5ceca}.quota-mode-help{font-size:12px;color:var(--muted);margin-top:4px}.installment-table{max-width:100%;overflow-x:auto}.installment-table table{font-size:13px}.installment-table th,.installment-table td{padding:9px 10px;vertical-align:middle;white-space:normal}.installment-table .inline-actions{gap:5px}.installment-table .inline-actions button{padding:6px 8px;font-size:12px}.equiv{display:block;color:var(--muted);font-size:11px;line-height:1.3;margin-top:3px}.uf-number{font-size:clamp(23px,2.4vw,31px);font-weight:800;letter-spacing:-.03em;margin:9px 0}.uf-meta{font-size:12px;color:var(--muted);margin-top:5px}.negative{color:var(--red)}.positive{color:#347553}.empty-small{padding:16px 8px;color:var(--muted);font-size:13px}.notice.info{background:#edf6f1;border-color:#d3e8dc;color:#345b49}.form-intro{margin:0 0 16px;color:var(--muted);font-size:13px}.payrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stack{display:grid;gap:12px}.divider{height:1px;background:var(--line);margin:12px 0}.option-form{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px;margin:15px 0}.option-list{display:grid;gap:8px;margin-top:14px}.settings-entry{display:flex;align-items:center;gap:16px}.entry-symbol{width:46px;height:46px;border-radius:13px;background:var(--mint);color:var(--green);display:grid;place-items:center;font-size:24px;flex-shrink:0}.entry-copy{flex:1;min-width:0}.entry-copy h3{margin:0 0 5px}.entry-copy p{margin:0}.settings-entry .btn{white-space:nowrap}@media(max-width:700px){.settings-entry{align-items:flex-start;flex-wrap:wrap}.entry-copy{flex:1 1 calc(100% - 64px)}.settings-entry .btn{width:100%}}.option-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}.option-item span{overflow-wrap:anywhere}.option-empty{padding:14px 8px;color:var(--muted);font-size:13px;text-align:center}.econ-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.econ-value{font-size:clamp(20px,2vw,27px);font-weight:780;letter-spacing:-.03em;margin:12px 0 5px;overflow-wrap:anywhere}.econ-date{font-size:12px;color:var(--muted)}.econ-label{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:13px}.converter-grid{display:grid;grid-template-columns:minmax(100px,.85fr) minmax(145px,1fr) auto minmax(145px,1fr);gap:10px;align-items:end}.converter-grid .field{min-width:0}.converter-result{font-size:clamp(23px,2.7vw,34px);font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere;margin:16px 0 5px}.econ-source{font-size:12px;color:var(--muted);line-height:1.55}.econ-two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.econ-btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}@media(max-width:1000px){.econ-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.econ-grid,.econ-two{grid-template-columns:1fr}.converter-grid{grid-template-columns:1fr 1fr}.converter-grid .field:first-child{grid-column:1/-1}.converter-grid .swap-holder{display:flex;align-items:center;justify-content:center}.converter-grid #econConvertSwap{width:100%}.econ-value{font-size:23px}}@media(max-width:700px){.option-form{grid-template-columns:1fr}.option-form .btn{width:100%}}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two-col{grid-template-columns:1fr}.app{grid-template-columns:210px minmax(0,1fr)}.sidebar{padding-inline:10px}}@media(max-width:700px){.app{display:block}.sidebar{display:none}main{padding:20px 14px 105px}.topbar{align-items:flex-start;flex-direction:column;margin-bottom:22px}.top-actions{width:100%;justify-content:space-between}.stats{gap:10px}.card{padding:14px;border-radius:14px}.amount{font-size:23px}.section-head{align-items:flex-start}.form-grid{grid-template-columns:1fr}.mobile-nav{display:flex;align-items:stretch;gap:4px;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:7px 8px max(7px,env(safe-area-inset-bottom));z-index:15;overflow-x:auto;overflow-y:hidden;white-space:nowrap;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#aac0b6 #f4f7f5}.mobile-nav::-webkit-scrollbar{height:4px}.mobile-nav::-webkit-scrollbar-track{background:#f4f7f5}.mobile-nav::-webkit-scrollbar-thumb{background:#aac0b6;border-radius:4px}.mobile-nav button{border:0;background:transparent;color:var(--muted);font-size:10px;display:flex;flex:0 0 76px;min-width:76px;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:5px 3px;border-radius:9px;white-space:normal;line-height:1.15}.mobile-nav button span:first-child{font-size:18px;line-height:1.2}.mobile-nav button span:last-child{font-size:10px}.mobile-nav button:hover,.mobile-nav button.active{color:var(--green);font-weight:800;background:#edf5f1}.report-row{grid-template-columns:95px 1fr 75px}.hide-mobile{display:none!important}.top-actions .btn{padding:9px}.payrow{grid-template-columns:1fr}}
+
+.amort-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.amort-summary .card{min-width:0}.amort-summary .amount{font-size:clamp(17px,2vw,24px)}
+.amort-help{font-size:12px;color:var(--muted);line-height:1.5}.attachment-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.attachment-link{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;color:var(--text)}.attachment-link:hover{background:var(--surface-soft)}
+@media(max-width:760px){.amort-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Estado visual del botón de Google Drive: rojo desconectado y verde conectado. */
+#driveConnectBtn.drive-connect-disconnected,
+#driveConnectBtn.drive-connect-disconnected:disabled{background:#b42318!important;color:#fff!important;border-color:#b42318!important;opacity:1!important;cursor:pointer!important}
+#driveConnectBtn.drive-connect-connected,
+#driveConnectBtn.drive-connect-connected:disabled{background:#16803c!important;color:#fff!important;border-color:#16803c!important;opacity:1!important;cursor:not-allowed!important}
+
+/* Alertas de vencimiento */
+.alert-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.alert-metric{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px}
+.alert-metric strong{display:block;font-size:26px;line-height:1.2;margin:5px 0}
+.alert-metric small{color:var(--muted)}
+.alert-list{display:grid;gap:10px}
+.alert-row{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.alert-row:last-child{border-bottom:0}
+.alert-row p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.alert-bullet{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
+.alert-bullet.late{background:var(--red)}
+.alert-settings{display:grid;gap:12px}
+@media(max-width:650px){.alert-summary{grid-template-columns:1fr}.alert-row{align-items:flex-start;flex-wrap:wrap}}
+
+
+
+/* v144: control discreto para volver a contraer la tarjeta expandida. */
+.debt-card-head{position:relative;padding-right:44px}
+.debt-collapse-control{position:absolute;right:0;top:0;display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 8px;border:1px solid #d9e5df;border-radius:9px;background:var(--card);color:var(--green);font-size:18px;line-height:1;cursor:pointer}
+.debt-collapse-control:hover{background:#e8f4ed}
+.debt-collapse-control:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* v143: vista inicial compacta de créditos; la tarjeta original se conserva intacta al expandir. */
+.debt-card-v22{position:relative}
+.debt-compact-head{display:flex;align-items:center;gap:13px;width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d9e5df;border-radius:14px;background:var(--card);color:var(--ink);text-align:left;cursor:pointer}
+.debt-compact-head[hidden]{display:none!important}
+.debt-compact-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex:none;border-radius:50%;background:#e8f4ed;color:var(--green);font-size:20px}
+.debt-compact-copy{min-width:0;flex:1}
+.debt-compact-title{display:block;font-weight:850;font-size:16px;line-height:1.25;color:var(--green);overflow-wrap:anywhere}
+.debt-compact-subtitle{display:block;margin-top:4px;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.debt-compact-balance{display:grid;gap:2px;min-width:0;text-align:right;color:var(--muted);font-size:11px;line-height:1.3;font-variant-numeric:tabular-nums}
+.debt-compact-balance strong{color:var(--ink);font-weight:650}
+.debt-compact-uf{min-width:0;text-align:right}
+.debt-compact-uf strong{display:block;font-size:clamp(14px,1.5vw,19px);font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.debt-compact-uf span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+.debt-compact-chevron{flex:none;font-size:21px;color:var(--green);padding:0 2px}
+.debt-card-v22.debt-card-collapsed{padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
+.debt-card-v22.debt-card-collapsed&gt;.debt-compact-head{display:flex}
+.debt-card-v22.debt-card-collapsed&gt;:not(.debt-compact-head){display:none!important}
+.debt-card-v22:not(.debt-card-collapsed)&gt;.debt-compact-head{display:none!important}
+@media(max-width:520px){.debt-compact-head{gap:9px;padding:12px}.debt-compact-icon{width:36px;height:36px}.debt-compact-title{font-size:14px}.debt-compact-subtitle{font-size:11px}.debt-compact-balance{font-size:10px}.debt-compact-uf strong{font-size:13px}}
+
+/* v22: tarjetas de créditos reorganizadas; conserva acciones y datos del registro. */
+.debt-card-v22{display:block;background:var(--card);border:1px solid #d9e5df;border-radius:18px;padding:19px 20px;margin:14px 0 18px;box-shadow:0 7px 22px rgba(23,59,53,.055);overflow:hidden}
+.debt-card-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.debt-title-wrap{min-width:220px;flex:1}
+.debt-type-label{display:block;font-size:10px;line-height:1.3;letter-spacing:.09em;text-transform:uppercase;font-weight:850;color:#47715f;margin-bottom:5px}
+.debt-card-title{font-size:clamp(20px,2.1vw,27px);line-height:1.18;letter-spacing:-.035em;font-weight:850;color:var(--green);margin:0;overflow-wrap:anywhere}
+.debt-balance{border:1px solid #d9e8df;background:#f3faf6;border-radius:13px;padding:10px 14px;min-width:160px;text-align:right}
+.debt-balance span{display:block;color:var(--muted);font-size:11px;font-weight:750;margin-bottom:3px}
+.debt-balance strong{display:block;color:#205f45;font-size:clamp(20px,2vw,27px);font-weight:850;line-height:1.15;font-variant-numeric:tabular-nums}
+.debt-summary-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:8px 0 2px}.debt-summary-cards .debt-summary-card{min-height:0;height:auto;padding:6px 12px;box-shadow:none}.debt-summary-card{min-width:0;border:1px solid #dce8e1;border-radius:10px;padding:7px 12px;background:var(--card)}.debt-summary-card:nth-child(1){background:#f3faf6}.debt-summary-card:nth-child(4){background:#f7fbf8}.debt-summary-label{display:block;color:var(--muted);font-size:11px;line-height:1.2;font-weight:750;margin-bottom:3px}.debt-summary-value{display:block;font-size:clamp(15px,1.35vw,19px);line-height:1.2;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.debt-summary-card:nth-child(1) .debt-summary-value,.debt-summary-card:nth-child(4) .debt-summary-value{color:#205f45}.debt-summary-equivalent{display:block;color:var(--muted);font-size:10px;line-height:1.25;margin-top:3px;font-weight:650;overflow-wrap:anywhere}.debt-summary-note{display:block;color:var(--muted);font-size:10px;line-height:1.2;margin-top:3px}@media(max-width:850px){.debt-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.debt-summary-cards{gap:6px}.debt-summary-cards .debt-summary-card{min-height:0;height:auto;padding:5px 8px}.debt-summary-label{font-size:9px}.debt-summary-value{font-size:13px}.debt-summary-equivalent{font-size:9px}.debt-summary-note{font-size:8px}}
+.debt-card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 0 5px}
+.debt-card-actions .btn{margin:0}.debt-details-button{margin-left:auto!important}
+.debt-card-v22 .installment-progress{margin-top:14px}
+.debt-card-v22 .progress-copy{display:flex;flex-wrap:wrap;gap:5px 12px;line-height:1.5;margin-top:5px}
+.debt-last-payment{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;margin-top:13px;padding:11px 13px;border:1px solid #dce9e2;border-radius:12px;background:#f7fbf8;font-size:13px}
+.debt-last-payment-label{font-size:11px;font-weight:850;letter-spacing:.03em;text-transform:uppercase;color:#426657}
+.debt-last-payment strong{font-weight:750;color:var(--ink)}
+.debt-last-payment-amount{margin-left:auto;font-size:16px;font-weight:850;color:var(--green);font-variant-numeric:tabular-nums}
+.debt-last-payment-empty{color:var(--muted);background:#fafcfb}.debt-last-payment-detail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px 10px;align-items:stretch;margin-top:9px;padding:9px 11px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto;display:grid;align-content:center;gap:4px;min-width:0;padding:0 8px 0 0;border-right:1px solid #dce9e2}.debt-last-payment-heading .debt-last-payment-label{font-size:10px}.debt-last-payment-heading strong{font-size:12px;color:var(--ink);overflow-wrap:anywhere}.debt-last-payment-item{display:grid;gap:3px;min-width:0}.debt-last-payment-item span{font-size:10px;color:var(--muted);line-height:1.25}.debt-last-payment-item strong{font-size:12px;font-weight:760;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.debt-last-payment-difference{padding:8px 10px;border-radius:9px;background:#edf6f1}.debt-last-payment-difference strong{color:var(--green)}
+.debt-credit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.debt-details-content{padding:8px 16px 14px;border-top:1px solid var(--line);background:#fff}
+.debt-archive-actions{margin-top:10px;justify-content:flex-end}.debt-archive-actions:empty{display:none}
+.debt-detail-row{display:grid;grid-template-columns:minmax(150px,38%) minmax(0,1fr);gap:14px;align-items:start;padding:10px 2px;border-bottom:1px solid #e7ece9;font-size:13px;line-height:1.5}
+.debt-detail-label{color:var(--muted,#65756c);font-weight:600}
+.debt-detail-value{color:var(--ink);text-align:right;overflow-wrap:anywhere;min-width:0}
+.debt-detail-row:last-child{border-bottom:0}
+.debt-detail-note{padding:10px 0;border-bottom:1px solid #e7ece9;font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+.debt-details-content a{overflow-wrap:anywhere}
+@media(max-width:600px){.debt-details-content{padding:6px 11px 10px}.debt-detail-row{grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:8px;padding:9px 0;font-size:12px}.debt-detail-note{font-size:12px}}
+
+.debt-card-v22 .installment-table{margin-top:8px}
+@media(max-width:650px){.debt-card-v22{padding:14px;border-radius:14px}.debt-card-head{align-items:stretch;gap:11px}.debt-title-wrap{flex-basis:100%}.debt-balance{width:100%;text-align:left}.debt-card-actions{gap:6px}.debt-card-actions .btn{font-size:11px;padding:8px 9px}.debt-last-payment{align-items:flex-start;gap:7px 10px}.debt-last-payment-amount{margin-left:0;width:100%}.debt-last-payment-detail{grid-template-columns:repeat(7,minmax(105px,1fr));gap:8px 10px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto}.debt-last-payment-difference{grid-column:auto}.debt-card-details summary{padding:11px 12px}}
+/* Google Drive: tarjeta visible */
+/* Mostrar siempre la tarjeta de almacenamiento local, sin plegarla */
+#page-settings &gt; #localStorageCard{display:block!important;visibility:visible!important;opacity:1!important}
+#page-settings &gt; #localStorageCard &gt; .section-head{display:flex!important;visibility:visible!important}
+
+/* Lista de chequeo: resumen, filtros, calendario e historial */
+.task-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 12px}.task-summary{padding:16px 18px}.task-summary .amount{font-size:25px}.task-progress-card{padding:16px 18px;margin-bottom:14px}.task-progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.task-progress-head span{font-size:13px;color:var(--muted);font-weight:700}.task-view-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.task-view-tabs button.task-view-active{background:var(--green);color:#fff;border-color:var(--green)}.task-filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.task-filters label,.task-category-manager label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);font-weight:700}.task-filters input,.task-filters select,.task-category-add input{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--surface,#fff);color:var(--ink)}.task-category-manager{border-top:1px solid var(--line);margin-top:14px;padding-top:13px}.task-category-add{display:flex;gap:8px;margin-top:6px}.task-category-add input{max-width:340px}.task-category-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.task-category-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;background:var(--surface,#fff)}.task-category-chip button{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;line-height:1}.task-calendar-card{margin-bottom:12px}.task-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.task-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.task-calendar-weekday{text-align:center;color:var(--muted);font-size:11px;font-weight:700;padding:5px 0}.task-calendar-day{min-height:68px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface,#fff);color:var(--ink);text-align:left;cursor:pointer;overflow:hidden}.task-calendar-day.is-other{opacity:.4}.task-calendar-day.is-today{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.task-calendar-day.is-selected{background:#e9f5ed;border-color:var(--green)}.task-calendar-day-number{font-weight:700;font-size:12px}.task-calendar-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:7px}.task-calendar-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}.task-calendar-dot.late{background:#b42318}.task-calendar-dot.done{background:#8b98a2}.task-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.task-item{align-items:flex-start}.task-item-main{min-width:0;flex:1}.task-item-meta{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}.task-item-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.task-item-actions select{max-width:140px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface,#fff);color:var(--ink);font-size:12px}.task-priority-high{background:#fce8e6!important;color:#9c2525!important}.task-priority-medium{background:#fff1d6!important;color:#805400!important}.task-priority-low{background:#e7f4eb!important;color:#21663a!important}.task-done-date{font-size:11px;color:var(--muted)}
+@media(max-width:850px){.task-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.task-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.task-filters{grid-template-columns:1fr}.task-category-add{align-items:stretch;flex-direction:column}.task-category-add input{max-width:none}.task-calendar-day{min-height:52px;padding:4px}.task-calendar-grid{gap:3px}.task-calendar-day-number{font-size:11px}.task-item-actions{width:100%}.task-progress-head{align-items:flex-start;flex-direction:column}}
+.task-toolbar{display:flex;align-items:center;gap:8px;margin:0 0 12px}.task-toolbar .task-view-tabs{margin:0}.task-search-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:38px;min-height:36px;padding:8px}.task-filters-card[hidden]{display:none!important}.task-filters-card{margin-bottom:12px}.task-filters{display:flex;align-items:flex-end;gap:12px;flex-wrap:nowrap}.task-filters label{flex:1 1 0;min-width:140px}.task-filters label:first-child{flex:2 1 220px}.task-category-card{margin-bottom:14px}.task-category-card .task-category-manager{border-top:0;margin-top:0;padding-top:0}@media(max-width:720px){.task-filters{flex-wrap:wrap}.task-filters label,.task-filters label:first-child{flex:1 1 180px;min-width:0}.task-toolbar{flex-wrap:wrap}}.debt-type-group{margin:0 0 22px}.debt-type-group-title{margin:0 0 10px;padding:0 0 8px;border-bottom:1px solid var(--line,#d7e0e8);font-size:1rem;font-weight:700;color:var(--text,#102a43)}.debt-type-group .debt-card-v22{margin-bottom:10px}.debt-type-group .debt-card-v22:last-child{margin-bottom:0}
+/* v163: corrección específica de las dos fechas en los formularios
+   de deuda financiera y deuda personal; evita desbordes en pantallas móviles. */
+#formFields .debt-agreement-date-field,
+#formFields .debt-final-date-field{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  align-self:stretch;
+}
+#formFields .debt-agreement-date-field label,
+#formFields .debt-final-date-field label{
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+#formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+#formFields .debt-final-date-field input[type=&quot;date&quot;]{
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  height:44px;
+  min-height:44px;
+  margin:0;
+  box-sizing:border-box;
+  padding:8px 6px;
+  font-size:16px;
+  line-height:1.2;
+}
+@media(max-width:700px){
+  #formFields .debt-agreement-date-field,
+  #formFields .debt-final-date-field{
+    grid-column:1 / -1;
+    justify-self:stretch;
+  }
+  #formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .debt-final-date-field input[type=&quot;date&quot;]{
+    width:100%;
+    max-width:100%;
+    padding-inline:5px;
+    font-size:16px;
+  }
+}
+&lt;/style&gt;&lt;style id=&quot;recovered-settings-arrows-style&quot;&gt;
+#page-settings &gt; .recovery-settings-card{position:relative}
+#page-settings &gt; .recovery-settings-card &gt; .section-head{align-items:center}
+#page-settings &gt; .recovery-settings-card &gt; .recovery-settings-header{display:flex;align-items:center;gap:12px;width:100%;min-width:0}
+#page-settings &gt; .recovery-settings-card &gt; .recovery-settings-header &gt; .entry-copy{flex:1;min-width:0}
+.recovery-setting-arrow{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:36px;height:34px;margin-left:auto;padding:0;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-size:20px;line-height:1;cursor:pointer}
+.recovery-setting-arrow:hover{background:var(--surface-soft)}
+.recovery-setting-arrow span{display:inline-block;transition:transform .18s ease}
+.recovery-setting-arrow[aria-expanded=&quot;false&quot;] span{transform:rotate(-90deg)}
+#page-settings [hidden]{display:none!important}
+&lt;/style&gt;&lt;style id=&quot;movement-history-styles&quot;&gt;
+.history-filter-card{margin:16px 0}
+.history-filter-heading,.history-results-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.history-filter-heading strong,.history-results-head strong{font-size:15px}
+.history-filter-heading p{margin:4px 0 0;font-size:12px}
+.history-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.history-filter-grid .field{min-width:0}
+.history-filter-grid .month-select{width:100%;min-width:0}.history-filter-grid input[type=&quot;date&quot;]{min-height:43px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.history-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.history-summary-card{padding:16px}
+.history-summary-card .amount{font-size:clamp(18px,2vw,25px);margin:10px 0 5px;line-height:1.3}
+.history-results-head{align-items:center;margin-bottom:12px}
+@media(max-width:800px){.history-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.history-summary-grid{grid-template-columns:1fr}.history-summary-card .amount{font-size:22px}}
+@media(max-width:460px){.history-filter-grid{grid-template-columns:1fr}.history-filter-heading .btn{width:100%}}
+
+/* Comparación mensual: mantiene CLP y UF en series independientes */
+.month-compare-section-head{margin-top:26px}
+.month-compare-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.month-compare-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;min-width:0;box-shadow:var(--shadow)}
+.month-compare-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:13px}
+.month-compare-title{font-size:14px;font-weight:800;line-height:1.3}
+.month-compare-currency{display:inline-flex;align-items:center;justify-content:center;padding:4px 7px;border-radius:7px;background:var(--mint);color:var(--green);font-size:10px;font-weight:850;letter-spacing:.05em;flex:none}
+.month-compare-line{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:5px 0;font-size:11px;color:var(--muted)}
+.month-compare-line strong{font-size:12px;color:var(--ink);text-align:right;font-weight:750;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.month-compare-delta{border-top:1px solid var(--line);margin-top:9px;padding-top:9px}
+.month-compare-change{font-weight:850!important}
+.month-compare-change.good,.month-compare-state.good{color:#176b47}
+.month-compare-change.bad,.month-compare-state.bad{color:#a43e38}
+.month-compare-state{display:inline-flex;align-items:center;border-radius:20px;border:1px solid var(--line);padding:4px 8px;font-size:10px;font-weight:800;margin-top:7px;background:#f7faf8;color:var(--muted)}
+.month-compare-state.good{background:#e9f6ef;border-color:#c6e7d3}
+.month-compare-state.bad{background:#fff0ee;border-color:#f0d0cc}
+.month-compare-state.neutral{background:#f5f7f6;color:var(--muted)}
+@media(max-width:1100px){.month-compare-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.month-compare-grid{grid-template-columns:1fr;gap:10px}.month-compare-card{padding:14px}.month-compare-line{font-size:12px}.month-compare-line strong{font-size:13px}}
+
+
+/* Control de respaldos: registro local de copias manuales y confirmaciones en Drive */
+.backup-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.backup-control-metric{min-width:0;padding:15px;border:1px solid var(--line);border-radius:13px;background:#f9fbfa}
+.backup-control-label{font-size:12px;color:var(--muted);font-weight:700;line-height:1.35}
+.backup-control-metric strong{display:block;margin:8px 0 5px;font-size:16px;font-weight:850;overflow-wrap:anywhere;line-height:1.35;font-variant-numeric:tabular-nums}
+.backup-control-metric small{display:block;color:var(--muted);font-size:11px;line-height:1.45}
+@media(max-width:600px){.backup-control-grid{grid-template-columns:1fr}.backup-control-metric{padding:13px}}
+
+
+/* Inicio simplificado: jerarquía visual y secciones plegables, sin eliminar datos. */
+.home-test-note{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:10px;margin:0 0 18px}
+.home-test-note strong{color:var(--green)}
+.home-welcome{display:flex;align-items:flex-end;justify-content:space-between;margin:6px 0 14px}
+.home-welcome h2{font-size:23px;letter-spacing:-.04em;margin:0;color:var(--ink)}
+.home-welcome p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.home-balance-card{padding:22px 24px;margin-bottom:12px;background:linear-gradient(115deg,#fff 0%,#f4faf6 100%);border-color:#d8e8df}
+.home-balance-card .stat-top{font-weight:700;color:#486157}
+.home-balance-amount{font-size:clamp(30px,3.2vw,40px);margin:10px 0 5px;color:var(--green)}
+.home-primary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.home-primary-stats .card{padding:16px 18px}
+.home-primary-stats .amount{margin:10px 0 4px}
+.home-alerts-block{margin:4px 0 16px}
+.home-alerts-block .section-head{margin:0 0 10px}
+.home-alert-summary{margin:0 0 10px;gap:10px}
+.home-alert-summary .alert-metric{padding:12px 14px}
+.home-alert-summary .alert-metric strong{font-size:22px}
+.home-alert-summary .alert-metric small:last-child{font-size:11px}
+.home-fold{border:1px solid var(--line);border-radius:14px;background:var(--card);margin:12px 0;box-shadow:var(--shadow);overflow:hidden}
+.home-fold&gt;summary{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;list-style:none;padding:16px 18px;min-height:66px}
+.home-fold&gt;summary::-webkit-details-marker{display:none}
+.home-fold&gt;summary:hover{background:#fbfdfb}
+.home-fold-copy{display:grid;gap:3px;min-width:0}
+.home-fold-copy strong{font-size:14px;color:var(--ink);font-weight:750}
+.home-fold-copy small{font-size:12px;color:var(--muted);line-height:1.4}
+.home-fold-indicator{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:9px;background:#eff5f1;color:var(--green)}
+.home-fold-indicator:before{content:&quot;+&quot;;font-size:20px;line-height:1;font-weight:500}
+.home-fold[open]&gt;summary .home-fold-indicator:before{content:&quot;−&quot;}
+.home-fold[open]&gt;summary{border-bottom:1px solid var(--line)}
+.home-fold&gt;.month-compare-grid,.home-fold&gt;.card,.home-fold&gt;.grid,.home-fold&gt;.section-head{margin:14px 16px}
+.home-fold&gt;.month-compare-grid{margin-bottom:16px}
+.home-fold&gt;.card{margin-bottom:16px}
+.home-fold&gt;.home-secondary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.home-secondary-stats .card{padding:14px 16px}
+.home-secondary-stats .amount{font-size:clamp(19px,2vw,25px);margin:10px 0 4px}
+.home-inner-head.section-head{margin-top:18px}
+.home-fold .month-compare-grid{gap:10px}
+.home-alert-detail{margin-top:0;box-shadow:none}
+.home-alert-detail&gt;summary{padding:11px 14px;min-height:48px}
+.home-alert-detail .card{box-shadow:none}
+.home-situation-card{padding:4px 18px}
+.home-situation-card .setting{padding:13px 0}
+@media(max-width:700px){
+ .home-welcome h2{font-size:21px}
+ .home-balance-card{padding:18px}
+ .home-balance-amount{font-size:30px}
+ .home-primary-stats{gap:9px}
+ .home-primary-stats .card{padding:12px}
+ .home-primary-stats .amount{font-size:clamp(17px,4.6vw,22px)}
+ .home-primary-stats .hint{font-size:11px}
+ .home-alert-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .home-alert-summary .alert-metric{padding:10px 8px;border-radius:11px}
+ .home-alert-summary .alert-metric small{font-size:10px}
+ .home-alert-summary .alert-metric strong{font-size:20px}
+ .home-fold&gt;summary{padding:13px 13px;gap:10px}
+ .home-fold&gt;.month-compare-grid,.home-fold&gt;.card,.home-fold&gt;.grid,.home-fold&gt;.section-head{margin-left:10px;margin-right:10px}
+ .home-fold&gt;.home-secondary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .home-secondary-stats .card{padding:11px 10px}
+ .home-secondary-stats .amount{font-size:16px;overflow-wrap:anywhere}
+ .home-secondary-stats .stat-top{font-size:11px}
+ .home-fold .home-situation-card{padding:3px 12px}
+}
+
+&lt;/style&gt;&lt;style id=&quot;debt-chart-v19-style&quot;&gt;.debt-chart-panel{margin-top:12px;padding:16px;border:1px solid #d7e6dd;border-radius:14px;background:#f7fbf8}.debt-chart-panel[hidden],[data-chart-custom][hidden]{display:none!important}.debt-chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.debt-chart-heading h4{margin:0 0 4px;font-size:15px}.debt-chart-filters{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:14px 0}.debt-chart-filters label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted)}.debt-chart-filters select,.debt-chart-filters input{max-width:190px;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff;color:var(--ink);font:inherit}.debt-chart-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.debt-chart-stat{padding:10px 12px;border:1px solid #e0ebe4;border-radius:10px;background:#fff;min-width:0}.debt-chart-stat span{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.debt-chart-stat strong{font-size:15px;overflow-wrap:anywhere}.debt-chart-plot{width:100%;overflow:hidden;border:1px solid #e3ece6;border-radius:12px;background:#fff}.debt-chart-plot svg{display:block;width:100%;height:auto;min-height:180px}.debt-chart-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5}.debt-chart-empty{padding:20px;text-align:center;background:#fff;border:1px dashed #cbd9d0;border-radius:10px;color:var(--muted)}@media(max-width:560px){.debt-chart-summary{grid-template-columns:1fr}.debt-chart-filters label,.debt-chart-filters select,.debt-chart-filters input{width:100%;max-width:none}.debt-chart-panel{padding:11px}}&lt;/style&gt;&lt;style id=&quot;mobile-friendly-v54&quot;&gt;
+/* Ajustes de comodidad móvil para la aplicación oficial */
+html{-webkit-text-size-adjust:100%;scroll-padding-top:14px}
+button,a,select,input[type=&quot;checkbox&quot;],input[type=&quot;radio&quot;]{touch-action:manipulation}
+@media(max-width:700px){
+  body{font-size:15px;line-height:1.5}
+  main{padding:16px 12px calc(112px + env(safe-area-inset-bottom))}
+  .topbar{gap:12px;margin-bottom:18px}
+  .topbar h1{font-size:25px;line-height:1.2}
+  .top-actions{align-items:stretch;gap:8px}
+  .top-actions&gt;.btn{min-height:44px;white-space:normal}
+  .section-head{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:20px 0 12px}
+  .section-head h2{font-size:19px}
+  .section-head&gt;.btn,.section-head .toolbar{width:100%}
+  .toolbar{gap:8px}
+  .toolbar .btn{min-height:42px;flex:1 1 auto}
+  .card{padding:14px;border-radius:14px}
+  .grid{gap:11px}
+  .form-card{max-width:none;width:100%}
+  .form-grid,.form-advanced-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+  .field{gap:7px}
+  .field label{font-size:13px}
+  .field input,.field select,.field textarea,.month-select,
+  .debt-chart-filters select,.debt-chart-filters input{
+    min-height:44px;font-size:16px;padding:11px 12px
+  }
+  .field textarea{min-height:92px}
+  .form-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .form-actions .btn,.option-form .btn{min-height:44px;width:100%}
+  .btn{min-height:40px}
+  .btn.small{min-height:38px}
+  .option-item{align-items:flex-start;gap:8px;padding:10px}
+  .option-item .btn{flex:0 0 auto}
+  .table-wrap,.installment-table,.history-table-wrap{
+    max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{min-width:590px}
+  .installment-table table{min-width:760px}
+  .mobile-nav{
+    gap:2px;padding:7px 6px max(8px,env(safe-area-inset-bottom));
+    box-shadow:0 -5px 20px rgba(24,53,44,.08);scrollbar-width:none
+  }
+  .mobile-nav::-webkit-scrollbar{display:none}
+  .mobile-nav button{flex-basis:70px;min-width:70px;min-height:52px;padding:6px 3px}
+  .mobile-nav button span:first-child{font-size:19px}
+  .mobile-nav button span:last-child{font-size:10px}
+  .debt-card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .debt-card-actions .btn{min-width:0;min-height:42px;white-space:normal;line-height:1.25}
+  .debt-last-payment-detail{scrollbar-width:thin;scrollbar-color:#aac0b6 #f4f7f5}
+  .debt-last-payment-item strong{overflow-wrap:anywhere;word-break:break-word}
+  .debt-card-details summary{min-height:44px;display:flex;align-items:center}
+  .setting{gap:10px;flex-wrap:wrap}
+  .setting&gt;.btn,.setting&gt;button{min-height:42px}
+  .toast{left:12px;right:12px;bottom:calc(82px + env(safe-area-inset-bottom));max-width:none}
+  .history-filter-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:380px){
+  main{padding-left:10px;padding-right:10px}
+  .topbar h1{font-size:23px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-top{font-size:12px}
+  .amount{font-size:21px}
+  .debt-card-actions{grid-template-columns:minmax(0,1fr)}
+  .mobile-nav button{flex-basis:64px;min-width:64px}
+}
+
+/* v163: normalización general de interfaz móvil.
+   Mantiene intactos los estilos de escritorio y evita desbordamientos horizontales. */
+@media screen and (max-width:700px){
+  html{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+  body{width:100%;max-width:100%;overflow-x:hidden}
+  .app,main,.page,.card,.form-card,.section-head,.topbar,.top-actions{
+    min-width:0;max-width:100%;box-sizing:border-box
+  }
+  main{width:100%;padding:14px 12px calc(112px + env(safe-area-inset-bottom))}
+  .topbar{gap:12px}
+  .topbar h1,.topbar h2,.section-head h2,.section-head h3,
+  .card h2,.card h3{overflow-wrap:anywhere;word-break:normal}
+  .top-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
+  .top-actions&gt;*{min-width:0;max-width:100%}
+  .stats,.grid,.two-col,.form-grid,.form-advanced-grid,
+  .debt-summary-grid,.econ-grid,.econ-two,.converter-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+    min-width:0;max-width:100%
+  }
+  .form-grid,.form-advanced-grid{gap:12px}
+  .form-card,.form-advanced{padding:12px}
+  .field{min-width:0;width:100%;max-width:100%}
+  .field label{max-width:100%;overflow-wrap:anywhere}
+  .field input,.field select,.field textarea,
+  .month-select,.field input[type=&quot;file&quot;]{
+    width:100%;min-width:0;max-width:100%;box-sizing:border-box;
+    font-size:16px
+  }
+  .field input[type=&quot;date&quot;]{
+    display:block;width:100%;min-width:0;max-width:100%;
+    height:44px;min-height:44px;box-sizing:border-box;
+    padding:8px 5px;font-size:16px
+  }
+  #formFields .debt-agreement-date-field,
+  #formFields .debt-final-date-field{
+    grid-column:auto!important;width:100%;min-width:0;max-width:100%;
+    justify-self:stretch;box-sizing:border-box
+  }
+  #formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .debt-final-date-field input[type=&quot;date&quot;]{
+    width:100%;min-width:0;max-width:100%;padding-left:5px;padding-right:5px
+  }
+  .btn,button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+  .toolbar,.form-actions,.inline-actions,.debt-card-actions{
+    flex-wrap:wrap;min-width:0;max-width:100%;gap:8px
+  }
+  .toolbar&gt;.btn,.form-actions&gt;.btn{flex:1 1 auto;min-width:0}
+  .table-wrap,.installment-table,.history-table-wrap{
+    display:block;width:100%;max-width:100%;overflow-x:auto;
+    overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{min-width:590px}
+  .installment-table table{min-width:760px}
+  img,svg,canvas,video{max-width:100%}
+  input,select,textarea,button{touch-action:manipulation}
+}
+@media screen and (max-width:380px){
+  main{padding-left:9px;padding-right:9px}
+  .card,.form-card{padding:10px}
+  .field input[type=&quot;date&quot;]{padding-left:3px;padding-right:3px}
+  .mobile-nav button{min-width:64px;flex-basis:64px}
+}
+&lt;/style&gt;&lt;style id=&quot;v164-mobile-date-fields-fix&quot;&gt;
+@media screen and (max-width:700px){
+  #formFields{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+  #formFields .field.debt-agreement-date-field,
+  #formFields .field.debt-final-date-field{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-column:1 / -1!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+    justify-self:stretch!important;overflow:hidden!important;
+  }
+  #formFields .field.debt-agreement-date-field label,
+  #formFields .field.debt-final-date-field label{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+  #formFields .field.debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .field.debt-final-date-field input[type=&quot;date&quot;]{
+    display:block!important;float:none!important;width:100%!important;min-width:0!important;max-width:100%!important;
+    inline-size:100%!important;min-inline-size:0!important;max-inline-size:100%!important;
+    height:44px!important;min-height:44px!important;margin:0!important;padding:6px 4px!important;
+    box-sizing:border-box!important;font-size:16px!important;line-height:1.2!important;
+  }
+}
+&lt;/style&gt;&lt;style id=&quot;v165-mobile-quota-label-position-fix&quot;&gt;
+/* v165: el campo calculado debe mantener etiqueta e input juntos aunque
+   el selector de tipo de interés añada un botón en la columna vecina. */
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;]{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  justify-content:flex-start!important;align-self:start!important;align-content:start!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  gap:6px!important;grid-row:auto!important;box-sizing:border-box!important;
+}
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;] label{
+  display:block!important;position:static!important;flex:none!important;
+  margin:0!important;padding:0!important;line-height:1.35!important;
+}
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;] input{
+  display:block!important;position:static!important;flex:none!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:44px!important;min-height:44px!important;margin:0!important;
+  box-sizing:border-box!important;
+}
+&lt;/style&gt;&lt;style id=&quot;v173-mobile-debt-date-layout&quot;&gt;
+/* v172: se elimina la regla :has() anterior que forzaba dos columnas en todo el formulario. */
+.debt-date-fields-row{display:contents}
+@media (max-width:700px){
+  #formFields.form-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    column-gap:0!important;
+    row-gap:12px!important;
+    align-items:start!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+    align-items:start!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row &gt; .field{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:5px!important;
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:0!important;
+    align-self:start!important;
+    justify-self:stretch!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row &gt; .field &gt; label{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    font-size:12px!important;
+    line-height:1.25!important;
+    overflow-wrap:anywhere!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row input[type=&quot;date&quot;]{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+    margin:0!important;
+    padding:4px 2px!important;
+    font-size:13px!important;
+    line-height:normal!important;
+    box-sizing:border-box!important;
+  }
+  #formFields.form-grid &gt; .field:not(.debt-agreement-date-field):not(.debt-final-date-field){
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+@media (min-width:701px){
+  #formFields.form-grid &gt; .debt-date-fields-row{display:contents}
+}
+&lt;/style&gt;&lt;style id=&quot;v178-linear-financial-forms&quot;&gt;
+/* v178: listado lineal para Deudas personales y Dinero por cobrar; resto de formularios sin cambios. */
+#formFields.linear-financial-form{display:flex;flex-direction:column;gap:14px;}
+#formFields.linear-financial-form &gt; .field{display:flex;flex-direction:column;gap:6px;width:100%;min-width:0;}
+#formFields.linear-financial-form &gt; .field &gt; label{font-weight:650;line-height:1.35;}
+#formFields.linear-financial-form &gt; .field &gt; input,
+#formFields.linear-financial-form &gt; .field &gt; select,
+#formFields.linear-financial-form &gt; .field &gt; textarea{width:100%;max-width:100%;min-width:0;box-sizing:border-box;}
+#formFields.linear-financial-form &gt; .field &gt; input,
+#formFields.linear-financial-form &gt; .field &gt; select{min-height:44px;}
+#formFields.linear-financial-form &gt; .field &gt; .readonly{background:var(--surface-2,#f1f5f9);font-weight:700;}
+&lt;/style&gt;&lt;style id=&quot;v183-personal-payment-date-edit&quot;&gt;
+.personal-payment-edit-cell,.personal-payment-edit-head{text-align:center;width:56px;min-width:56px;white-space:nowrap}
+.personal-payment-edit-icon{display:inline-grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid #dce8e2;border-radius:9px;background:#f4faf7;color:#286c51;cursor:pointer;font:700 22px/1 system-ui,-apple-system,sans-serif;transition:background .15s,border-color .15s}
+.personal-payment-edit-icon:hover{background:#e3f3e9;border-color:#a5d1b8}
+.personal-payment-edit-icon:focus-visible{outline:3px solid #7fc19c;outline-offset:2px}
+#page-form.payment-date-edit-mode .form-card{max-width:850px;margin-inline:auto}
+#page-form.payment-date-edit-mode #formFields&gt;.field:nth-of-type(5){grid-column:1 / -1}
+#page-form.payment-date-edit-mode #formFields input[readonly],#page-form.payment-date-edit-mode #formFields textarea[readonly]{background:#f2f6f4;color:#53645b;opacity:1}
+.personal-payment-edit-tip{grid-column:1 / -1;margin:0;padding:12px 14px;border-radius:11px;background:#f3f8f5;color:#425e50;font-size:13px}
+.personal-payment-correction-history{grid-column:1 / -1;margin-top:8px;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:#f9fbfa}
+.personal-payment-correction-history h3{margin:0 0 10px;font-size:15px}
+.personal-payment-correction-empty{margin:0;color:var(--muted);font-size:13px}
+.personal-payment-correction-list{margin:0;padding-left:20px;display:grid;gap:10px}
+.personal-payment-correction-list li{padding-left:5px;font-size:13px}
+.personal-payment-correction-list p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.personal-payment-correction-list small{color:var(--muted)}
+@media(max-width:700px){#page-form.payment-date-edit-mode #formFields&gt;.field{grid-column:1 / -1}.personal-payment-correction-history{padding:14px}.personal-payment-edit-icon{width:34px;height:34px}}
+&lt;/style&gt;&lt;style id=&quot;v192-recurring-checklist&quot;&gt;
+.field[hidden]{display:none!important}.checklist-recurrence-panel{margin:12px 0;padding:17px 19px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.checklist-recurrence-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.checklist-recurrence-head strong{font-size:15px}
+.checklist-recurring-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.checklist-recurring-tile{border:1px solid #e3eae6;border-radius:12px;background:#f8fbf9;padding:11px 13px;display:flex;flex-direction:column;gap:4px}
+.checklist-recurring-tile strong{font-size:13px;overflow-wrap:anywhere}
+.checklist-recurring-tile small{color:var(--muted)}
+.checklist-recurring-tile .pill{align-self:start}
+.checklist-payment-action{white-space:normal}
+/* v197: colapsado opcional, manteniendo diseño v192 */
+.mcf-programmed-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto}
+.mcf-programmed-tile-actions{margin-top:7px;display:flex;align-items:center}
+.mcf-programmed-tile-actions .btn{font-size:12px;padding:5px 12px}
+.checklist-recurrence-panel.mcf-collapsed .checklist-recurrence-head{margin-bottom:0}
+#mcfProgrammedCards[hidden]{display:none!important}
+@media(max-width:700px){.checklist-recurrence-panel{padding:13px}.checklist-recurring-grid{grid-template-columns:1fr}}
+&lt;/style&gt;&lt;style id=&quot;v198-cloud-only&quot;&gt;
+#cloudGate{position:fixed;inset:0;z-index:99999;background:rgba(18,37,32,.94);display:flex;align-items:center;justify-content:center;padding:18px}
+#cloudGate[hidden]{display:none!important}
+#cloudGatePanel{max-width:540px;width:100%;padding:28px;border-radius:17px;background:#fff;color:#18382d;box-shadow:0 12px 45px #0004}
+#cloudGatePanel h2{margin:0 0 12px;font-size:21px}
+#cloudGatePanel p{line-height:1.5;font-size:14px}
+#cloudGatePanel .btn{margin:4px 6px 4px 0}
+#cloudGateMessage{font-weight:600;overflow-wrap:anywhere}
+#cloudSyncBar{position:fixed;right:15px;bottom:15px;z-index:1200;padding:12px 15px;border-radius:12px;background:#173c32;color:white;box-shadow:0 5px 22px #0003;max-width:min(92vw,430px);font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#cloudSyncBar button{border:1px solid #aec8bb;border-radius:8px;padding:6px 9px;background:white;color:#173c32;cursor:pointer}
+#cloudSyncBar[data-state=&quot;error&quot;]{background:#82382f}
+#cloudSyncBar[data-state=&quot;pending&quot;]{background:#765a1f}
+&lt;/style&gt;&lt;style id=&quot;mcf-v203-recovery-style&quot;&gt;
+#mcfRecoverLaunch{position:fixed;left:15px;bottom:15px;z-index:1300}
+#mcfRecoverLaunch[hidden],#mcfRecoverOverlay[hidden]{display:none!important}
+#mcfRecoverLaunch button{border:0;background:#f0c46f;color:#143d32;box-shadow:0 4px 20px #0004;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
+#mcfRecoverOverlay{position:fixed;inset:0;z-index:99998;background:#071b17e8;display:flex;justify-content:center;align-items:center;padding:18px}
+#mcfRecoverPanel{width:min(96vw,720px);max-height:90vh;overflow-y:auto;background:white;color:#193b31;border-radius:16px;padding:24px;box-shadow:0 12px 40px #0005}
+#mcfRecoverPanel h2{margin:0 0 6px;font-size:21px}
+#mcfRecoverPanel p,#mcfRecoverPanel label{font-size:14px;line-height:1.5}
+#mcfRecoverPanel select,#mcfRecoverPanel input[type=file]{width:100%;padding:10px;margin:8px 0 12px;max-width:100%;border:1px solid #b0bfb6;border-radius:7px;background:#fff;color:#123}
+#mcfRecoverStats{padding:12px;background:#f1f6f3;color:#183c30;border-radius:8px;min-height:90px;white-space:pre-wrap;line-height:1.5;font-size:13px;overflow-wrap:anywhere}
+#mcfRecoverActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+#mcfRecoverActions button{padding:11px 14px;border:1px solid #657b70;background:#fff;border-radius:8px;cursor:pointer}
+#mcfRecoverActions button.primary{background:#204c3c;color:#fff;border-color:#204c3c}
+#mcfRecoverActions button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:700px){
+ #cloudGate{align-items:safe center;overflow:auto;padding:12px}
+ #cloudGatePanel{box-sizing:border-box;max-height:calc(100dvh - 24px);overflow:auto;padding:16px}
+ #cloudGatePanel select,#cloudGatePanel button,#localStorageCard button{box-sizing:border-box;max-width:100%;white-space:normal;min-height:44px}
+ #cloudGatePanel button{margin:4px 0;width:100%}
+ #localStorageCard .inline-actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ #localStorageCard,#storageDestination,#storageHelp,#cloudSyncText{min-width:0;overflow-wrap:anywhere}
+ #cloudSyncBar{position:static;margin:6px 10px;flex-wrap:wrap;max-width:100%;box-sizing:border-box}
+ .recovery-drive-header{flex-wrap:wrap}
+}
+@media (max-width:700px){
+ .debt-card-v22.debt-card-collapsed&gt;.debt-compact-head{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-areas:&quot;icon name arrow&quot; &quot;summary summary summary&quot;;
+  column-gap:9px;row-gap:6px;
+ }
+ .debt-compact-icon{grid-area:icon}
+ .debt-compact-copy{grid-area:name}
+ .debt-compact-chevron{grid-area:arrow}
+ .debt-compact-uf,.debt-compact-balance{grid-area:summary;min-width:0;text-align:right}
+}
+&lt;/style&gt;&lt;main style=&quot;padding:12px&quot;&gt;&lt;article class=&quot;debt-card-v22 debt-card-collapsed&quot;&gt;&lt;button class=&quot;debt-compact-head&quot;&gt;&lt;span class=&quot;debt-compact-icon&quot;&gt;▣&lt;/span&gt;&lt;span class=&quot;debt-compact-copy&quot;&gt;&lt;span class=&quot;debt-compact-title&quot;&gt;Crédito Hipotecario&lt;/span&gt;&lt;span class=&quot;debt-compact-subtitle&quot;&gt;MYV · Crédito hipotecario&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;debt-compact-uf&quot;&gt;&lt;strong&gt;1.734,1234 UF&lt;span class=&quot;equiv&quot;&gt;≈ $70.123.456 al último valor UF (24-11-2026)&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;Cuotas pendientes 340&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;debt-compact-chevron&quot;&gt;⌄&lt;/span&gt;&lt;/button&gt;&lt;/article&gt;&lt;/main&gt;"></iframe></figure><figure><figcaption>390 px</figcaption><iframe title="Vista 390" width="390" height="220" srcdoc="&lt;!doctype html&gt;&lt;meta charset=utf-8&gt;&lt;style&gt;
+/* Resumen de deudas financieras: saldos independientes por moneda */
+.debt-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 12px}
+.debt-summary-card{position:relative;isolation:isolate;overflow:hidden;padding:23px 25px;min-height:164px;border-radius:19px;box-shadow:0 8px 24px rgba(22,45,36,.07);background:linear-gradient(135deg,#fff 0%,#f8fbf9 100%);border:1px solid #dce8e1}
+.debt-summary-card:after{content:&quot;&quot;;position:absolute;z-index:-1;right:-32px;top:-44px;width:152px;height:152px;border-radius:50%;background:rgba(44,125,89,.07);pointer-events:none}
+.debt-summary-uf{background:linear-gradient(135deg,#fff 0%,#f7f9fe 100%);border-color:#dce5f5}
+.debt-summary-uf:after{background:rgba(56,101,175,.08)}
+.debt-summary-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.debt-summary-badge{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:33px;padding:0 11px;border-radius:10px;background:#e6f4ec;color:#226b4d;font-size:12px;font-weight:850;letter-spacing:.06em}
+.debt-summary-uf .debt-summary-badge{background:#e8effb;color:#2c5ca2}
+.debt-summary-kicker{font-size:12px;color:var(--muted);font-weight:650}
+.debt-summary-label{margin-top:16px;font-size:14px;font-weight:700;color:#33453d}
+.debt-summary-uf .debt-summary-label{color:#354867}
+.debt-summary-value{position:relative;z-index:1;font-size:clamp(27px,3vw,36px);font-weight:820;letter-spacing:-.045em;line-height:1.15;margin:7px 0 0;overflow-wrap:anywhere;color:#205f45}
+.debt-summary-uf .debt-summary-value{color:#2c5ca2}
+.debt-summary-foot{font-size:12px;line-height:1.45;color:var(--muted);margin-top:9px;max-width:440px}
+.debt-summary-subline{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;margin:0 0 16px;border:1px solid var(--line);border-radius:12px;background:#fafcfb;color:#4e6158;font-size:13px}
+.debt-summary-subline&gt;span{display:flex;align-items:center;gap:9px}
+.debt-summary-subline strong{font-size:16px;color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
+.debt-summary-subicon{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#edf3f0;color:#426b59;font-weight:800}
+@media(max-width:700px){.debt-summary-grid{grid-template-columns:1fr;gap:12px}.debt-summary-card{padding:20px 21px;min-height:146px}.debt-summary-value{font-size:30px}.debt-summary-subline{padding:10px 12px}}
+
+:root{--ink:#1d2d2a;--muted:#687873;--line:#dfe7e3;--paper:#f5f8f6;--card:#fff;--green:#173b35;--mint:#dceee7;--gold:#e9c66b;--red:#a43e38;--shadow:0 8px 28px rgba(24,53,44,.05)}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}.app{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr)}.sidebar{background:var(--green);color:#fff;padding:24px 15px;display:flex;flex-direction:column;gap:24px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brandmark{width:40px;height:40px;border-radius:13px;background:var(--gold);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:19px}.brand strong{display:block;font-size:16px}.brand small{color:#c6d9d2}.brand-image{width:40px;height:40px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;flex-shrink:0}.brand-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--line);display:inline-block;vertical-align:middle}.brand-avatar.hidden{display:none}.nav-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#a9c3ba;padding:0 12px;margin-bottom:7px}.nav{display:grid;gap:5px}.nav button{display:flex;align-items:center;gap:12px;border:0;background:transparent;color:#d9e6e1;text-align:left;padding:11px 12px;border-radius:10px;width:100%}.nav button:hover,.nav button.active{background:#2d564c;color:white}.nav .ico{width:22px;text-align:center;font-size:17px}.side-note{margin-top:auto;border:1px solid #41665b;background:#23483f;padding:13px;border-radius:12px;font-size:12px;color:#d0e0da}main{min-width:0;padding:28px clamp(16px,3vw,42px) 90px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.eyebrow{color:var(--muted);font-size:12px;margin-bottom:4px}.topbar h1{font-size:clamp(24px,3vw,32px);letter-spacing:-.04em;margin:0}.top-actions{display:flex;align-items:center;gap:9px}.period-clock-cards{width:min(650px,54vw);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;align-items:stretch}.period-card,.clock-card{min-width:0;min-height:70px;padding:11px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;justify-content:center}.period-card{align-items:center}.period-card .month-select{width:100%;min-width:0;border:0;background:transparent;padding:0 20px 0 0;font-size:clamp(15px,1.55vw,18px);font-weight:750;cursor:pointer}.clock-card{flex-direction:column;align-items:flex-start;gap:1px}.clock-date{font-size:clamp(10px,1vw,12px);line-height:1.25;color:var(--muted);text-transform:capitalize;overflow-wrap:anywhere}.clock-time{font-size:clamp(18px,1.9vw,24px);font-weight:800;line-height:1.2;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:var(--green);white-space:nowrap}@media(max-width:700px){.top-actions .period-clock-cards{width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.period-card,.clock-card{padding:10px 11px;min-height:66px}.period-card .month-select{font-size:15px}.clock-date{font-size:10px}.clock-time{font-size:clamp(16px,4vw,21px)}}.month-select,.btn,.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);padding:10px 12px}.btn{font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}.btn.soft{background:var(--mint);border-color:var(--mint)}.btn.danger{color:var(--red);background:#fff;border-color:#f0d2cf}.btn.small{padding:7px 10px;font-size:13px}.content{max-width:1320px;margin:auto}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:24px 0 13px}.section-head h2{margin:0;font-size:18px;letter-spacing:-.02em}.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.grid{display:grid;gap:14px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;gap:8px}.stat-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--mint);color:var(--green)}.amount{font-size:clamp(21px,2.2vw,29px);font-weight:760;letter-spacing:-.04em;margin:14px 0 5px;overflow-wrap:anywhere}.hint{font-size:12px;color:var(--muted)}.two-col{grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr)}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th{text-align:left;color:var(--muted);font-size:11px;font-weight:650;text-transform:uppercase;letter-spacing:.04em;padding:11px 9px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:13px 9px;border-bottom:1px solid #edf1ef;vertical-align:middle}tbody tr:last-child td{border-bottom:0}.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}.pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:20px;background:#edf3f0;color:#49645b;font-size:11px;font-weight:650;white-space:nowrap}.pill.warn{background:#fff2d8;color:#8b5c12}.pill.red{background:#fbe9e7;color:var(--red)}.progress{height:7px;background:#e9efec;border-radius:10px;overflow:hidden;margin:9px 0 5px}.progress span{display:block;height:100%;background:#5d9a80;border-radius:10px}.list{display:grid;gap:0}.list-item{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid #edf1ef}.list-item:last-child{border:0}.check{width:19px;height:19px;accent-color:var(--green)}.list-copy{flex:1;min-width:0}.list-copy strong{display:block;font-size:13px}.list-copy small{color:var(--muted);font-size:12px}.list-amount{font-size:13px;font-weight:700;white-space:nowrap}.page{display:none}.page.active{display:block}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.form-advanced{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfdfc}.form-advanced summary{cursor:pointer;font-size:13px;font-weight:750;color:var(--green);padding:3px 2px}.form-advanced-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}.form-advanced[open] summary{margin-bottom:4px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#51635d}.field input,.field select,.field textarea{width:100%;min-width:0}.field textarea{resize:vertical}.form-card{max-width:850px}.form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.notice{padding:13px 15px;border-radius:12px;background:#fff5dd;color:#755315;font-size:13px;border:1px solid #f1dfb5;margin:14px 0}.muted{color:var(--muted)}.mini-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.setting{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting p{margin:4px 0 0;color:var(--muted);font-size:13px}.mobile-nav{display:none}.toast{position:fixed;bottom:22px;right:22px;background:#173b35;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:20;max-width:calc(100vw - 32px)}.hidden{display:none!important}.field input[type=&quot;color&quot;]{height:44px;padding:4px;min-width:76px}.field input[type=&quot;file&quot;]{padding:8px;background:#fff}.debt-section+.divider{margin:22px 0}.brandmark.hidden{display:none!important}.inline-actions{display:flex;gap:6px;flex-wrap:wrap}.progress-copy{font-size:12px;color:var(--muted)}.installment-progress{display:flex;width:100%;height:11px;gap:3px;margin:10px 0 6px;overflow:hidden;border-radius:9px;background:#f0f2f1}.installment-progress .paid-segment{height:100%;background:#25834f;min-width:0;transition:width .15s ease}.installment-progress .pending-segment{height:100%;background:#cf4545;min-width:0;transition:width .15s ease}.installment-progress .neutral-segment{height:100%;background:#c5ceca;min-width:0}.progress-legend{display:inline-flex;align-items:center;gap:5px;margin-right:10px}.progress-dot{display:inline-block;width:8px;height:8px;border-radius:50%}.progress-dot.paid{background:#25834f}.progress-dot.pending{background:#cf4545}.progress-dot.neutral{background:#c5ceca}.quota-mode-help{font-size:12px;color:var(--muted);margin-top:4px}.installment-table{max-width:100%;overflow-x:auto}.installment-table table{font-size:13px}.installment-table th,.installment-table td{padding:9px 10px;vertical-align:middle;white-space:normal}.installment-table .inline-actions{gap:5px}.installment-table .inline-actions button{padding:6px 8px;font-size:12px}.equiv{display:block;color:var(--muted);font-size:11px;line-height:1.3;margin-top:3px}.uf-number{font-size:clamp(23px,2.4vw,31px);font-weight:800;letter-spacing:-.03em;margin:9px 0}.uf-meta{font-size:12px;color:var(--muted);margin-top:5px}.negative{color:var(--red)}.positive{color:#347553}.empty-small{padding:16px 8px;color:var(--muted);font-size:13px}.notice.info{background:#edf6f1;border-color:#d3e8dc;color:#345b49}.form-intro{margin:0 0 16px;color:var(--muted);font-size:13px}.payrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stack{display:grid;gap:12px}.divider{height:1px;background:var(--line);margin:12px 0}.option-form{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px;margin:15px 0}.option-list{display:grid;gap:8px;margin-top:14px}.settings-entry{display:flex;align-items:center;gap:16px}.entry-symbol{width:46px;height:46px;border-radius:13px;background:var(--mint);color:var(--green);display:grid;place-items:center;font-size:24px;flex-shrink:0}.entry-copy{flex:1;min-width:0}.entry-copy h3{margin:0 0 5px}.entry-copy p{margin:0}.settings-entry .btn{white-space:nowrap}@media(max-width:700px){.settings-entry{align-items:flex-start;flex-wrap:wrap}.entry-copy{flex:1 1 calc(100% - 64px)}.settings-entry .btn{width:100%}}.option-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}.option-item span{overflow-wrap:anywhere}.option-empty{padding:14px 8px;color:var(--muted);font-size:13px;text-align:center}.econ-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.econ-value{font-size:clamp(20px,2vw,27px);font-weight:780;letter-spacing:-.03em;margin:12px 0 5px;overflow-wrap:anywhere}.econ-date{font-size:12px;color:var(--muted)}.econ-label{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:13px}.converter-grid{display:grid;grid-template-columns:minmax(100px,.85fr) minmax(145px,1fr) auto minmax(145px,1fr);gap:10px;align-items:end}.converter-grid .field{min-width:0}.converter-result{font-size:clamp(23px,2.7vw,34px);font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere;margin:16px 0 5px}.econ-source{font-size:12px;color:var(--muted);line-height:1.55}.econ-two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.econ-btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}@media(max-width:1000px){.econ-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.econ-grid,.econ-two{grid-template-columns:1fr}.converter-grid{grid-template-columns:1fr 1fr}.converter-grid .field:first-child{grid-column:1/-1}.converter-grid .swap-holder{display:flex;align-items:center;justify-content:center}.converter-grid #econConvertSwap{width:100%}.econ-value{font-size:23px}}@media(max-width:700px){.option-form{grid-template-columns:1fr}.option-form .btn{width:100%}}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two-col{grid-template-columns:1fr}.app{grid-template-columns:210px minmax(0,1fr)}.sidebar{padding-inline:10px}}@media(max-width:700px){.app{display:block}.sidebar{display:none}main{padding:20px 14px 105px}.topbar{align-items:flex-start;flex-direction:column;margin-bottom:22px}.top-actions{width:100%;justify-content:space-between}.stats{gap:10px}.card{padding:14px;border-radius:14px}.amount{font-size:23px}.section-head{align-items:flex-start}.form-grid{grid-template-columns:1fr}.mobile-nav{display:flex;align-items:stretch;gap:4px;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:7px 8px max(7px,env(safe-area-inset-bottom));z-index:15;overflow-x:auto;overflow-y:hidden;white-space:nowrap;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#aac0b6 #f4f7f5}.mobile-nav::-webkit-scrollbar{height:4px}.mobile-nav::-webkit-scrollbar-track{background:#f4f7f5}.mobile-nav::-webkit-scrollbar-thumb{background:#aac0b6;border-radius:4px}.mobile-nav button{border:0;background:transparent;color:var(--muted);font-size:10px;display:flex;flex:0 0 76px;min-width:76px;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:5px 3px;border-radius:9px;white-space:normal;line-height:1.15}.mobile-nav button span:first-child{font-size:18px;line-height:1.2}.mobile-nav button span:last-child{font-size:10px}.mobile-nav button:hover,.mobile-nav button.active{color:var(--green);font-weight:800;background:#edf5f1}.report-row{grid-template-columns:95px 1fr 75px}.hide-mobile{display:none!important}.top-actions .btn{padding:9px}.payrow{grid-template-columns:1fr}}
+
+.amort-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.amort-summary .card{min-width:0}.amort-summary .amount{font-size:clamp(17px,2vw,24px)}
+.amort-help{font-size:12px;color:var(--muted);line-height:1.5}.attachment-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.attachment-link{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;color:var(--text)}.attachment-link:hover{background:var(--surface-soft)}
+@media(max-width:760px){.amort-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Estado visual del botón de Google Drive: rojo desconectado y verde conectado. */
+#driveConnectBtn.drive-connect-disconnected,
+#driveConnectBtn.drive-connect-disconnected:disabled{background:#b42318!important;color:#fff!important;border-color:#b42318!important;opacity:1!important;cursor:pointer!important}
+#driveConnectBtn.drive-connect-connected,
+#driveConnectBtn.drive-connect-connected:disabled{background:#16803c!important;color:#fff!important;border-color:#16803c!important;opacity:1!important;cursor:not-allowed!important}
+
+/* Alertas de vencimiento */
+.alert-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.alert-metric{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px}
+.alert-metric strong{display:block;font-size:26px;line-height:1.2;margin:5px 0}
+.alert-metric small{color:var(--muted)}
+.alert-list{display:grid;gap:10px}
+.alert-row{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.alert-row:last-child{border-bottom:0}
+.alert-row p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.alert-bullet{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
+.alert-bullet.late{background:var(--red)}
+.alert-settings{display:grid;gap:12px}
+@media(max-width:650px){.alert-summary{grid-template-columns:1fr}.alert-row{align-items:flex-start;flex-wrap:wrap}}
+
+
+
+/* v144: control discreto para volver a contraer la tarjeta expandida. */
+.debt-card-head{position:relative;padding-right:44px}
+.debt-collapse-control{position:absolute;right:0;top:0;display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 8px;border:1px solid #d9e5df;border-radius:9px;background:var(--card);color:var(--green);font-size:18px;line-height:1;cursor:pointer}
+.debt-collapse-control:hover{background:#e8f4ed}
+.debt-collapse-control:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* v143: vista inicial compacta de créditos; la tarjeta original se conserva intacta al expandir. */
+.debt-card-v22{position:relative}
+.debt-compact-head{display:flex;align-items:center;gap:13px;width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d9e5df;border-radius:14px;background:var(--card);color:var(--ink);text-align:left;cursor:pointer}
+.debt-compact-head[hidden]{display:none!important}
+.debt-compact-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex:none;border-radius:50%;background:#e8f4ed;color:var(--green);font-size:20px}
+.debt-compact-copy{min-width:0;flex:1}
+.debt-compact-title{display:block;font-weight:850;font-size:16px;line-height:1.25;color:var(--green);overflow-wrap:anywhere}
+.debt-compact-subtitle{display:block;margin-top:4px;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.debt-compact-balance{display:grid;gap:2px;min-width:0;text-align:right;color:var(--muted);font-size:11px;line-height:1.3;font-variant-numeric:tabular-nums}
+.debt-compact-balance strong{color:var(--ink);font-weight:650}
+.debt-compact-uf{min-width:0;text-align:right}
+.debt-compact-uf strong{display:block;font-size:clamp(14px,1.5vw,19px);font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.debt-compact-uf span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+.debt-compact-chevron{flex:none;font-size:21px;color:var(--green);padding:0 2px}
+.debt-card-v22.debt-card-collapsed{padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
+.debt-card-v22.debt-card-collapsed&gt;.debt-compact-head{display:flex}
+.debt-card-v22.debt-card-collapsed&gt;:not(.debt-compact-head){display:none!important}
+.debt-card-v22:not(.debt-card-collapsed)&gt;.debt-compact-head{display:none!important}
+@media(max-width:520px){.debt-compact-head{gap:9px;padding:12px}.debt-compact-icon{width:36px;height:36px}.debt-compact-title{font-size:14px}.debt-compact-subtitle{font-size:11px}.debt-compact-balance{font-size:10px}.debt-compact-uf strong{font-size:13px}}
+
+/* v22: tarjetas de créditos reorganizadas; conserva acciones y datos del registro. */
+.debt-card-v22{display:block;background:var(--card);border:1px solid #d9e5df;border-radius:18px;padding:19px 20px;margin:14px 0 18px;box-shadow:0 7px 22px rgba(23,59,53,.055);overflow:hidden}
+.debt-card-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.debt-title-wrap{min-width:220px;flex:1}
+.debt-type-label{display:block;font-size:10px;line-height:1.3;letter-spacing:.09em;text-transform:uppercase;font-weight:850;color:#47715f;margin-bottom:5px}
+.debt-card-title{font-size:clamp(20px,2.1vw,27px);line-height:1.18;letter-spacing:-.035em;font-weight:850;color:var(--green);margin:0;overflow-wrap:anywhere}
+.debt-balance{border:1px solid #d9e8df;background:#f3faf6;border-radius:13px;padding:10px 14px;min-width:160px;text-align:right}
+.debt-balance span{display:block;color:var(--muted);font-size:11px;font-weight:750;margin-bottom:3px}
+.debt-balance strong{display:block;color:#205f45;font-size:clamp(20px,2vw,27px);font-weight:850;line-height:1.15;font-variant-numeric:tabular-nums}
+.debt-summary-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:8px 0 2px}.debt-summary-cards .debt-summary-card{min-height:0;height:auto;padding:6px 12px;box-shadow:none}.debt-summary-card{min-width:0;border:1px solid #dce8e1;border-radius:10px;padding:7px 12px;background:var(--card)}.debt-summary-card:nth-child(1){background:#f3faf6}.debt-summary-card:nth-child(4){background:#f7fbf8}.debt-summary-label{display:block;color:var(--muted);font-size:11px;line-height:1.2;font-weight:750;margin-bottom:3px}.debt-summary-value{display:block;font-size:clamp(15px,1.35vw,19px);line-height:1.2;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.debt-summary-card:nth-child(1) .debt-summary-value,.debt-summary-card:nth-child(4) .debt-summary-value{color:#205f45}.debt-summary-equivalent{display:block;color:var(--muted);font-size:10px;line-height:1.25;margin-top:3px;font-weight:650;overflow-wrap:anywhere}.debt-summary-note{display:block;color:var(--muted);font-size:10px;line-height:1.2;margin-top:3px}@media(max-width:850px){.debt-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.debt-summary-cards{gap:6px}.debt-summary-cards .debt-summary-card{min-height:0;height:auto;padding:5px 8px}.debt-summary-label{font-size:9px}.debt-summary-value{font-size:13px}.debt-summary-equivalent{font-size:9px}.debt-summary-note{font-size:8px}}
+.debt-card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 0 5px}
+.debt-card-actions .btn{margin:0}.debt-details-button{margin-left:auto!important}
+.debt-card-v22 .installment-progress{margin-top:14px}
+.debt-card-v22 .progress-copy{display:flex;flex-wrap:wrap;gap:5px 12px;line-height:1.5;margin-top:5px}
+.debt-last-payment{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;margin-top:13px;padding:11px 13px;border:1px solid #dce9e2;border-radius:12px;background:#f7fbf8;font-size:13px}
+.debt-last-payment-label{font-size:11px;font-weight:850;letter-spacing:.03em;text-transform:uppercase;color:#426657}
+.debt-last-payment strong{font-weight:750;color:var(--ink)}
+.debt-last-payment-amount{margin-left:auto;font-size:16px;font-weight:850;color:var(--green);font-variant-numeric:tabular-nums}
+.debt-last-payment-empty{color:var(--muted);background:#fafcfb}.debt-last-payment-detail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px 10px;align-items:stretch;margin-top:9px;padding:9px 11px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto;display:grid;align-content:center;gap:4px;min-width:0;padding:0 8px 0 0;border-right:1px solid #dce9e2}.debt-last-payment-heading .debt-last-payment-label{font-size:10px}.debt-last-payment-heading strong{font-size:12px;color:var(--ink);overflow-wrap:anywhere}.debt-last-payment-item{display:grid;gap:3px;min-width:0}.debt-last-payment-item span{font-size:10px;color:var(--muted);line-height:1.25}.debt-last-payment-item strong{font-size:12px;font-weight:760;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.debt-last-payment-difference{padding:8px 10px;border-radius:9px;background:#edf6f1}.debt-last-payment-difference strong{color:var(--green)}
+.debt-credit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.debt-details-content{padding:8px 16px 14px;border-top:1px solid var(--line);background:#fff}
+.debt-archive-actions{margin-top:10px;justify-content:flex-end}.debt-archive-actions:empty{display:none}
+.debt-detail-row{display:grid;grid-template-columns:minmax(150px,38%) minmax(0,1fr);gap:14px;align-items:start;padding:10px 2px;border-bottom:1px solid #e7ece9;font-size:13px;line-height:1.5}
+.debt-detail-label{color:var(--muted,#65756c);font-weight:600}
+.debt-detail-value{color:var(--ink);text-align:right;overflow-wrap:anywhere;min-width:0}
+.debt-detail-row:last-child{border-bottom:0}
+.debt-detail-note{padding:10px 0;border-bottom:1px solid #e7ece9;font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+.debt-details-content a{overflow-wrap:anywhere}
+@media(max-width:600px){.debt-details-content{padding:6px 11px 10px}.debt-detail-row{grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:8px;padding:9px 0;font-size:12px}.debt-detail-note{font-size:12px}}
+
+.debt-card-v22 .installment-table{margin-top:8px}
+@media(max-width:650px){.debt-card-v22{padding:14px;border-radius:14px}.debt-card-head{align-items:stretch;gap:11px}.debt-title-wrap{flex-basis:100%}.debt-balance{width:100%;text-align:left}.debt-card-actions{gap:6px}.debt-card-actions .btn{font-size:11px;padding:8px 9px}.debt-last-payment{align-items:flex-start;gap:7px 10px}.debt-last-payment-amount{margin-left:0;width:100%}.debt-last-payment-detail{grid-template-columns:repeat(7,minmax(105px,1fr));gap:8px 10px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto}.debt-last-payment-difference{grid-column:auto}.debt-card-details summary{padding:11px 12px}}
+/* Google Drive: tarjeta visible */
+/* Mostrar siempre la tarjeta de almacenamiento local, sin plegarla */
+#page-settings &gt; #localStorageCard{display:block!important;visibility:visible!important;opacity:1!important}
+#page-settings &gt; #localStorageCard &gt; .section-head{display:flex!important;visibility:visible!important}
+
+/* Lista de chequeo: resumen, filtros, calendario e historial */
+.task-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 12px}.task-summary{padding:16px 18px}.task-summary .amount{font-size:25px}.task-progress-card{padding:16px 18px;margin-bottom:14px}.task-progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.task-progress-head span{font-size:13px;color:var(--muted);font-weight:700}.task-view-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.task-view-tabs button.task-view-active{background:var(--green);color:#fff;border-color:var(--green)}.task-filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.task-filters label,.task-category-manager label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);font-weight:700}.task-filters input,.task-filters select,.task-category-add input{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--surface,#fff);color:var(--ink)}.task-category-manager{border-top:1px solid var(--line);margin-top:14px;padding-top:13px}.task-category-add{display:flex;gap:8px;margin-top:6px}.task-category-add input{max-width:340px}.task-category-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.task-category-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;background:var(--surface,#fff)}.task-category-chip button{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;line-height:1}.task-calendar-card{margin-bottom:12px}.task-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.task-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.task-calendar-weekday{text-align:center;color:var(--muted);font-size:11px;font-weight:700;padding:5px 0}.task-calendar-day{min-height:68px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface,#fff);color:var(--ink);text-align:left;cursor:pointer;overflow:hidden}.task-calendar-day.is-other{opacity:.4}.task-calendar-day.is-today{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.task-calendar-day.is-selected{background:#e9f5ed;border-color:var(--green)}.task-calendar-day-number{font-weight:700;font-size:12px}.task-calendar-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:7px}.task-calendar-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}.task-calendar-dot.late{background:#b42318}.task-calendar-dot.done{background:#8b98a2}.task-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.task-item{align-items:flex-start}.task-item-main{min-width:0;flex:1}.task-item-meta{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}.task-item-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.task-item-actions select{max-width:140px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface,#fff);color:var(--ink);font-size:12px}.task-priority-high{background:#fce8e6!important;color:#9c2525!important}.task-priority-medium{background:#fff1d6!important;color:#805400!important}.task-priority-low{background:#e7f4eb!important;color:#21663a!important}.task-done-date{font-size:11px;color:var(--muted)}
+@media(max-width:850px){.task-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.task-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.task-filters{grid-template-columns:1fr}.task-category-add{align-items:stretch;flex-direction:column}.task-category-add input{max-width:none}.task-calendar-day{min-height:52px;padding:4px}.task-calendar-grid{gap:3px}.task-calendar-day-number{font-size:11px}.task-item-actions{width:100%}.task-progress-head{align-items:flex-start;flex-direction:column}}
+.task-toolbar{display:flex;align-items:center;gap:8px;margin:0 0 12px}.task-toolbar .task-view-tabs{margin:0}.task-search-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:38px;min-height:36px;padding:8px}.task-filters-card[hidden]{display:none!important}.task-filters-card{margin-bottom:12px}.task-filters{display:flex;align-items:flex-end;gap:12px;flex-wrap:nowrap}.task-filters label{flex:1 1 0;min-width:140px}.task-filters label:first-child{flex:2 1 220px}.task-category-card{margin-bottom:14px}.task-category-card .task-category-manager{border-top:0;margin-top:0;padding-top:0}@media(max-width:720px){.task-filters{flex-wrap:wrap}.task-filters label,.task-filters label:first-child{flex:1 1 180px;min-width:0}.task-toolbar{flex-wrap:wrap}}.debt-type-group{margin:0 0 22px}.debt-type-group-title{margin:0 0 10px;padding:0 0 8px;border-bottom:1px solid var(--line,#d7e0e8);font-size:1rem;font-weight:700;color:var(--text,#102a43)}.debt-type-group .debt-card-v22{margin-bottom:10px}.debt-type-group .debt-card-v22:last-child{margin-bottom:0}
+/* v163: corrección específica de las dos fechas en los formularios
+   de deuda financiera y deuda personal; evita desbordes en pantallas móviles. */
+#formFields .debt-agreement-date-field,
+#formFields .debt-final-date-field{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  align-self:stretch;
+}
+#formFields .debt-agreement-date-field label,
+#formFields .debt-final-date-field label{
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+#formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+#formFields .debt-final-date-field input[type=&quot;date&quot;]{
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  height:44px;
+  min-height:44px;
+  margin:0;
+  box-sizing:border-box;
+  padding:8px 6px;
+  font-size:16px;
+  line-height:1.2;
+}
+@media(max-width:700px){
+  #formFields .debt-agreement-date-field,
+  #formFields .debt-final-date-field{
+    grid-column:1 / -1;
+    justify-self:stretch;
+  }
+  #formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .debt-final-date-field input[type=&quot;date&quot;]{
+    width:100%;
+    max-width:100%;
+    padding-inline:5px;
+    font-size:16px;
+  }
+}
+&lt;/style&gt;&lt;style id=&quot;recovered-settings-arrows-style&quot;&gt;
+#page-settings &gt; .recovery-settings-card{position:relative}
+#page-settings &gt; .recovery-settings-card &gt; .section-head{align-items:center}
+#page-settings &gt; .recovery-settings-card &gt; .recovery-settings-header{display:flex;align-items:center;gap:12px;width:100%;min-width:0}
+#page-settings &gt; .recovery-settings-card &gt; .recovery-settings-header &gt; .entry-copy{flex:1;min-width:0}
+.recovery-setting-arrow{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:36px;height:34px;margin-left:auto;padding:0;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-size:20px;line-height:1;cursor:pointer}
+.recovery-setting-arrow:hover{background:var(--surface-soft)}
+.recovery-setting-arrow span{display:inline-block;transition:transform .18s ease}
+.recovery-setting-arrow[aria-expanded=&quot;false&quot;] span{transform:rotate(-90deg)}
+#page-settings [hidden]{display:none!important}
+&lt;/style&gt;&lt;style id=&quot;movement-history-styles&quot;&gt;
+.history-filter-card{margin:16px 0}
+.history-filter-heading,.history-results-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.history-filter-heading strong,.history-results-head strong{font-size:15px}
+.history-filter-heading p{margin:4px 0 0;font-size:12px}
+.history-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.history-filter-grid .field{min-width:0}
+.history-filter-grid .month-select{width:100%;min-width:0}.history-filter-grid input[type=&quot;date&quot;]{min-height:43px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.history-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.history-summary-card{padding:16px}
+.history-summary-card .amount{font-size:clamp(18px,2vw,25px);margin:10px 0 5px;line-height:1.3}
+.history-results-head{align-items:center;margin-bottom:12px}
+@media(max-width:800px){.history-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.history-summary-grid{grid-template-columns:1fr}.history-summary-card .amount{font-size:22px}}
+@media(max-width:460px){.history-filter-grid{grid-template-columns:1fr}.history-filter-heading .btn{width:100%}}
+
+/* Comparación mensual: mantiene CLP y UF en series independientes */
+.month-compare-section-head{margin-top:26px}
+.month-compare-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.month-compare-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;min-width:0;box-shadow:var(--shadow)}
+.month-compare-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:13px}
+.month-compare-title{font-size:14px;font-weight:800;line-height:1.3}
+.month-compare-currency{display:inline-flex;align-items:center;justify-content:center;padding:4px 7px;border-radius:7px;background:var(--mint);color:var(--green);font-size:10px;font-weight:850;letter-spacing:.05em;flex:none}
+.month-compare-line{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:5px 0;font-size:11px;color:var(--muted)}
+.month-compare-line strong{font-size:12px;color:var(--ink);text-align:right;font-weight:750;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.month-compare-delta{border-top:1px solid var(--line);margin-top:9px;padding-top:9px}
+.month-compare-change{font-weight:850!important}
+.month-compare-change.good,.month-compare-state.good{color:#176b47}
+.month-compare-change.bad,.month-compare-state.bad{color:#a43e38}
+.month-compare-state{display:inline-flex;align-items:center;border-radius:20px;border:1px solid var(--line);padding:4px 8px;font-size:10px;font-weight:800;margin-top:7px;background:#f7faf8;color:var(--muted)}
+.month-compare-state.good{background:#e9f6ef;border-color:#c6e7d3}
+.month-compare-state.bad{background:#fff0ee;border-color:#f0d0cc}
+.month-compare-state.neutral{background:#f5f7f6;color:var(--muted)}
+@media(max-width:1100px){.month-compare-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.month-compare-grid{grid-template-columns:1fr;gap:10px}.month-compare-card{padding:14px}.month-compare-line{font-size:12px}.month-compare-line strong{font-size:13px}}
+
+
+/* Control de respaldos: registro local de copias manuales y confirmaciones en Drive */
+.backup-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.backup-control-metric{min-width:0;padding:15px;border:1px solid var(--line);border-radius:13px;background:#f9fbfa}
+.backup-control-label{font-size:12px;color:var(--muted);font-weight:700;line-height:1.35}
+.backup-control-metric strong{display:block;margin:8px 0 5px;font-size:16px;font-weight:850;overflow-wrap:anywhere;line-height:1.35;font-variant-numeric:tabular-nums}
+.backup-control-metric small{display:block;color:var(--muted);font-size:11px;line-height:1.45}
+@media(max-width:600px){.backup-control-grid{grid-template-columns:1fr}.backup-control-metric{padding:13px}}
+
+
+/* Inicio simplificado: jerarquía visual y secciones plegables, sin eliminar datos. */
+.home-test-note{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:10px;margin:0 0 18px}
+.home-test-note strong{color:var(--green)}
+.home-welcome{display:flex;align-items:flex-end;justify-content:space-between;margin:6px 0 14px}
+.home-welcome h2{font-size:23px;letter-spacing:-.04em;margin:0;color:var(--ink)}
+.home-welcome p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.home-balance-card{padding:22px 24px;margin-bottom:12px;background:linear-gradient(115deg,#fff 0%,#f4faf6 100%);border-color:#d8e8df}
+.home-balance-card .stat-top{font-weight:700;color:#486157}
+.home-balance-amount{font-size:clamp(30px,3.2vw,40px);margin:10px 0 5px;color:var(--green)}
+.home-primary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.home-primary-stats .card{padding:16px 18px}
+.home-primary-stats .amount{margin:10px 0 4px}
+.home-alerts-block{margin:4px 0 16px}
+.home-alerts-block .section-head{margin:0 0 10px}
+.home-alert-summary{margin:0 0 10px;gap:10px}
+.home-alert-summary .alert-metric{padding:12px 14px}
+.home-alert-summary .alert-metric strong{font-size:22px}
+.home-alert-summary .alert-metric small:last-child{font-size:11px}
+.home-fold{border:1px solid var(--line);border-radius:14px;background:var(--card);margin:12px 0;box-shadow:var(--shadow);overflow:hidden}
+.home-fold&gt;summary{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;list-style:none;padding:16px 18px;min-height:66px}
+.home-fold&gt;summary::-webkit-details-marker{display:none}
+.home-fold&gt;summary:hover{background:#fbfdfb}
+.home-fold-copy{display:grid;gap:3px;min-width:0}
+.home-fold-copy strong{font-size:14px;color:var(--ink);font-weight:750}
+.home-fold-copy small{font-size:12px;color:var(--muted);line-height:1.4}
+.home-fold-indicator{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:9px;background:#eff5f1;color:var(--green)}
+.home-fold-indicator:before{content:&quot;+&quot;;font-size:20px;line-height:1;font-weight:500}
+.home-fold[open]&gt;summary .home-fold-indicator:before{content:&quot;−&quot;}
+.home-fold[open]&gt;summary{border-bottom:1px solid var(--line)}
+.home-fold&gt;.month-compare-grid,.home-fold&gt;.card,.home-fold&gt;.grid,.home-fold&gt;.section-head{margin:14px 16px}
+.home-fold&gt;.month-compare-grid{margin-bottom:16px}
+.home-fold&gt;.card{margin-bottom:16px}
+.home-fold&gt;.home-secondary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.home-secondary-stats .card{padding:14px 16px}
+.home-secondary-stats .amount{font-size:clamp(19px,2vw,25px);margin:10px 0 4px}
+.home-inner-head.section-head{margin-top:18px}
+.home-fold .month-compare-grid{gap:10px}
+.home-alert-detail{margin-top:0;box-shadow:none}
+.home-alert-detail&gt;summary{padding:11px 14px;min-height:48px}
+.home-alert-detail .card{box-shadow:none}
+.home-situation-card{padding:4px 18px}
+.home-situation-card .setting{padding:13px 0}
+@media(max-width:700px){
+ .home-welcome h2{font-size:21px}
+ .home-balance-card{padding:18px}
+ .home-balance-amount{font-size:30px}
+ .home-primary-stats{gap:9px}
+ .home-primary-stats .card{padding:12px}
+ .home-primary-stats .amount{font-size:clamp(17px,4.6vw,22px)}
+ .home-primary-stats .hint{font-size:11px}
+ .home-alert-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .home-alert-summary .alert-metric{padding:10px 8px;border-radius:11px}
+ .home-alert-summary .alert-metric small{font-size:10px}
+ .home-alert-summary .alert-metric strong{font-size:20px}
+ .home-fold&gt;summary{padding:13px 13px;gap:10px}
+ .home-fold&gt;.month-compare-grid,.home-fold&gt;.card,.home-fold&gt;.grid,.home-fold&gt;.section-head{margin-left:10px;margin-right:10px}
+ .home-fold&gt;.home-secondary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .home-secondary-stats .card{padding:11px 10px}
+ .home-secondary-stats .amount{font-size:16px;overflow-wrap:anywhere}
+ .home-secondary-stats .stat-top{font-size:11px}
+ .home-fold .home-situation-card{padding:3px 12px}
+}
+
+&lt;/style&gt;&lt;style id=&quot;debt-chart-v19-style&quot;&gt;.debt-chart-panel{margin-top:12px;padding:16px;border:1px solid #d7e6dd;border-radius:14px;background:#f7fbf8}.debt-chart-panel[hidden],[data-chart-custom][hidden]{display:none!important}.debt-chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.debt-chart-heading h4{margin:0 0 4px;font-size:15px}.debt-chart-filters{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:14px 0}.debt-chart-filters label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted)}.debt-chart-filters select,.debt-chart-filters input{max-width:190px;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff;color:var(--ink);font:inherit}.debt-chart-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.debt-chart-stat{padding:10px 12px;border:1px solid #e0ebe4;border-radius:10px;background:#fff;min-width:0}.debt-chart-stat span{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.debt-chart-stat strong{font-size:15px;overflow-wrap:anywhere}.debt-chart-plot{width:100%;overflow:hidden;border:1px solid #e3ece6;border-radius:12px;background:#fff}.debt-chart-plot svg{display:block;width:100%;height:auto;min-height:180px}.debt-chart-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5}.debt-chart-empty{padding:20px;text-align:center;background:#fff;border:1px dashed #cbd9d0;border-radius:10px;color:var(--muted)}@media(max-width:560px){.debt-chart-summary{grid-template-columns:1fr}.debt-chart-filters label,.debt-chart-filters select,.debt-chart-filters input{width:100%;max-width:none}.debt-chart-panel{padding:11px}}&lt;/style&gt;&lt;style id=&quot;mobile-friendly-v54&quot;&gt;
+/* Ajustes de comodidad móvil para la aplicación oficial */
+html{-webkit-text-size-adjust:100%;scroll-padding-top:14px}
+button,a,select,input[type=&quot;checkbox&quot;],input[type=&quot;radio&quot;]{touch-action:manipulation}
+@media(max-width:700px){
+  body{font-size:15px;line-height:1.5}
+  main{padding:16px 12px calc(112px + env(safe-area-inset-bottom))}
+  .topbar{gap:12px;margin-bottom:18px}
+  .topbar h1{font-size:25px;line-height:1.2}
+  .top-actions{align-items:stretch;gap:8px}
+  .top-actions&gt;.btn{min-height:44px;white-space:normal}
+  .section-head{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:20px 0 12px}
+  .section-head h2{font-size:19px}
+  .section-head&gt;.btn,.section-head .toolbar{width:100%}
+  .toolbar{gap:8px}
+  .toolbar .btn{min-height:42px;flex:1 1 auto}
+  .card{padding:14px;border-radius:14px}
+  .grid{gap:11px}
+  .form-card{max-width:none;width:100%}
+  .form-grid,.form-advanced-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+  .field{gap:7px}
+  .field label{font-size:13px}
+  .field input,.field select,.field textarea,.month-select,
+  .debt-chart-filters select,.debt-chart-filters input{
+    min-height:44px;font-size:16px;padding:11px 12px
+  }
+  .field textarea{min-height:92px}
+  .form-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .form-actions .btn,.option-form .btn{min-height:44px;width:100%}
+  .btn{min-height:40px}
+  .btn.small{min-height:38px}
+  .option-item{align-items:flex-start;gap:8px;padding:10px}
+  .option-item .btn{flex:0 0 auto}
+  .table-wrap,.installment-table,.history-table-wrap{
+    max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{min-width:590px}
+  .installment-table table{min-width:760px}
+  .mobile-nav{
+    gap:2px;padding:7px 6px max(8px,env(safe-area-inset-bottom));
+    box-shadow:0 -5px 20px rgba(24,53,44,.08);scrollbar-width:none
+  }
+  .mobile-nav::-webkit-scrollbar{display:none}
+  .mobile-nav button{flex-basis:70px;min-width:70px;min-height:52px;padding:6px 3px}
+  .mobile-nav button span:first-child{font-size:19px}
+  .mobile-nav button span:last-child{font-size:10px}
+  .debt-card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .debt-card-actions .btn{min-width:0;min-height:42px;white-space:normal;line-height:1.25}
+  .debt-last-payment-detail{scrollbar-width:thin;scrollbar-color:#aac0b6 #f4f7f5}
+  .debt-last-payment-item strong{overflow-wrap:anywhere;word-break:break-word}
+  .debt-card-details summary{min-height:44px;display:flex;align-items:center}
+  .setting{gap:10px;flex-wrap:wrap}
+  .setting&gt;.btn,.setting&gt;button{min-height:42px}
+  .toast{left:12px;right:12px;bottom:calc(82px + env(safe-area-inset-bottom));max-width:none}
+  .history-filter-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:380px){
+  main{padding-left:10px;padding-right:10px}
+  .topbar h1{font-size:23px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-top{font-size:12px}
+  .amount{font-size:21px}
+  .debt-card-actions{grid-template-columns:minmax(0,1fr)}
+  .mobile-nav button{flex-basis:64px;min-width:64px}
+}
+
+/* v163: normalización general de interfaz móvil.
+   Mantiene intactos los estilos de escritorio y evita desbordamientos horizontales. */
+@media screen and (max-width:700px){
+  html{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+  body{width:100%;max-width:100%;overflow-x:hidden}
+  .app,main,.page,.card,.form-card,.section-head,.topbar,.top-actions{
+    min-width:0;max-width:100%;box-sizing:border-box
+  }
+  main{width:100%;padding:14px 12px calc(112px + env(safe-area-inset-bottom))}
+  .topbar{gap:12px}
+  .topbar h1,.topbar h2,.section-head h2,.section-head h3,
+  .card h2,.card h3{overflow-wrap:anywhere;word-break:normal}
+  .top-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
+  .top-actions&gt;*{min-width:0;max-width:100%}
+  .stats,.grid,.two-col,.form-grid,.form-advanced-grid,
+  .debt-summary-grid,.econ-grid,.econ-two,.converter-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+    min-width:0;max-width:100%
+  }
+  .form-grid,.form-advanced-grid{gap:12px}
+  .form-card,.form-advanced{padding:12px}
+  .field{min-width:0;width:100%;max-width:100%}
+  .field label{max-width:100%;overflow-wrap:anywhere}
+  .field input,.field select,.field textarea,
+  .month-select,.field input[type=&quot;file&quot;]{
+    width:100%;min-width:0;max-width:100%;box-sizing:border-box;
+    font-size:16px
+  }
+  .field input[type=&quot;date&quot;]{
+    display:block;width:100%;min-width:0;max-width:100%;
+    height:44px;min-height:44px;box-sizing:border-box;
+    padding:8px 5px;font-size:16px
+  }
+  #formFields .debt-agreement-date-field,
+  #formFields .debt-final-date-field{
+    grid-column:auto!important;width:100%;min-width:0;max-width:100%;
+    justify-self:stretch;box-sizing:border-box
+  }
+  #formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .debt-final-date-field input[type=&quot;date&quot;]{
+    width:100%;min-width:0;max-width:100%;padding-left:5px;padding-right:5px
+  }
+  .btn,button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+  .toolbar,.form-actions,.inline-actions,.debt-card-actions{
+    flex-wrap:wrap;min-width:0;max-width:100%;gap:8px
+  }
+  .toolbar&gt;.btn,.form-actions&gt;.btn{flex:1 1 auto;min-width:0}
+  .table-wrap,.installment-table,.history-table-wrap{
+    display:block;width:100%;max-width:100%;overflow-x:auto;
+    overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{min-width:590px}
+  .installment-table table{min-width:760px}
+  img,svg,canvas,video{max-width:100%}
+  input,select,textarea,button{touch-action:manipulation}
+}
+@media screen and (max-width:380px){
+  main{padding-left:9px;padding-right:9px}
+  .card,.form-card{padding:10px}
+  .field input[type=&quot;date&quot;]{padding-left:3px;padding-right:3px}
+  .mobile-nav button{min-width:64px;flex-basis:64px}
+}
+&lt;/style&gt;&lt;style id=&quot;v164-mobile-date-fields-fix&quot;&gt;
+@media screen and (max-width:700px){
+  #formFields{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+  #formFields .field.debt-agreement-date-field,
+  #formFields .field.debt-final-date-field{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-column:1 / -1!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+    justify-self:stretch!important;overflow:hidden!important;
+  }
+  #formFields .field.debt-agreement-date-field label,
+  #formFields .field.debt-final-date-field label{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+  #formFields .field.debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .field.debt-final-date-field input[type=&quot;date&quot;]{
+    display:block!important;float:none!important;width:100%!important;min-width:0!important;max-width:100%!important;
+    inline-size:100%!important;min-inline-size:0!important;max-inline-size:100%!important;
+    height:44px!important;min-height:44px!important;margin:0!important;padding:6px 4px!important;
+    box-sizing:border-box!important;font-size:16px!important;line-height:1.2!important;
+  }
+}
+&lt;/style&gt;&lt;style id=&quot;v165-mobile-quota-label-position-fix&quot;&gt;
+/* v165: el campo calculado debe mantener etiqueta e input juntos aunque
+   el selector de tipo de interés añada un botón en la columna vecina. */
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;]{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  justify-content:flex-start!important;align-self:start!important;align-content:start!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  gap:6px!important;grid-row:auto!important;box-sizing:border-box!important;
+}
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;] label{
+  display:block!important;position:static!important;flex:none!important;
+  margin:0!important;padding:0!important;line-height:1.35!important;
+}
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;] input{
+  display:block!important;position:static!important;flex:none!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:44px!important;min-height:44px!important;margin:0!important;
+  box-sizing:border-box!important;
+}
+&lt;/style&gt;&lt;style id=&quot;v173-mobile-debt-date-layout&quot;&gt;
+/* v172: se elimina la regla :has() anterior que forzaba dos columnas en todo el formulario. */
+.debt-date-fields-row{display:contents}
+@media (max-width:700px){
+  #formFields.form-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    column-gap:0!important;
+    row-gap:12px!important;
+    align-items:start!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+    align-items:start!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row &gt; .field{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:5px!important;
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:0!important;
+    align-self:start!important;
+    justify-self:stretch!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row &gt; .field &gt; label{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    font-size:12px!important;
+    line-height:1.25!important;
+    overflow-wrap:anywhere!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row input[type=&quot;date&quot;]{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+    margin:0!important;
+    padding:4px 2px!important;
+    font-size:13px!important;
+    line-height:normal!important;
+    box-sizing:border-box!important;
+  }
+  #formFields.form-grid &gt; .field:not(.debt-agreement-date-field):not(.debt-final-date-field){
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+@media (min-width:701px){
+  #formFields.form-grid &gt; .debt-date-fields-row{display:contents}
+}
+&lt;/style&gt;&lt;style id=&quot;v178-linear-financial-forms&quot;&gt;
+/* v178: listado lineal para Deudas personales y Dinero por cobrar; resto de formularios sin cambios. */
+#formFields.linear-financial-form{display:flex;flex-direction:column;gap:14px;}
+#formFields.linear-financial-form &gt; .field{display:flex;flex-direction:column;gap:6px;width:100%;min-width:0;}
+#formFields.linear-financial-form &gt; .field &gt; label{font-weight:650;line-height:1.35;}
+#formFields.linear-financial-form &gt; .field &gt; input,
+#formFields.linear-financial-form &gt; .field &gt; select,
+#formFields.linear-financial-form &gt; .field &gt; textarea{width:100%;max-width:100%;min-width:0;box-sizing:border-box;}
+#formFields.linear-financial-form &gt; .field &gt; input,
+#formFields.linear-financial-form &gt; .field &gt; select{min-height:44px;}
+#formFields.linear-financial-form &gt; .field &gt; .readonly{background:var(--surface-2,#f1f5f9);font-weight:700;}
+&lt;/style&gt;&lt;style id=&quot;v183-personal-payment-date-edit&quot;&gt;
+.personal-payment-edit-cell,.personal-payment-edit-head{text-align:center;width:56px;min-width:56px;white-space:nowrap}
+.personal-payment-edit-icon{display:inline-grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid #dce8e2;border-radius:9px;background:#f4faf7;color:#286c51;cursor:pointer;font:700 22px/1 system-ui,-apple-system,sans-serif;transition:background .15s,border-color .15s}
+.personal-payment-edit-icon:hover{background:#e3f3e9;border-color:#a5d1b8}
+.personal-payment-edit-icon:focus-visible{outline:3px solid #7fc19c;outline-offset:2px}
+#page-form.payment-date-edit-mode .form-card{max-width:850px;margin-inline:auto}
+#page-form.payment-date-edit-mode #formFields&gt;.field:nth-of-type(5){grid-column:1 / -1}
+#page-form.payment-date-edit-mode #formFields input[readonly],#page-form.payment-date-edit-mode #formFields textarea[readonly]{background:#f2f6f4;color:#53645b;opacity:1}
+.personal-payment-edit-tip{grid-column:1 / -1;margin:0;padding:12px 14px;border-radius:11px;background:#f3f8f5;color:#425e50;font-size:13px}
+.personal-payment-correction-history{grid-column:1 / -1;margin-top:8px;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:#f9fbfa}
+.personal-payment-correction-history h3{margin:0 0 10px;font-size:15px}
+.personal-payment-correction-empty{margin:0;color:var(--muted);font-size:13px}
+.personal-payment-correction-list{margin:0;padding-left:20px;display:grid;gap:10px}
+.personal-payment-correction-list li{padding-left:5px;font-size:13px}
+.personal-payment-correction-list p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.personal-payment-correction-list small{color:var(--muted)}
+@media(max-width:700px){#page-form.payment-date-edit-mode #formFields&gt;.field{grid-column:1 / -1}.personal-payment-correction-history{padding:14px}.personal-payment-edit-icon{width:34px;height:34px}}
+&lt;/style&gt;&lt;style id=&quot;v192-recurring-checklist&quot;&gt;
+.field[hidden]{display:none!important}.checklist-recurrence-panel{margin:12px 0;padding:17px 19px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.checklist-recurrence-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.checklist-recurrence-head strong{font-size:15px}
+.checklist-recurring-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.checklist-recurring-tile{border:1px solid #e3eae6;border-radius:12px;background:#f8fbf9;padding:11px 13px;display:flex;flex-direction:column;gap:4px}
+.checklist-recurring-tile strong{font-size:13px;overflow-wrap:anywhere}
+.checklist-recurring-tile small{color:var(--muted)}
+.checklist-recurring-tile .pill{align-self:start}
+.checklist-payment-action{white-space:normal}
+/* v197: colapsado opcional, manteniendo diseño v192 */
+.mcf-programmed-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto}
+.mcf-programmed-tile-actions{margin-top:7px;display:flex;align-items:center}
+.mcf-programmed-tile-actions .btn{font-size:12px;padding:5px 12px}
+.checklist-recurrence-panel.mcf-collapsed .checklist-recurrence-head{margin-bottom:0}
+#mcfProgrammedCards[hidden]{display:none!important}
+@media(max-width:700px){.checklist-recurrence-panel{padding:13px}.checklist-recurring-grid{grid-template-columns:1fr}}
+&lt;/style&gt;&lt;style id=&quot;v198-cloud-only&quot;&gt;
+#cloudGate{position:fixed;inset:0;z-index:99999;background:rgba(18,37,32,.94);display:flex;align-items:center;justify-content:center;padding:18px}
+#cloudGate[hidden]{display:none!important}
+#cloudGatePanel{max-width:540px;width:100%;padding:28px;border-radius:17px;background:#fff;color:#18382d;box-shadow:0 12px 45px #0004}
+#cloudGatePanel h2{margin:0 0 12px;font-size:21px}
+#cloudGatePanel p{line-height:1.5;font-size:14px}
+#cloudGatePanel .btn{margin:4px 6px 4px 0}
+#cloudGateMessage{font-weight:600;overflow-wrap:anywhere}
+#cloudSyncBar{position:fixed;right:15px;bottom:15px;z-index:1200;padding:12px 15px;border-radius:12px;background:#173c32;color:white;box-shadow:0 5px 22px #0003;max-width:min(92vw,430px);font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#cloudSyncBar button{border:1px solid #aec8bb;border-radius:8px;padding:6px 9px;background:white;color:#173c32;cursor:pointer}
+#cloudSyncBar[data-state=&quot;error&quot;]{background:#82382f}
+#cloudSyncBar[data-state=&quot;pending&quot;]{background:#765a1f}
+&lt;/style&gt;&lt;style id=&quot;mcf-v203-recovery-style&quot;&gt;
+#mcfRecoverLaunch{position:fixed;left:15px;bottom:15px;z-index:1300}
+#mcfRecoverLaunch[hidden],#mcfRecoverOverlay[hidden]{display:none!important}
+#mcfRecoverLaunch button{border:0;background:#f0c46f;color:#143d32;box-shadow:0 4px 20px #0004;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
+#mcfRecoverOverlay{position:fixed;inset:0;z-index:99998;background:#071b17e8;display:flex;justify-content:center;align-items:center;padding:18px}
+#mcfRecoverPanel{width:min(96vw,720px);max-height:90vh;overflow-y:auto;background:white;color:#193b31;border-radius:16px;padding:24px;box-shadow:0 12px 40px #0005}
+#mcfRecoverPanel h2{margin:0 0 6px;font-size:21px}
+#mcfRecoverPanel p,#mcfRecoverPanel label{font-size:14px;line-height:1.5}
+#mcfRecoverPanel select,#mcfRecoverPanel input[type=file]{width:100%;padding:10px;margin:8px 0 12px;max-width:100%;border:1px solid #b0bfb6;border-radius:7px;background:#fff;color:#123}
+#mcfRecoverStats{padding:12px;background:#f1f6f3;color:#183c30;border-radius:8px;min-height:90px;white-space:pre-wrap;line-height:1.5;font-size:13px;overflow-wrap:anywhere}
+#mcfRecoverActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+#mcfRecoverActions button{padding:11px 14px;border:1px solid #657b70;background:#fff;border-radius:8px;cursor:pointer}
+#mcfRecoverActions button.primary{background:#204c3c;color:#fff;border-color:#204c3c}
+#mcfRecoverActions button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:700px){
+ #cloudGate{align-items:safe center;overflow:auto;padding:12px}
+ #cloudGatePanel{box-sizing:border-box;max-height:calc(100dvh - 24px);overflow:auto;padding:16px}
+ #cloudGatePanel select,#cloudGatePanel button,#localStorageCard button{box-sizing:border-box;max-width:100%;white-space:normal;min-height:44px}
+ #cloudGatePanel button{margin:4px 0;width:100%}
+ #localStorageCard .inline-actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ #localStorageCard,#storageDestination,#storageHelp,#cloudSyncText{min-width:0;overflow-wrap:anywhere}
+ #cloudSyncBar{position:static;margin:6px 10px;flex-wrap:wrap;max-width:100%;box-sizing:border-box}
+ .recovery-drive-header{flex-wrap:wrap}
+}
+@media (max-width:700px){
+ .debt-card-v22.debt-card-collapsed&gt;.debt-compact-head{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-areas:&quot;icon name arrow&quot; &quot;summary summary summary&quot;;
+  column-gap:9px;row-gap:6px;
+ }
+ .debt-compact-icon{grid-area:icon}
+ .debt-compact-copy{grid-area:name}
+ .debt-compact-chevron{grid-area:arrow}
+ .debt-compact-uf,.debt-compact-balance{grid-area:summary;min-width:0;text-align:right}
+}
+&lt;/style&gt;&lt;main style=&quot;padding:12px&quot;&gt;&lt;article class=&quot;debt-card-v22 debt-card-collapsed&quot;&gt;&lt;button class=&quot;debt-compact-head&quot;&gt;&lt;span class=&quot;debt-compact-icon&quot;&gt;▣&lt;/span&gt;&lt;span class=&quot;debt-compact-copy&quot;&gt;&lt;span class=&quot;debt-compact-title&quot;&gt;Crédito Hipotecario&lt;/span&gt;&lt;span class=&quot;debt-compact-subtitle&quot;&gt;MYV · Crédito hipotecario&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;debt-compact-uf&quot;&gt;&lt;strong&gt;1.734,1234 UF&lt;span class=&quot;equiv&quot;&gt;≈ $70.123.456 al último valor UF (24-11-2026)&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;Cuotas pendientes 340&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;debt-compact-chevron&quot;&gt;⌄&lt;/span&gt;&lt;/button&gt;&lt;/article&gt;&lt;/main&gt;"></iframe></figure><figure><figcaption>430 px</figcaption><iframe title="Vista 430" width="430" height="220" srcdoc="&lt;!doctype html&gt;&lt;meta charset=utf-8&gt;&lt;style&gt;
+/* Resumen de deudas financieras: saldos independientes por moneda */
+.debt-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 12px}
+.debt-summary-card{position:relative;isolation:isolate;overflow:hidden;padding:23px 25px;min-height:164px;border-radius:19px;box-shadow:0 8px 24px rgba(22,45,36,.07);background:linear-gradient(135deg,#fff 0%,#f8fbf9 100%);border:1px solid #dce8e1}
+.debt-summary-card:after{content:&quot;&quot;;position:absolute;z-index:-1;right:-32px;top:-44px;width:152px;height:152px;border-radius:50%;background:rgba(44,125,89,.07);pointer-events:none}
+.debt-summary-uf{background:linear-gradient(135deg,#fff 0%,#f7f9fe 100%);border-color:#dce5f5}
+.debt-summary-uf:after{background:rgba(56,101,175,.08)}
+.debt-summary-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.debt-summary-badge{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:33px;padding:0 11px;border-radius:10px;background:#e6f4ec;color:#226b4d;font-size:12px;font-weight:850;letter-spacing:.06em}
+.debt-summary-uf .debt-summary-badge{background:#e8effb;color:#2c5ca2}
+.debt-summary-kicker{font-size:12px;color:var(--muted);font-weight:650}
+.debt-summary-label{margin-top:16px;font-size:14px;font-weight:700;color:#33453d}
+.debt-summary-uf .debt-summary-label{color:#354867}
+.debt-summary-value{position:relative;z-index:1;font-size:clamp(27px,3vw,36px);font-weight:820;letter-spacing:-.045em;line-height:1.15;margin:7px 0 0;overflow-wrap:anywhere;color:#205f45}
+.debt-summary-uf .debt-summary-value{color:#2c5ca2}
+.debt-summary-foot{font-size:12px;line-height:1.45;color:var(--muted);margin-top:9px;max-width:440px}
+.debt-summary-subline{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;margin:0 0 16px;border:1px solid var(--line);border-radius:12px;background:#fafcfb;color:#4e6158;font-size:13px}
+.debt-summary-subline&gt;span{display:flex;align-items:center;gap:9px}
+.debt-summary-subline strong{font-size:16px;color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
+.debt-summary-subicon{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#edf3f0;color:#426b59;font-weight:800}
+@media(max-width:700px){.debt-summary-grid{grid-template-columns:1fr;gap:12px}.debt-summary-card{padding:20px 21px;min-height:146px}.debt-summary-value{font-size:30px}.debt-summary-subline{padding:10px 12px}}
+
+:root{--ink:#1d2d2a;--muted:#687873;--line:#dfe7e3;--paper:#f5f8f6;--card:#fff;--green:#173b35;--mint:#dceee7;--gold:#e9c66b;--red:#a43e38;--shadow:0 8px 28px rgba(24,53,44,.05)}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}.app{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr)}.sidebar{background:var(--green);color:#fff;padding:24px 15px;display:flex;flex-direction:column;gap:24px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brandmark{width:40px;height:40px;border-radius:13px;background:var(--gold);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:19px}.brand strong{display:block;font-size:16px}.brand small{color:#c6d9d2}.brand-image{width:40px;height:40px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;flex-shrink:0}.brand-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--line);display:inline-block;vertical-align:middle}.brand-avatar.hidden{display:none}.nav-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#a9c3ba;padding:0 12px;margin-bottom:7px}.nav{display:grid;gap:5px}.nav button{display:flex;align-items:center;gap:12px;border:0;background:transparent;color:#d9e6e1;text-align:left;padding:11px 12px;border-radius:10px;width:100%}.nav button:hover,.nav button.active{background:#2d564c;color:white}.nav .ico{width:22px;text-align:center;font-size:17px}.side-note{margin-top:auto;border:1px solid #41665b;background:#23483f;padding:13px;border-radius:12px;font-size:12px;color:#d0e0da}main{min-width:0;padding:28px clamp(16px,3vw,42px) 90px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.eyebrow{color:var(--muted);font-size:12px;margin-bottom:4px}.topbar h1{font-size:clamp(24px,3vw,32px);letter-spacing:-.04em;margin:0}.top-actions{display:flex;align-items:center;gap:9px}.period-clock-cards{width:min(650px,54vw);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;align-items:stretch}.period-card,.clock-card{min-width:0;min-height:70px;padding:11px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;justify-content:center}.period-card{align-items:center}.period-card .month-select{width:100%;min-width:0;border:0;background:transparent;padding:0 20px 0 0;font-size:clamp(15px,1.55vw,18px);font-weight:750;cursor:pointer}.clock-card{flex-direction:column;align-items:flex-start;gap:1px}.clock-date{font-size:clamp(10px,1vw,12px);line-height:1.25;color:var(--muted);text-transform:capitalize;overflow-wrap:anywhere}.clock-time{font-size:clamp(18px,1.9vw,24px);font-weight:800;line-height:1.2;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:var(--green);white-space:nowrap}@media(max-width:700px){.top-actions .period-clock-cards{width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.period-card,.clock-card{padding:10px 11px;min-height:66px}.period-card .month-select{font-size:15px}.clock-date{font-size:10px}.clock-time{font-size:clamp(16px,4vw,21px)}}.month-select,.btn,.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);padding:10px 12px}.btn{font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}.btn.soft{background:var(--mint);border-color:var(--mint)}.btn.danger{color:var(--red);background:#fff;border-color:#f0d2cf}.btn.small{padding:7px 10px;font-size:13px}.content{max-width:1320px;margin:auto}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:24px 0 13px}.section-head h2{margin:0;font-size:18px;letter-spacing:-.02em}.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.grid{display:grid;gap:14px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;gap:8px}.stat-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--mint);color:var(--green)}.amount{font-size:clamp(21px,2.2vw,29px);font-weight:760;letter-spacing:-.04em;margin:14px 0 5px;overflow-wrap:anywhere}.hint{font-size:12px;color:var(--muted)}.two-col{grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr)}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th{text-align:left;color:var(--muted);font-size:11px;font-weight:650;text-transform:uppercase;letter-spacing:.04em;padding:11px 9px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:13px 9px;border-bottom:1px solid #edf1ef;vertical-align:middle}tbody tr:last-child td{border-bottom:0}.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}.pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:20px;background:#edf3f0;color:#49645b;font-size:11px;font-weight:650;white-space:nowrap}.pill.warn{background:#fff2d8;color:#8b5c12}.pill.red{background:#fbe9e7;color:var(--red)}.progress{height:7px;background:#e9efec;border-radius:10px;overflow:hidden;margin:9px 0 5px}.progress span{display:block;height:100%;background:#5d9a80;border-radius:10px}.list{display:grid;gap:0}.list-item{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid #edf1ef}.list-item:last-child{border:0}.check{width:19px;height:19px;accent-color:var(--green)}.list-copy{flex:1;min-width:0}.list-copy strong{display:block;font-size:13px}.list-copy small{color:var(--muted);font-size:12px}.list-amount{font-size:13px;font-weight:700;white-space:nowrap}.page{display:none}.page.active{display:block}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.form-advanced{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfdfc}.form-advanced summary{cursor:pointer;font-size:13px;font-weight:750;color:var(--green);padding:3px 2px}.form-advanced-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}.form-advanced[open] summary{margin-bottom:4px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#51635d}.field input,.field select,.field textarea{width:100%;min-width:0}.field textarea{resize:vertical}.form-card{max-width:850px}.form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.notice{padding:13px 15px;border-radius:12px;background:#fff5dd;color:#755315;font-size:13px;border:1px solid #f1dfb5;margin:14px 0}.muted{color:var(--muted)}.mini-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.setting{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting p{margin:4px 0 0;color:var(--muted);font-size:13px}.mobile-nav{display:none}.toast{position:fixed;bottom:22px;right:22px;background:#173b35;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:20;max-width:calc(100vw - 32px)}.hidden{display:none!important}.field input[type=&quot;color&quot;]{height:44px;padding:4px;min-width:76px}.field input[type=&quot;file&quot;]{padding:8px;background:#fff}.debt-section+.divider{margin:22px 0}.brandmark.hidden{display:none!important}.inline-actions{display:flex;gap:6px;flex-wrap:wrap}.progress-copy{font-size:12px;color:var(--muted)}.installment-progress{display:flex;width:100%;height:11px;gap:3px;margin:10px 0 6px;overflow:hidden;border-radius:9px;background:#f0f2f1}.installment-progress .paid-segment{height:100%;background:#25834f;min-width:0;transition:width .15s ease}.installment-progress .pending-segment{height:100%;background:#cf4545;min-width:0;transition:width .15s ease}.installment-progress .neutral-segment{height:100%;background:#c5ceca;min-width:0}.progress-legend{display:inline-flex;align-items:center;gap:5px;margin-right:10px}.progress-dot{display:inline-block;width:8px;height:8px;border-radius:50%}.progress-dot.paid{background:#25834f}.progress-dot.pending{background:#cf4545}.progress-dot.neutral{background:#c5ceca}.quota-mode-help{font-size:12px;color:var(--muted);margin-top:4px}.installment-table{max-width:100%;overflow-x:auto}.installment-table table{font-size:13px}.installment-table th,.installment-table td{padding:9px 10px;vertical-align:middle;white-space:normal}.installment-table .inline-actions{gap:5px}.installment-table .inline-actions button{padding:6px 8px;font-size:12px}.equiv{display:block;color:var(--muted);font-size:11px;line-height:1.3;margin-top:3px}.uf-number{font-size:clamp(23px,2.4vw,31px);font-weight:800;letter-spacing:-.03em;margin:9px 0}.uf-meta{font-size:12px;color:var(--muted);margin-top:5px}.negative{color:var(--red)}.positive{color:#347553}.empty-small{padding:16px 8px;color:var(--muted);font-size:13px}.notice.info{background:#edf6f1;border-color:#d3e8dc;color:#345b49}.form-intro{margin:0 0 16px;color:var(--muted);font-size:13px}.payrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stack{display:grid;gap:12px}.divider{height:1px;background:var(--line);margin:12px 0}.option-form{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px;margin:15px 0}.option-list{display:grid;gap:8px;margin-top:14px}.settings-entry{display:flex;align-items:center;gap:16px}.entry-symbol{width:46px;height:46px;border-radius:13px;background:var(--mint);color:var(--green);display:grid;place-items:center;font-size:24px;flex-shrink:0}.entry-copy{flex:1;min-width:0}.entry-copy h3{margin:0 0 5px}.entry-copy p{margin:0}.settings-entry .btn{white-space:nowrap}@media(max-width:700px){.settings-entry{align-items:flex-start;flex-wrap:wrap}.entry-copy{flex:1 1 calc(100% - 64px)}.settings-entry .btn{width:100%}}.option-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}.option-item span{overflow-wrap:anywhere}.option-empty{padding:14px 8px;color:var(--muted);font-size:13px;text-align:center}.econ-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.econ-value{font-size:clamp(20px,2vw,27px);font-weight:780;letter-spacing:-.03em;margin:12px 0 5px;overflow-wrap:anywhere}.econ-date{font-size:12px;color:var(--muted)}.econ-label{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:13px}.converter-grid{display:grid;grid-template-columns:minmax(100px,.85fr) minmax(145px,1fr) auto minmax(145px,1fr);gap:10px;align-items:end}.converter-grid .field{min-width:0}.converter-result{font-size:clamp(23px,2.7vw,34px);font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere;margin:16px 0 5px}.econ-source{font-size:12px;color:var(--muted);line-height:1.55}.econ-two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.econ-btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}@media(max-width:1000px){.econ-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.econ-grid,.econ-two{grid-template-columns:1fr}.converter-grid{grid-template-columns:1fr 1fr}.converter-grid .field:first-child{grid-column:1/-1}.converter-grid .swap-holder{display:flex;align-items:center;justify-content:center}.converter-grid #econConvertSwap{width:100%}.econ-value{font-size:23px}}@media(max-width:700px){.option-form{grid-template-columns:1fr}.option-form .btn{width:100%}}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two-col{grid-template-columns:1fr}.app{grid-template-columns:210px minmax(0,1fr)}.sidebar{padding-inline:10px}}@media(max-width:700px){.app{display:block}.sidebar{display:none}main{padding:20px 14px 105px}.topbar{align-items:flex-start;flex-direction:column;margin-bottom:22px}.top-actions{width:100%;justify-content:space-between}.stats{gap:10px}.card{padding:14px;border-radius:14px}.amount{font-size:23px}.section-head{align-items:flex-start}.form-grid{grid-template-columns:1fr}.mobile-nav{display:flex;align-items:stretch;gap:4px;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:7px 8px max(7px,env(safe-area-inset-bottom));z-index:15;overflow-x:auto;overflow-y:hidden;white-space:nowrap;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#aac0b6 #f4f7f5}.mobile-nav::-webkit-scrollbar{height:4px}.mobile-nav::-webkit-scrollbar-track{background:#f4f7f5}.mobile-nav::-webkit-scrollbar-thumb{background:#aac0b6;border-radius:4px}.mobile-nav button{border:0;background:transparent;color:var(--muted);font-size:10px;display:flex;flex:0 0 76px;min-width:76px;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:5px 3px;border-radius:9px;white-space:normal;line-height:1.15}.mobile-nav button span:first-child{font-size:18px;line-height:1.2}.mobile-nav button span:last-child{font-size:10px}.mobile-nav button:hover,.mobile-nav button.active{color:var(--green);font-weight:800;background:#edf5f1}.report-row{grid-template-columns:95px 1fr 75px}.hide-mobile{display:none!important}.top-actions .btn{padding:9px}.payrow{grid-template-columns:1fr}}
+
+.amort-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.amort-summary .card{min-width:0}.amort-summary .amount{font-size:clamp(17px,2vw,24px)}
+.amort-help{font-size:12px;color:var(--muted);line-height:1.5}.attachment-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.attachment-link{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;color:var(--text)}.attachment-link:hover{background:var(--surface-soft)}
+@media(max-width:760px){.amort-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Estado visual del botón de Google Drive: rojo desconectado y verde conectado. */
+#driveConnectBtn.drive-connect-disconnected,
+#driveConnectBtn.drive-connect-disconnected:disabled{background:#b42318!important;color:#fff!important;border-color:#b42318!important;opacity:1!important;cursor:pointer!important}
+#driveConnectBtn.drive-connect-connected,
+#driveConnectBtn.drive-connect-connected:disabled{background:#16803c!important;color:#fff!important;border-color:#16803c!important;opacity:1!important;cursor:not-allowed!important}
+
+/* Alertas de vencimiento */
+.alert-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.alert-metric{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px}
+.alert-metric strong{display:block;font-size:26px;line-height:1.2;margin:5px 0}
+.alert-metric small{color:var(--muted)}
+.alert-list{display:grid;gap:10px}
+.alert-row{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.alert-row:last-child{border-bottom:0}
+.alert-row p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.alert-bullet{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
+.alert-bullet.late{background:var(--red)}
+.alert-settings{display:grid;gap:12px}
+@media(max-width:650px){.alert-summary{grid-template-columns:1fr}.alert-row{align-items:flex-start;flex-wrap:wrap}}
+
+
+
+/* v144: control discreto para volver a contraer la tarjeta expandida. */
+.debt-card-head{position:relative;padding-right:44px}
+.debt-collapse-control{position:absolute;right:0;top:0;display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 8px;border:1px solid #d9e5df;border-radius:9px;background:var(--card);color:var(--green);font-size:18px;line-height:1;cursor:pointer}
+.debt-collapse-control:hover{background:#e8f4ed}
+.debt-collapse-control:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* v143: vista inicial compacta de créditos; la tarjeta original se conserva intacta al expandir. */
+.debt-card-v22{position:relative}
+.debt-compact-head{display:flex;align-items:center;gap:13px;width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d9e5df;border-radius:14px;background:var(--card);color:var(--ink);text-align:left;cursor:pointer}
+.debt-compact-head[hidden]{display:none!important}
+.debt-compact-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex:none;border-radius:50%;background:#e8f4ed;color:var(--green);font-size:20px}
+.debt-compact-copy{min-width:0;flex:1}
+.debt-compact-title{display:block;font-weight:850;font-size:16px;line-height:1.25;color:var(--green);overflow-wrap:anywhere}
+.debt-compact-subtitle{display:block;margin-top:4px;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.debt-compact-balance{display:grid;gap:2px;min-width:0;text-align:right;color:var(--muted);font-size:11px;line-height:1.3;font-variant-numeric:tabular-nums}
+.debt-compact-balance strong{color:var(--ink);font-weight:650}
+.debt-compact-uf{min-width:0;text-align:right}
+.debt-compact-uf strong{display:block;font-size:clamp(14px,1.5vw,19px);font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.debt-compact-uf span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+.debt-compact-chevron{flex:none;font-size:21px;color:var(--green);padding:0 2px}
+.debt-card-v22.debt-card-collapsed{padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
+.debt-card-v22.debt-card-collapsed&gt;.debt-compact-head{display:flex}
+.debt-card-v22.debt-card-collapsed&gt;:not(.debt-compact-head){display:none!important}
+.debt-card-v22:not(.debt-card-collapsed)&gt;.debt-compact-head{display:none!important}
+@media(max-width:520px){.debt-compact-head{gap:9px;padding:12px}.debt-compact-icon{width:36px;height:36px}.debt-compact-title{font-size:14px}.debt-compact-subtitle{font-size:11px}.debt-compact-balance{font-size:10px}.debt-compact-uf strong{font-size:13px}}
+
+/* v22: tarjetas de créditos reorganizadas; conserva acciones y datos del registro. */
+.debt-card-v22{display:block;background:var(--card);border:1px solid #d9e5df;border-radius:18px;padding:19px 20px;margin:14px 0 18px;box-shadow:0 7px 22px rgba(23,59,53,.055);overflow:hidden}
+.debt-card-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.debt-title-wrap{min-width:220px;flex:1}
+.debt-type-label{display:block;font-size:10px;line-height:1.3;letter-spacing:.09em;text-transform:uppercase;font-weight:850;color:#47715f;margin-bottom:5px}
+.debt-card-title{font-size:clamp(20px,2.1vw,27px);line-height:1.18;letter-spacing:-.035em;font-weight:850;color:var(--green);margin:0;overflow-wrap:anywhere}
+.debt-balance{border:1px solid #d9e8df;background:#f3faf6;border-radius:13px;padding:10px 14px;min-width:160px;text-align:right}
+.debt-balance span{display:block;color:var(--muted);font-size:11px;font-weight:750;margin-bottom:3px}
+.debt-balance strong{display:block;color:#205f45;font-size:clamp(20px,2vw,27px);font-weight:850;line-height:1.15;font-variant-numeric:tabular-nums}
+.debt-summary-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:8px 0 2px}.debt-summary-cards .debt-summary-card{min-height:0;height:auto;padding:6px 12px;box-shadow:none}.debt-summary-card{min-width:0;border:1px solid #dce8e1;border-radius:10px;padding:7px 12px;background:var(--card)}.debt-summary-card:nth-child(1){background:#f3faf6}.debt-summary-card:nth-child(4){background:#f7fbf8}.debt-summary-label{display:block;color:var(--muted);font-size:11px;line-height:1.2;font-weight:750;margin-bottom:3px}.debt-summary-value{display:block;font-size:clamp(15px,1.35vw,19px);line-height:1.2;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.debt-summary-card:nth-child(1) .debt-summary-value,.debt-summary-card:nth-child(4) .debt-summary-value{color:#205f45}.debt-summary-equivalent{display:block;color:var(--muted);font-size:10px;line-height:1.25;margin-top:3px;font-weight:650;overflow-wrap:anywhere}.debt-summary-note{display:block;color:var(--muted);font-size:10px;line-height:1.2;margin-top:3px}@media(max-width:850px){.debt-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.debt-summary-cards{gap:6px}.debt-summary-cards .debt-summary-card{min-height:0;height:auto;padding:5px 8px}.debt-summary-label{font-size:9px}.debt-summary-value{font-size:13px}.debt-summary-equivalent{font-size:9px}.debt-summary-note{font-size:8px}}
+.debt-card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 0 5px}
+.debt-card-actions .btn{margin:0}.debt-details-button{margin-left:auto!important}
+.debt-card-v22 .installment-progress{margin-top:14px}
+.debt-card-v22 .progress-copy{display:flex;flex-wrap:wrap;gap:5px 12px;line-height:1.5;margin-top:5px}
+.debt-last-payment{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;margin-top:13px;padding:11px 13px;border:1px solid #dce9e2;border-radius:12px;background:#f7fbf8;font-size:13px}
+.debt-last-payment-label{font-size:11px;font-weight:850;letter-spacing:.03em;text-transform:uppercase;color:#426657}
+.debt-last-payment strong{font-weight:750;color:var(--ink)}
+.debt-last-payment-amount{margin-left:auto;font-size:16px;font-weight:850;color:var(--green);font-variant-numeric:tabular-nums}
+.debt-last-payment-empty{color:var(--muted);background:#fafcfb}.debt-last-payment-detail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px 10px;align-items:stretch;margin-top:9px;padding:9px 11px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto;display:grid;align-content:center;gap:4px;min-width:0;padding:0 8px 0 0;border-right:1px solid #dce9e2}.debt-last-payment-heading .debt-last-payment-label{font-size:10px}.debt-last-payment-heading strong{font-size:12px;color:var(--ink);overflow-wrap:anywhere}.debt-last-payment-item{display:grid;gap:3px;min-width:0}.debt-last-payment-item span{font-size:10px;color:var(--muted);line-height:1.25}.debt-last-payment-item strong{font-size:12px;font-weight:760;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.debt-last-payment-difference{padding:8px 10px;border-radius:9px;background:#edf6f1}.debt-last-payment-difference strong{color:var(--green)}
+.debt-credit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.debt-details-content{padding:8px 16px 14px;border-top:1px solid var(--line);background:#fff}
+.debt-archive-actions{margin-top:10px;justify-content:flex-end}.debt-archive-actions:empty{display:none}
+.debt-detail-row{display:grid;grid-template-columns:minmax(150px,38%) minmax(0,1fr);gap:14px;align-items:start;padding:10px 2px;border-bottom:1px solid #e7ece9;font-size:13px;line-height:1.5}
+.debt-detail-label{color:var(--muted,#65756c);font-weight:600}
+.debt-detail-value{color:var(--ink);text-align:right;overflow-wrap:anywhere;min-width:0}
+.debt-detail-row:last-child{border-bottom:0}
+.debt-detail-note{padding:10px 0;border-bottom:1px solid #e7ece9;font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+.debt-details-content a{overflow-wrap:anywhere}
+@media(max-width:600px){.debt-details-content{padding:6px 11px 10px}.debt-detail-row{grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:8px;padding:9px 0;font-size:12px}.debt-detail-note{font-size:12px}}
+
+.debt-card-v22 .installment-table{margin-top:8px}
+@media(max-width:650px){.debt-card-v22{padding:14px;border-radius:14px}.debt-card-head{align-items:stretch;gap:11px}.debt-title-wrap{flex-basis:100%}.debt-balance{width:100%;text-align:left}.debt-card-actions{gap:6px}.debt-card-actions .btn{font-size:11px;padding:8px 9px}.debt-last-payment{align-items:flex-start;gap:7px 10px}.debt-last-payment-amount{margin-left:0;width:100%}.debt-last-payment-detail{grid-template-columns:repeat(7,minmax(105px,1fr));gap:8px 10px;overflow-x:auto}.debt-last-payment-heading{grid-column:auto}.debt-last-payment-difference{grid-column:auto}.debt-card-details summary{padding:11px 12px}}
+/* Google Drive: tarjeta visible */
+/* Mostrar siempre la tarjeta de almacenamiento local, sin plegarla */
+#page-settings &gt; #localStorageCard{display:block!important;visibility:visible!important;opacity:1!important}
+#page-settings &gt; #localStorageCard &gt; .section-head{display:flex!important;visibility:visible!important}
+
+/* Lista de chequeo: resumen, filtros, calendario e historial */
+.task-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 12px}.task-summary{padding:16px 18px}.task-summary .amount{font-size:25px}.task-progress-card{padding:16px 18px;margin-bottom:14px}.task-progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.task-progress-head span{font-size:13px;color:var(--muted);font-weight:700}.task-view-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.task-view-tabs button.task-view-active{background:var(--green);color:#fff;border-color:var(--green)}.task-filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.task-filters label,.task-category-manager label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);font-weight:700}.task-filters input,.task-filters select,.task-category-add input{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--surface,#fff);color:var(--ink)}.task-category-manager{border-top:1px solid var(--line);margin-top:14px;padding-top:13px}.task-category-add{display:flex;gap:8px;margin-top:6px}.task-category-add input{max-width:340px}.task-category-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.task-category-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;background:var(--surface,#fff)}.task-category-chip button{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;line-height:1}.task-calendar-card{margin-bottom:12px}.task-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.task-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.task-calendar-weekday{text-align:center;color:var(--muted);font-size:11px;font-weight:700;padding:5px 0}.task-calendar-day{min-height:68px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface,#fff);color:var(--ink);text-align:left;cursor:pointer;overflow:hidden}.task-calendar-day.is-other{opacity:.4}.task-calendar-day.is-today{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.task-calendar-day.is-selected{background:#e9f5ed;border-color:var(--green)}.task-calendar-day-number{font-weight:700;font-size:12px}.task-calendar-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:7px}.task-calendar-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}.task-calendar-dot.late{background:#b42318}.task-calendar-dot.done{background:#8b98a2}.task-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.task-item{align-items:flex-start}.task-item-main{min-width:0;flex:1}.task-item-meta{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}.task-item-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.task-item-actions select{max-width:140px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface,#fff);color:var(--ink);font-size:12px}.task-priority-high{background:#fce8e6!important;color:#9c2525!important}.task-priority-medium{background:#fff1d6!important;color:#805400!important}.task-priority-low{background:#e7f4eb!important;color:#21663a!important}.task-done-date{font-size:11px;color:var(--muted)}
+@media(max-width:850px){.task-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.task-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.task-filters{grid-template-columns:1fr}.task-category-add{align-items:stretch;flex-direction:column}.task-category-add input{max-width:none}.task-calendar-day{min-height:52px;padding:4px}.task-calendar-grid{gap:3px}.task-calendar-day-number{font-size:11px}.task-item-actions{width:100%}.task-progress-head{align-items:flex-start;flex-direction:column}}
+.task-toolbar{display:flex;align-items:center;gap:8px;margin:0 0 12px}.task-toolbar .task-view-tabs{margin:0}.task-search-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:38px;min-height:36px;padding:8px}.task-filters-card[hidden]{display:none!important}.task-filters-card{margin-bottom:12px}.task-filters{display:flex;align-items:flex-end;gap:12px;flex-wrap:nowrap}.task-filters label{flex:1 1 0;min-width:140px}.task-filters label:first-child{flex:2 1 220px}.task-category-card{margin-bottom:14px}.task-category-card .task-category-manager{border-top:0;margin-top:0;padding-top:0}@media(max-width:720px){.task-filters{flex-wrap:wrap}.task-filters label,.task-filters label:first-child{flex:1 1 180px;min-width:0}.task-toolbar{flex-wrap:wrap}}.debt-type-group{margin:0 0 22px}.debt-type-group-title{margin:0 0 10px;padding:0 0 8px;border-bottom:1px solid var(--line,#d7e0e8);font-size:1rem;font-weight:700;color:var(--text,#102a43)}.debt-type-group .debt-card-v22{margin-bottom:10px}.debt-type-group .debt-card-v22:last-child{margin-bottom:0}
+/* v163: corrección específica de las dos fechas en los formularios
+   de deuda financiera y deuda personal; evita desbordes en pantallas móviles. */
+#formFields .debt-agreement-date-field,
+#formFields .debt-final-date-field{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  align-self:stretch;
+}
+#formFields .debt-agreement-date-field label,
+#formFields .debt-final-date-field label{
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+#formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+#formFields .debt-final-date-field input[type=&quot;date&quot;]{
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  height:44px;
+  min-height:44px;
+  margin:0;
+  box-sizing:border-box;
+  padding:8px 6px;
+  font-size:16px;
+  line-height:1.2;
+}
+@media(max-width:700px){
+  #formFields .debt-agreement-date-field,
+  #formFields .debt-final-date-field{
+    grid-column:1 / -1;
+    justify-self:stretch;
+  }
+  #formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .debt-final-date-field input[type=&quot;date&quot;]{
+    width:100%;
+    max-width:100%;
+    padding-inline:5px;
+    font-size:16px;
+  }
+}
+&lt;/style&gt;&lt;style id=&quot;recovered-settings-arrows-style&quot;&gt;
+#page-settings &gt; .recovery-settings-card{position:relative}
+#page-settings &gt; .recovery-settings-card &gt; .section-head{align-items:center}
+#page-settings &gt; .recovery-settings-card &gt; .recovery-settings-header{display:flex;align-items:center;gap:12px;width:100%;min-width:0}
+#page-settings &gt; .recovery-settings-card &gt; .recovery-settings-header &gt; .entry-copy{flex:1;min-width:0}
+.recovery-setting-arrow{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:36px;height:34px;margin-left:auto;padding:0;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-size:20px;line-height:1;cursor:pointer}
+.recovery-setting-arrow:hover{background:var(--surface-soft)}
+.recovery-setting-arrow span{display:inline-block;transition:transform .18s ease}
+.recovery-setting-arrow[aria-expanded=&quot;false&quot;] span{transform:rotate(-90deg)}
+#page-settings [hidden]{display:none!important}
+&lt;/style&gt;&lt;style id=&quot;movement-history-styles&quot;&gt;
+.history-filter-card{margin:16px 0}
+.history-filter-heading,.history-results-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.history-filter-heading strong,.history-results-head strong{font-size:15px}
+.history-filter-heading p{margin:4px 0 0;font-size:12px}
+.history-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.history-filter-grid .field{min-width:0}
+.history-filter-grid .month-select{width:100%;min-width:0}.history-filter-grid input[type=&quot;date&quot;]{min-height:43px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.history-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.history-summary-card{padding:16px}
+.history-summary-card .amount{font-size:clamp(18px,2vw,25px);margin:10px 0 5px;line-height:1.3}
+.history-results-head{align-items:center;margin-bottom:12px}
+@media(max-width:800px){.history-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.history-summary-grid{grid-template-columns:1fr}.history-summary-card .amount{font-size:22px}}
+@media(max-width:460px){.history-filter-grid{grid-template-columns:1fr}.history-filter-heading .btn{width:100%}}
+
+/* Comparación mensual: mantiene CLP y UF en series independientes */
+.month-compare-section-head{margin-top:26px}
+.month-compare-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.month-compare-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;min-width:0;box-shadow:var(--shadow)}
+.month-compare-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:13px}
+.month-compare-title{font-size:14px;font-weight:800;line-height:1.3}
+.month-compare-currency{display:inline-flex;align-items:center;justify-content:center;padding:4px 7px;border-radius:7px;background:var(--mint);color:var(--green);font-size:10px;font-weight:850;letter-spacing:.05em;flex:none}
+.month-compare-line{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:5px 0;font-size:11px;color:var(--muted)}
+.month-compare-line strong{font-size:12px;color:var(--ink);text-align:right;font-weight:750;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.month-compare-delta{border-top:1px solid var(--line);margin-top:9px;padding-top:9px}
+.month-compare-change{font-weight:850!important}
+.month-compare-change.good,.month-compare-state.good{color:#176b47}
+.month-compare-change.bad,.month-compare-state.bad{color:#a43e38}
+.month-compare-state{display:inline-flex;align-items:center;border-radius:20px;border:1px solid var(--line);padding:4px 8px;font-size:10px;font-weight:800;margin-top:7px;background:#f7faf8;color:var(--muted)}
+.month-compare-state.good{background:#e9f6ef;border-color:#c6e7d3}
+.month-compare-state.bad{background:#fff0ee;border-color:#f0d0cc}
+.month-compare-state.neutral{background:#f5f7f6;color:var(--muted)}
+@media(max-width:1100px){.month-compare-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.month-compare-grid{grid-template-columns:1fr;gap:10px}.month-compare-card{padding:14px}.month-compare-line{font-size:12px}.month-compare-line strong{font-size:13px}}
+
+
+/* Control de respaldos: registro local de copias manuales y confirmaciones en Drive */
+.backup-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.backup-control-metric{min-width:0;padding:15px;border:1px solid var(--line);border-radius:13px;background:#f9fbfa}
+.backup-control-label{font-size:12px;color:var(--muted);font-weight:700;line-height:1.35}
+.backup-control-metric strong{display:block;margin:8px 0 5px;font-size:16px;font-weight:850;overflow-wrap:anywhere;line-height:1.35;font-variant-numeric:tabular-nums}
+.backup-control-metric small{display:block;color:var(--muted);font-size:11px;line-height:1.45}
+@media(max-width:600px){.backup-control-grid{grid-template-columns:1fr}.backup-control-metric{padding:13px}}
+
+
+/* Inicio simplificado: jerarquía visual y secciones plegables, sin eliminar datos. */
+.home-test-note{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:10px;margin:0 0 18px}
+.home-test-note strong{color:var(--green)}
+.home-welcome{display:flex;align-items:flex-end;justify-content:space-between;margin:6px 0 14px}
+.home-welcome h2{font-size:23px;letter-spacing:-.04em;margin:0;color:var(--ink)}
+.home-welcome p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.home-balance-card{padding:22px 24px;margin-bottom:12px;background:linear-gradient(115deg,#fff 0%,#f4faf6 100%);border-color:#d8e8df}
+.home-balance-card .stat-top{font-weight:700;color:#486157}
+.home-balance-amount{font-size:clamp(30px,3.2vw,40px);margin:10px 0 5px;color:var(--green)}
+.home-primary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.home-primary-stats .card{padding:16px 18px}
+.home-primary-stats .amount{margin:10px 0 4px}
+.home-alerts-block{margin:4px 0 16px}
+.home-alerts-block .section-head{margin:0 0 10px}
+.home-alert-summary{margin:0 0 10px;gap:10px}
+.home-alert-summary .alert-metric{padding:12px 14px}
+.home-alert-summary .alert-metric strong{font-size:22px}
+.home-alert-summary .alert-metric small:last-child{font-size:11px}
+.home-fold{border:1px solid var(--line);border-radius:14px;background:var(--card);margin:12px 0;box-shadow:var(--shadow);overflow:hidden}
+.home-fold&gt;summary{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;list-style:none;padding:16px 18px;min-height:66px}
+.home-fold&gt;summary::-webkit-details-marker{display:none}
+.home-fold&gt;summary:hover{background:#fbfdfb}
+.home-fold-copy{display:grid;gap:3px;min-width:0}
+.home-fold-copy strong{font-size:14px;color:var(--ink);font-weight:750}
+.home-fold-copy small{font-size:12px;color:var(--muted);line-height:1.4}
+.home-fold-indicator{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:9px;background:#eff5f1;color:var(--green)}
+.home-fold-indicator:before{content:&quot;+&quot;;font-size:20px;line-height:1;font-weight:500}
+.home-fold[open]&gt;summary .home-fold-indicator:before{content:&quot;−&quot;}
+.home-fold[open]&gt;summary{border-bottom:1px solid var(--line)}
+.home-fold&gt;.month-compare-grid,.home-fold&gt;.card,.home-fold&gt;.grid,.home-fold&gt;.section-head{margin:14px 16px}
+.home-fold&gt;.month-compare-grid{margin-bottom:16px}
+.home-fold&gt;.card{margin-bottom:16px}
+.home-fold&gt;.home-secondary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.home-secondary-stats .card{padding:14px 16px}
+.home-secondary-stats .amount{font-size:clamp(19px,2vw,25px);margin:10px 0 4px}
+.home-inner-head.section-head{margin-top:18px}
+.home-fold .month-compare-grid{gap:10px}
+.home-alert-detail{margin-top:0;box-shadow:none}
+.home-alert-detail&gt;summary{padding:11px 14px;min-height:48px}
+.home-alert-detail .card{box-shadow:none}
+.home-situation-card{padding:4px 18px}
+.home-situation-card .setting{padding:13px 0}
+@media(max-width:700px){
+ .home-welcome h2{font-size:21px}
+ .home-balance-card{padding:18px}
+ .home-balance-amount{font-size:30px}
+ .home-primary-stats{gap:9px}
+ .home-primary-stats .card{padding:12px}
+ .home-primary-stats .amount{font-size:clamp(17px,4.6vw,22px)}
+ .home-primary-stats .hint{font-size:11px}
+ .home-alert-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .home-alert-summary .alert-metric{padding:10px 8px;border-radius:11px}
+ .home-alert-summary .alert-metric small{font-size:10px}
+ .home-alert-summary .alert-metric strong{font-size:20px}
+ .home-fold&gt;summary{padding:13px 13px;gap:10px}
+ .home-fold&gt;.month-compare-grid,.home-fold&gt;.card,.home-fold&gt;.grid,.home-fold&gt;.section-head{margin-left:10px;margin-right:10px}
+ .home-fold&gt;.home-secondary-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .home-secondary-stats .card{padding:11px 10px}
+ .home-secondary-stats .amount{font-size:16px;overflow-wrap:anywhere}
+ .home-secondary-stats .stat-top{font-size:11px}
+ .home-fold .home-situation-card{padding:3px 12px}
+}
+
+&lt;/style&gt;&lt;style id=&quot;debt-chart-v19-style&quot;&gt;.debt-chart-panel{margin-top:12px;padding:16px;border:1px solid #d7e6dd;border-radius:14px;background:#f7fbf8}.debt-chart-panel[hidden],[data-chart-custom][hidden]{display:none!important}.debt-chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.debt-chart-heading h4{margin:0 0 4px;font-size:15px}.debt-chart-filters{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:14px 0}.debt-chart-filters label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted)}.debt-chart-filters select,.debt-chart-filters input{max-width:190px;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff;color:var(--ink);font:inherit}.debt-chart-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.debt-chart-stat{padding:10px 12px;border:1px solid #e0ebe4;border-radius:10px;background:#fff;min-width:0}.debt-chart-stat span{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.debt-chart-stat strong{font-size:15px;overflow-wrap:anywhere}.debt-chart-plot{width:100%;overflow:hidden;border:1px solid #e3ece6;border-radius:12px;background:#fff}.debt-chart-plot svg{display:block;width:100%;height:auto;min-height:180px}.debt-chart-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5}.debt-chart-empty{padding:20px;text-align:center;background:#fff;border:1px dashed #cbd9d0;border-radius:10px;color:var(--muted)}@media(max-width:560px){.debt-chart-summary{grid-template-columns:1fr}.debt-chart-filters label,.debt-chart-filters select,.debt-chart-filters input{width:100%;max-width:none}.debt-chart-panel{padding:11px}}&lt;/style&gt;&lt;style id=&quot;mobile-friendly-v54&quot;&gt;
+/* Ajustes de comodidad móvil para la aplicación oficial */
+html{-webkit-text-size-adjust:100%;scroll-padding-top:14px}
+button,a,select,input[type=&quot;checkbox&quot;],input[type=&quot;radio&quot;]{touch-action:manipulation}
+@media(max-width:700px){
+  body{font-size:15px;line-height:1.5}
+  main{padding:16px 12px calc(112px + env(safe-area-inset-bottom))}
+  .topbar{gap:12px;margin-bottom:18px}
+  .topbar h1{font-size:25px;line-height:1.2}
+  .top-actions{align-items:stretch;gap:8px}
+  .top-actions&gt;.btn{min-height:44px;white-space:normal}
+  .section-head{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:20px 0 12px}
+  .section-head h2{font-size:19px}
+  .section-head&gt;.btn,.section-head .toolbar{width:100%}
+  .toolbar{gap:8px}
+  .toolbar .btn{min-height:42px;flex:1 1 auto}
+  .card{padding:14px;border-radius:14px}
+  .grid{gap:11px}
+  .form-card{max-width:none;width:100%}
+  .form-grid,.form-advanced-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+  .field{gap:7px}
+  .field label{font-size:13px}
+  .field input,.field select,.field textarea,.month-select,
+  .debt-chart-filters select,.debt-chart-filters input{
+    min-height:44px;font-size:16px;padding:11px 12px
+  }
+  .field textarea{min-height:92px}
+  .form-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .form-actions .btn,.option-form .btn{min-height:44px;width:100%}
+  .btn{min-height:40px}
+  .btn.small{min-height:38px}
+  .option-item{align-items:flex-start;gap:8px;padding:10px}
+  .option-item .btn{flex:0 0 auto}
+  .table-wrap,.installment-table,.history-table-wrap{
+    max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{min-width:590px}
+  .installment-table table{min-width:760px}
+  .mobile-nav{
+    gap:2px;padding:7px 6px max(8px,env(safe-area-inset-bottom));
+    box-shadow:0 -5px 20px rgba(24,53,44,.08);scrollbar-width:none
+  }
+  .mobile-nav::-webkit-scrollbar{display:none}
+  .mobile-nav button{flex-basis:70px;min-width:70px;min-height:52px;padding:6px 3px}
+  .mobile-nav button span:first-child{font-size:19px}
+  .mobile-nav button span:last-child{font-size:10px}
+  .debt-card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .debt-card-actions .btn{min-width:0;min-height:42px;white-space:normal;line-height:1.25}
+  .debt-last-payment-detail{scrollbar-width:thin;scrollbar-color:#aac0b6 #f4f7f5}
+  .debt-last-payment-item strong{overflow-wrap:anywhere;word-break:break-word}
+  .debt-card-details summary{min-height:44px;display:flex;align-items:center}
+  .setting{gap:10px;flex-wrap:wrap}
+  .setting&gt;.btn,.setting&gt;button{min-height:42px}
+  .toast{left:12px;right:12px;bottom:calc(82px + env(safe-area-inset-bottom));max-width:none}
+  .history-filter-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:380px){
+  main{padding-left:10px;padding-right:10px}
+  .topbar h1{font-size:23px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-top{font-size:12px}
+  .amount{font-size:21px}
+  .debt-card-actions{grid-template-columns:minmax(0,1fr)}
+  .mobile-nav button{flex-basis:64px;min-width:64px}
+}
+
+/* v163: normalización general de interfaz móvil.
+   Mantiene intactos los estilos de escritorio y evita desbordamientos horizontales. */
+@media screen and (max-width:700px){
+  html{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+  body{width:100%;max-width:100%;overflow-x:hidden}
+  .app,main,.page,.card,.form-card,.section-head,.topbar,.top-actions{
+    min-width:0;max-width:100%;box-sizing:border-box
+  }
+  main{width:100%;padding:14px 12px calc(112px + env(safe-area-inset-bottom))}
+  .topbar{gap:12px}
+  .topbar h1,.topbar h2,.section-head h2,.section-head h3,
+  .card h2,.card h3{overflow-wrap:anywhere;word-break:normal}
+  .top-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
+  .top-actions&gt;*{min-width:0;max-width:100%}
+  .stats,.grid,.two-col,.form-grid,.form-advanced-grid,
+  .debt-summary-grid,.econ-grid,.econ-two,.converter-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+    min-width:0;max-width:100%
+  }
+  .form-grid,.form-advanced-grid{gap:12px}
+  .form-card,.form-advanced{padding:12px}
+  .field{min-width:0;width:100%;max-width:100%}
+  .field label{max-width:100%;overflow-wrap:anywhere}
+  .field input,.field select,.field textarea,
+  .month-select,.field input[type=&quot;file&quot;]{
+    width:100%;min-width:0;max-width:100%;box-sizing:border-box;
+    font-size:16px
+  }
+  .field input[type=&quot;date&quot;]{
+    display:block;width:100%;min-width:0;max-width:100%;
+    height:44px;min-height:44px;box-sizing:border-box;
+    padding:8px 5px;font-size:16px
+  }
+  #formFields .debt-agreement-date-field,
+  #formFields .debt-final-date-field{
+    grid-column:auto!important;width:100%;min-width:0;max-width:100%;
+    justify-self:stretch;box-sizing:border-box
+  }
+  #formFields .debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .debt-final-date-field input[type=&quot;date&quot;]{
+    width:100%;min-width:0;max-width:100%;padding-left:5px;padding-right:5px
+  }
+  .btn,button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+  .toolbar,.form-actions,.inline-actions,.debt-card-actions{
+    flex-wrap:wrap;min-width:0;max-width:100%;gap:8px
+  }
+  .toolbar&gt;.btn,.form-actions&gt;.btn{flex:1 1 auto;min-width:0}
+  .table-wrap,.installment-table,.history-table-wrap{
+    display:block;width:100%;max-width:100%;overflow-x:auto;
+    overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch
+  }
+  .table-wrap table{min-width:590px}
+  .installment-table table{min-width:760px}
+  img,svg,canvas,video{max-width:100%}
+  input,select,textarea,button{touch-action:manipulation}
+}
+@media screen and (max-width:380px){
+  main{padding-left:9px;padding-right:9px}
+  .card,.form-card{padding:10px}
+  .field input[type=&quot;date&quot;]{padding-left:3px;padding-right:3px}
+  .mobile-nav button{min-width:64px;flex-basis:64px}
+}
+&lt;/style&gt;&lt;style id=&quot;v164-mobile-date-fields-fix&quot;&gt;
+@media screen and (max-width:700px){
+  #formFields{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+  #formFields .field.debt-agreement-date-field,
+  #formFields .field.debt-final-date-field{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-column:1 / -1!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+    justify-self:stretch!important;overflow:hidden!important;
+  }
+  #formFields .field.debt-agreement-date-field label,
+  #formFields .field.debt-final-date-field label{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+  #formFields .field.debt-agreement-date-field input[type=&quot;date&quot;],
+  #formFields .field.debt-final-date-field input[type=&quot;date&quot;]{
+    display:block!important;float:none!important;width:100%!important;min-width:0!important;max-width:100%!important;
+    inline-size:100%!important;min-inline-size:0!important;max-inline-size:100%!important;
+    height:44px!important;min-height:44px!important;margin:0!important;padding:6px 4px!important;
+    box-sizing:border-box!important;font-size:16px!important;line-height:1.2!important;
+  }
+}
+&lt;/style&gt;&lt;style id=&quot;v165-mobile-quota-label-position-fix&quot;&gt;
+/* v165: el campo calculado debe mantener etiqueta e input juntos aunque
+   el selector de tipo de interés añada un botón en la columna vecina. */
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;]{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  justify-content:flex-start!important;align-self:start!important;align-content:start!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  gap:6px!important;grid-row:auto!important;box-sizing:border-box!important;
+}
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;] label{
+  display:block!important;position:static!important;flex:none!important;
+  margin:0!important;padding:0!important;line-height:1.35!important;
+}
+#formFields .field[data-field-name=&quot;calculatedQuota&quot;] input{
+  display:block!important;position:static!important;flex:none!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:44px!important;min-height:44px!important;margin:0!important;
+  box-sizing:border-box!important;
+}
+&lt;/style&gt;&lt;style id=&quot;v173-mobile-debt-date-layout&quot;&gt;
+/* v172: se elimina la regla :has() anterior que forzaba dos columnas en todo el formulario. */
+.debt-date-fields-row{display:contents}
+@media (max-width:700px){
+  #formFields.form-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    column-gap:0!important;
+    row-gap:12px!important;
+    align-items:start!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+    align-items:start!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row &gt; .field{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:5px!important;
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:0!important;
+    align-self:start!important;
+    justify-self:stretch!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row &gt; .field &gt; label{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    font-size:12px!important;
+    line-height:1.25!important;
+    overflow-wrap:anywhere!important;
+  }
+  #formFields.form-grid &gt; .debt-date-fields-row input[type=&quot;date&quot;]{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+    margin:0!important;
+    padding:4px 2px!important;
+    font-size:13px!important;
+    line-height:normal!important;
+    box-sizing:border-box!important;
+  }
+  #formFields.form-grid &gt; .field:not(.debt-agreement-date-field):not(.debt-final-date-field){
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+@media (min-width:701px){
+  #formFields.form-grid &gt; .debt-date-fields-row{display:contents}
+}
+&lt;/style&gt;&lt;style id=&quot;v178-linear-financial-forms&quot;&gt;
+/* v178: listado lineal para Deudas personales y Dinero por cobrar; resto de formularios sin cambios. */
+#formFields.linear-financial-form{display:flex;flex-direction:column;gap:14px;}
+#formFields.linear-financial-form &gt; .field{display:flex;flex-direction:column;gap:6px;width:100%;min-width:0;}
+#formFields.linear-financial-form &gt; .field &gt; label{font-weight:650;line-height:1.35;}
+#formFields.linear-financial-form &gt; .field &gt; input,
+#formFields.linear-financial-form &gt; .field &gt; select,
+#formFields.linear-financial-form &gt; .field &gt; textarea{width:100%;max-width:100%;min-width:0;box-sizing:border-box;}
+#formFields.linear-financial-form &gt; .field &gt; input,
+#formFields.linear-financial-form &gt; .field &gt; select{min-height:44px;}
+#formFields.linear-financial-form &gt; .field &gt; .readonly{background:var(--surface-2,#f1f5f9);font-weight:700;}
+&lt;/style&gt;&lt;style id=&quot;v183-personal-payment-date-edit&quot;&gt;
+.personal-payment-edit-cell,.personal-payment-edit-head{text-align:center;width:56px;min-width:56px;white-space:nowrap}
+.personal-payment-edit-icon{display:inline-grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid #dce8e2;border-radius:9px;background:#f4faf7;color:#286c51;cursor:pointer;font:700 22px/1 system-ui,-apple-system,sans-serif;transition:background .15s,border-color .15s}
+.personal-payment-edit-icon:hover{background:#e3f3e9;border-color:#a5d1b8}
+.personal-payment-edit-icon:focus-visible{outline:3px solid #7fc19c;outline-offset:2px}
+#page-form.payment-date-edit-mode .form-card{max-width:850px;margin-inline:auto}
+#page-form.payment-date-edit-mode #formFields&gt;.field:nth-of-type(5){grid-column:1 / -1}
+#page-form.payment-date-edit-mode #formFields input[readonly],#page-form.payment-date-edit-mode #formFields textarea[readonly]{background:#f2f6f4;color:#53645b;opacity:1}
+.personal-payment-edit-tip{grid-column:1 / -1;margin:0;padding:12px 14px;border-radius:11px;background:#f3f8f5;color:#425e50;font-size:13px}
+.personal-payment-correction-history{grid-column:1 / -1;margin-top:8px;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:#f9fbfa}
+.personal-payment-correction-history h3{margin:0 0 10px;font-size:15px}
+.personal-payment-correction-empty{margin:0;color:var(--muted);font-size:13px}
+.personal-payment-correction-list{margin:0;padding-left:20px;display:grid;gap:10px}
+.personal-payment-correction-list li{padding-left:5px;font-size:13px}
+.personal-payment-correction-list p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.personal-payment-correction-list small{color:var(--muted)}
+@media(max-width:700px){#page-form.payment-date-edit-mode #formFields&gt;.field{grid-column:1 / -1}.personal-payment-correction-history{padding:14px}.personal-payment-edit-icon{width:34px;height:34px}}
+&lt;/style&gt;&lt;style id=&quot;v192-recurring-checklist&quot;&gt;
+.field[hidden]{display:none!important}.checklist-recurrence-panel{margin:12px 0;padding:17px 19px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.checklist-recurrence-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.checklist-recurrence-head strong{font-size:15px}
+.checklist-recurring-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.checklist-recurring-tile{border:1px solid #e3eae6;border-radius:12px;background:#f8fbf9;padding:11px 13px;display:flex;flex-direction:column;gap:4px}
+.checklist-recurring-tile strong{font-size:13px;overflow-wrap:anywhere}
+.checklist-recurring-tile small{color:var(--muted)}
+.checklist-recurring-tile .pill{align-self:start}
+.checklist-payment-action{white-space:normal}
+/* v197: colapsado opcional, manteniendo diseño v192 */
+.mcf-programmed-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto}
+.mcf-programmed-tile-actions{margin-top:7px;display:flex;align-items:center}
+.mcf-programmed-tile-actions .btn{font-size:12px;padding:5px 12px}
+.checklist-recurrence-panel.mcf-collapsed .checklist-recurrence-head{margin-bottom:0}
+#mcfProgrammedCards[hidden]{display:none!important}
+@media(max-width:700px){.checklist-recurrence-panel{padding:13px}.checklist-recurring-grid{grid-template-columns:1fr}}
+&lt;/style&gt;&lt;style id=&quot;v198-cloud-only&quot;&gt;
+#cloudGate{position:fixed;inset:0;z-index:99999;background:rgba(18,37,32,.94);display:flex;align-items:center;justify-content:center;padding:18px}
+#cloudGate[hidden]{display:none!important}
+#cloudGatePanel{max-width:540px;width:100%;padding:28px;border-radius:17px;background:#fff;color:#18382d;box-shadow:0 12px 45px #0004}
+#cloudGatePanel h2{margin:0 0 12px;font-size:21px}
+#cloudGatePanel p{line-height:1.5;font-size:14px}
+#cloudGatePanel .btn{margin:4px 6px 4px 0}
+#cloudGateMessage{font-weight:600;overflow-wrap:anywhere}
+#cloudSyncBar{position:fixed;right:15px;bottom:15px;z-index:1200;padding:12px 15px;border-radius:12px;background:#173c32;color:white;box-shadow:0 5px 22px #0003;max-width:min(92vw,430px);font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#cloudSyncBar button{border:1px solid #aec8bb;border-radius:8px;padding:6px 9px;background:white;color:#173c32;cursor:pointer}
+#cloudSyncBar[data-state=&quot;error&quot;]{background:#82382f}
+#cloudSyncBar[data-state=&quot;pending&quot;]{background:#765a1f}
+&lt;/style&gt;&lt;style id=&quot;mcf-v203-recovery-style&quot;&gt;
+#mcfRecoverLaunch{position:fixed;left:15px;bottom:15px;z-index:1300}
+#mcfRecoverLaunch[hidden],#mcfRecoverOverlay[hidden]{display:none!important}
+#mcfRecoverLaunch button{border:0;background:#f0c46f;color:#143d32;box-shadow:0 4px 20px #0004;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
+#mcfRecoverOverlay{position:fixed;inset:0;z-index:99998;background:#071b17e8;display:flex;justify-content:center;align-items:center;padding:18px}
+#mcfRecoverPanel{width:min(96vw,720px);max-height:90vh;overflow-y:auto;background:white;color:#193b31;border-radius:16px;padding:24px;box-shadow:0 12px 40px #0005}
+#mcfRecoverPanel h2{margin:0 0 6px;font-size:21px}
+#mcfRecoverPanel p,#mcfRecoverPanel label{font-size:14px;line-height:1.5}
+#mcfRecoverPanel select,#mcfRecoverPanel input[type=file]{width:100%;padding:10px;margin:8px 0 12px;max-width:100%;border:1px solid #b0bfb6;border-radius:7px;background:#fff;color:#123}
+#mcfRecoverStats{padding:12px;background:#f1f6f3;color:#183c30;border-radius:8px;min-height:90px;white-space:pre-wrap;line-height:1.5;font-size:13px;overflow-wrap:anywhere}
+#mcfRecoverActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+#mcfRecoverActions button{padding:11px 14px;border:1px solid #657b70;background:#fff;border-radius:8px;cursor:pointer}
+#mcfRecoverActions button.primary{background:#204c3c;color:#fff;border-color:#204c3c}
+#mcfRecoverActions button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:700px){
+ #cloudGate{align-items:safe center;overflow:auto;padding:12px}
+ #cloudGatePanel{box-sizing:border-box;max-height:calc(100dvh - 24px);overflow:auto;padding:16px}
+ #cloudGatePanel select,#cloudGatePanel button,#localStorageCard button{box-sizing:border-box;max-width:100%;white-space:normal;min-height:44px}
+ #cloudGatePanel button{margin:4px 0;width:100%}
+ #localStorageCard .inline-actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ #localStorageCard,#storageDestination,#storageHelp,#cloudSyncText{min-width:0;overflow-wrap:anywhere}
+ #cloudSyncBar{position:static;margin:6px 10px;flex-wrap:wrap;max-width:100%;box-sizing:border-box}
+ .recovery-drive-header{flex-wrap:wrap}
+}
+@media (max-width:700px){
+ .debt-card-v22.debt-card-collapsed&gt;.debt-compact-head{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-areas:&quot;icon name arrow&quot; &quot;summary summary summary&quot;;
+  column-gap:9px;row-gap:6px;
+ }
+ .debt-compact-icon{grid-area:icon}
+ .debt-compact-copy{grid-area:name}
+ .debt-compact-chevron{grid-area:arrow}
+ .debt-compact-uf,.debt-compact-balance{grid-area:summary;min-width:0;text-align:right}
+}
+&lt;/style&gt;&lt;main style=&quot;padding:12px&quot;&gt;&lt;article class=&quot;debt-card-v22 debt-card-collapsed&quot;&gt;&lt;button class=&quot;debt-compact-head&quot;&gt;&lt;span class=&quot;debt-compact-icon&quot;&gt;▣&lt;/span&gt;&lt;span class=&quot;debt-compact-copy&quot;&gt;&lt;span class=&quot;debt-compact-title&quot;&gt;Crédito Hipotecario&lt;/span&gt;&lt;span class=&quot;debt-compact-subtitle&quot;&gt;MYV · Crédito hipotecario&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;debt-compact-uf&quot;&gt;&lt;strong&gt;1.734,1234 UF&lt;span class=&quot;equiv&quot;&gt;≈ $70.123.456 al último valor UF (24-11-2026)&lt;/span&gt;&lt;/strong&gt;&lt;span&gt;Cuotas pendientes 340&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;debt-compact-chevron&quot;&gt;⌄&lt;/span&gt;&lt;/button&gt;&lt;/article&gt;&lt;/main&gt;"></iframe></figure></main>
