@@ -628,8 +628,19 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
  #cloudSyncBar{position:static;margin:6px 10px;flex-wrap:wrap;max-width:100%;box-sizing:border-box}
  .recovery-drive-header{flex-wrap:wrap}
 }
+@media (max-width:700px){
+ .debt-card-v22.debt-card-collapsed>.debt-compact-head{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-areas:"icon name arrow" "summary summary summary";
+  column-gap:9px;row-gap:6px;
+ }
+ .debt-compact-icon{grid-area:icon}
+ .debt-compact-copy{grid-area:name}
+ .debt-compact-chevron{grid-area:arrow}
+ .debt-compact-uf,.debt-compact-balance{grid-area:summary;min-width:0;text-align:right}
+}
 </style></head><body><div id="cloudGate" role="dialog" aria-modal="true" aria-labelledby="cloudGateTitle">
- <div id="cloudGatePanel"><h2 id="cloudGateTitle">Mi Control Financiero · v217</h2>
+ <div id="cloudGatePanel"><h2 id="cloudGateTitle">Mi Control Financiero · v218</h2>
  <p>Abre tus datos desde este dispositivo o Google Drive. Puedes vincular el segundo destino en Configuración → Almacenamiento principal.</p>
  <button type="button" class="btn" id="deviceOpen" hidden>Abrir memoria de este dispositivo</button><div id="diskChoices" hidden><button type="button" class="btn primary" id="diskOpen">Abrir archivo del PC</button>
  <button type="button" class="btn" id="diskCreate">Crear archivo del PC</button>
@@ -1276,7 +1287,7 @@ async function flushPendingSnapshots(){
 async function cloudExportEmergency(){
  try{
   const payload=await backupEnvelope(db);
-  download('mi-control-financiero-v217-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
+  download('mi-control-financiero-v218-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
   const msg='Respaldo con los cambios preparado. Comprueba la descarga antes de cerrar.';
   if(pendingDialog.open)document.getElementById('pendingReason').textContent=msg;toast(msg);
  }catch(err){toast('No se pudo crear la copia de emergencia: '+err.message)}
