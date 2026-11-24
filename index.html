@@ -74,7 +74,7 @@
 .debt-compact-chevron{flex:none;font-size:21px;color:var(--green);padding:0 2px}
 .debt-card-v22.debt-card-collapsed{padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
 .debt-card-v22.debt-card-collapsed>.debt-compact-head{display:flex}
-.debt-card-v22.debt-card-collapsed>:not(.debt-compact-head){display:none!important}
+.debt-card-v22.debt-card-collapsed>:not(.debt-compact-head):not(.history-shortcut){display:none!important}
 .debt-card-v22:not(.debt-card-collapsed)>.debt-compact-head{display:none!important}
 @media(max-width:520px){.debt-compact-head{gap:9px;padding:12px}.debt-compact-icon{width:36px;height:36px}.debt-compact-title{font-size:14px}.debt-compact-subtitle{font-size:11px}.debt-compact-balance strong{font-size:13px}}
 
@@ -617,7 +617,7 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 #mcfRecoverActions button.primary{background:#204c3c;color:#fff;border-color:#204c3c}
 #mcfRecoverActions button:disabled{opacity:.5;cursor:not-allowed}
 </style></head><body><div id="cloudGate" role="dialog" aria-modal="true" aria-labelledby="cloudGateTitle">
- <div id="cloudGatePanel"><h2 id="cloudGateTitle">Mi Control Financiero · v208</h2>
+ <div id="cloudGatePanel"><h2 id="cloudGateTitle">Mi Control Financiero · v209</h2>
  <p>Elige dónde trabajar. Cada registro se guarda en el archivo elegido, incluidos sus comprobantes.</p>
  <div id="diskChoices" hidden><button type="button" class="btn primary" id="diskOpen">Abrir archivo del PC</button>
  <button type="button" class="btn" id="diskCreate">Crear archivo del PC</button>
@@ -1159,7 +1159,7 @@ async function flushPendingSnapshots(){
 async function cloudExportEmergency(){
  try{
   const payload=await backupEnvelope(db);
-  download('mi-control-financiero-v208-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
+  download('mi-control-financiero-v209-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
   const msg='Respaldo con los cambios preparado. Comprueba la descarga antes de cerrar.';
   if(pendingDialog.open)document.getElementById('pendingReason').textContent=msg;toast(msg);
  }catch(err){toast('No se pudo crear la copia de emergencia: '+err.message)}
@@ -1862,7 +1862,7 @@ function collectHistoryEntries(){
   const parentPayments=Array.isArray(d.payments)?d.payments:[];
   parentPayments.forEach((p,index)=>entries.push({id:'debt-payment:'+(p.id||d.id+':'+index),date:p.date||'',type:label,title:(d.title||'Deuda sin descripción')+(d.creditor?' · '+d.creditor:''),category:d.type||label,method:p.method||'—',amount:Number(p.amount||0),currency:p.currency||d.currency||'CLP',status:'Pagado',source,notes:p.notes||'',attachments:p.attachments||[],ufValueAtOperation:p.ufValueAtOperation||null,ufRateDate:p.ufRateDate||p.date||null,searchExtra:[d.title,d.creditor,d.type].filter(Boolean).join(' ')}));
   if(!personal)(d.installments||[]).forEach(ins=>(ins.paymentRecords||[]).forEach((p,index)=>{
-   const represented=parentPayments.some(parent=>String(parent.date||'')===String(p.date||'')&&String(parent.method||'')===String(p.method||''));
+   const represented=p.paymentId!=null&&parentPayments.some(parent=>String(parent.id)===String(p.paymentId));
    if(represented)return;
    entries.push({id:'installment-payment:'+d.id+':'+ins.id+':'+(p.id||index),date:p.date||ins.paidDate||'',type:'Pago de cuota financiera',title:(d.title||'Crédito sin descripción')+' · Cuota '+(ins.number||''),category:d.type||'Crédito',method:p.method||'—',amount:Number(p.amount??p.normalizedAmount??0),currency:p.currency||d.currency||'CLP',status:'Pagado',source:'Cuotas de deudas financieras',notes:p.notes||ins.notes||'',attachments:p.attachments||[],ufValueAtOperation:p.ufValueAtOperation||null,ufRateDate:p.ufRateDate||p.date||null,searchExtra:[d.title,d.creditor,'cuota '+(ins.number||'')].filter(Boolean).join(' ')});
   }));
@@ -2007,30 +2007,66 @@ function historySourceLabel(i){
  return '';
 }
 function canConfirmHistory(i){
- return i&&!i.notRequired&&(i.paid||i.historicalAssumed)&&!i.historyConfirmedAt&&
-  (installmentDatePaid(i)==='—'||historySourceLabel(i))&&!i.paymentRecords?.length;
+ if(!i||i.notRequired)return false;
+ if(i.historyConfirmedAt)return installmentDatePaid(i)==='—'&&i.paymentRecords?.length===1&&!i.paymentRecords[0].paymentId;
+ const overdue=i.dueDate&&i.dueDate<=today();
+ if(!i.paid&&!i.historicalAssumed)return Boolean(overdue);
+ if(i.paymentRecords?.length)return i.paymentRecords.length===1&&!i.paymentRecords[0].paymentId&&(Boolean(historySourceLabel(i))||installmentDatePaid(i)==='—');
+ return Boolean(overdue||i.historicalAssumed||historySourceLabel(i)||installmentDatePaid(i)==='—');
+
+}
+function historicalEntry(debt,i){
+ const currency=debt.currency||'CLP',quota=installmentQuotaData(debt,i);
+ const partial=!i.paid&&!i.historicalAssumed&&(Number(i.paidAmount)>0||Number(i.paidAmountRaw)>0||i.paymentRecords?.length>0);
+ if(partial){
+  const rate=Number(i.manualUfValue||i.ufValueAtOperation||0);
+  let previous=Number(i.paidAmount)||0;
+  if(i.paymentRecords?.length){
+   previous=0;
+   for(const payment of i.paymentRecords){
+    const pr=Number(payment.ufValueAtOperation||rate),unit=payment.currency||currency;
+    if(payment.normalizedAmount!=null&&(!payment.normalizedCurrency||payment.normalizedCurrency===currency))previous+=Number(payment.normalizedAmount);
+    else if(unit===currency)previous+=Number(payment.amount);
+    else if(pr>0)previous+=unit==='UF'?Number(payment.amount)*pr:Number(payment.amount)/pr;
+    else return {partial:true,unit:currency,amount:'',error:'Falta la UF de un abono anterior.'};
+   }
+  }else if(!previous&&Number(i.paidAmountRaw)>0){
+   const unit=i.paidCurrencyRaw||'CLP';
+   if(unit!==currency&&!(rate>0))return {partial:true,unit:currency,amount:'',error:'Falta la UF del abono anterior.'};
+   previous=unit===currency?Number(i.paidAmountRaw):unit==='UF'?Number(i.paidAmountRaw)*rate:Number(i.paidAmountRaw)/rate;
+  }
+  return {partial:true,unit:currency,previous,amount:precisionRound(Math.max(0,installmentDueInDebtCurrency(debt,i)-previous),currency)};
+ }
+ const useRaw=Number(i.paidAmountRaw)>0,known=Number(i.paidAmount)>0&&!i.historicalAssumed;
+ return {partial:false,unit:useRaw?(i.paidCurrencyRaw||'CLP'):known?currency:quota.currency,
+  amount:useRaw?i.paidAmountRaw:known?i.paidAmount:quota.amount};
 }
 const historyDialog=document.createElement('dialog');
 historyDialog.style.cssText='max-width:min(56rem,95vw);max-height:85vh;overflow:auto;border:1px solid #adbfb5;border-radius:12px';
 historyDialog.setAttribute('aria-labelledby','historyTitle');
-historyDialog.innerHTML='<h2 id="historyTitle">Completar pagos históricos</h2><p>Selecciona las cuotas que reconoces como pagadas y verifica cada monto. Puedes dejar la fecha vacía si la desconoces.</p><form><label><input id="allHistory" type="checkbox"> Seleccionar todas las cuotas de este año</label><div class="table-wrap"><table><thead><tr><th>Incluir</th><th>Cuota</th><th>Vencimiento</th><th>Monto pagado</th><th>Fecha real (opcional)</th></tr></thead><tbody></tbody></table></div><p role="status"></p><button type="submit" class="btn primary">Confirmar pagos seleccionados</button> <button type="button" class="btn" id="closeHistory">Cancelar</button></form>';
+historyDialog.innerHTML='<h2 id="historyTitle">Completar pagos históricos</h2><p>Selecciona las cuotas que ya pagaste. Revisa el monto y la fecha sugeridos. En las cuotas con abonos, registra solo el pago que completa el saldo.</p><form><label><input id="allHistory" type="checkbox"> Seleccionar todas las cuotas de la lista</label><div class="table-wrap"><table><thead><tr><th>Incluir</th><th>Cuota</th><th>Vencimiento</th><th>Monto pagado</th><th>Fecha real (opcional)</th></tr></thead><tbody></tbody></table></div><p role="status"></p><button type="submit" class="btn primary">Confirmar pagos seleccionados</button> <button type="button" class="btn" id="closeHistory">Cancelar</button></form>';
 document.body.append(historyDialog);
 let historyDebt;
 document.addEventListener('click',event=>{
  const button=event.target.closest('[data-history-debt]');if(!button||pendingForm||formSaving)return;
  historyDebt=db.debts.find(d=>String(d.id)===button.dataset.historyDebt);if(!historyDebt)return;
  const currency=historyDebt.currency||'CLP';
- const entries=historyDebt.installments.filter(i=>canConfirmHistory(i)&&String(i.dueDate).slice(0,4)===button.dataset.historyYear);
+ const entries=(historyDebt.installments||[]).filter(i=>canConfirmHistory(i)&&(!button.dataset.historyYear||String(i.dueDate).slice(0,4)===button.dataset.historyYear));
  const tbody=historyDialog.querySelector('tbody');tbody.replaceChildren();
  for(const i of entries){
   const tr=tbody.insertRow();tr.dataset.id=i.id;
-  const unit=i.paidAmountRaw!=null?(i.paidCurrencyRaw||'CLP'):currency;
-  const quota=installmentQuotaData(historyDebt,i);
-  const amount=i.paidAmountRaw??(Number(i.paidAmount)>0?i.paidAmount:(quota.currency===currency?quota.amount:''));
-  tr.innerHTML='<td><input type="checkbox" aria-label="Incluir cuota '+esc(i.number)+'"></td><td>'+esc(i.number)+'</td><td>'+esc(i.dueDate)+'</td><td><input type="number" step="any" aria-label="Monto cuota '+esc(i.number)+'" value="'+esc(amount)+'"> '+esc(unit)+'</td><td><input type="date" value="'+esc(i.paidDate||'')+'" aria-label="Fecha de pago cuota '+esc(i.number)+'"></td>';
+  const {unit,amount,partial,error}=historicalEntry(historyDebt,i);
+  tr.innerHTML='<td><input type="checkbox" aria-label="Incluir cuota '+esc(i.number)+'"></td><td>'+esc(i.number)+(partial?'<small style="display:block">Saldo tras abonos</small>':'')+'</td><td>'+esc(i.dueDate)+'</td><td><input type="number" step="any" aria-label="Monto cuota '+esc(i.number)+'" value="'+esc(amount)+'"> '+esc(unit)+(unit!==currency?'<label>UF del pago (CLP)<input type="number" step="any" data-history-rate value="'+esc(i.manualUfValue||i.ufValueAtOperation||'')+'"></label>':'')+(error?'<small>'+esc(error)+'</small>':'')+'</td><td><input type="date" value="'+esc((!partial&&i.paidDate)||i.dueDate||'')+'" aria-label="Fecha de pago cuota '+esc(i.number)+'"></td>';
  }
- historyDialog.querySelector('#allHistory').checked=false;historyDialog.querySelector('[role=status]').textContent='';
+ historyDialog.querySelector('#allHistory').checked=false;
+ historyDialog.querySelector('#allHistory').disabled=!entries.length;
+ historyDialog.querySelector('[type=submit]').disabled=!entries.length;
+ historyDialog.querySelector('[role=status]').textContent=entries.length?'':(historyDebt.installments?.length?'Este crédito no tiene cuotas antiguas pendientes de registrar o confirmar. Puedes revisar los pagos guardados en Ver cuotas.':'Este crédito todavía no tiene cuotas. Usa Añadir cuota manual en su tarjeta.');
+ historyDialog.querySelector('#historyTitle').textContent='Completar cuotas antiguas · '+(historyDebt.title||'Crédito');
  historyDialog.showModal();
+});
+historyDialog.querySelector('tbody').addEventListener('input',event=>{
+ if(event.target.matches('input:not([type=checkbox])'))event.target.closest('tr').querySelector('[type=checkbox]').checked=true;
 });
 historyDialog.querySelector('#closeHistory').onclick=()=>historyDialog.close();
 historyDialog.querySelector('#allHistory').onchange=event=>{
@@ -2046,20 +2082,31 @@ historyDialog.querySelector('form').onsubmit=async event=>{
   const i=historyDebt.installments.find(i=>String(i.id)===row.dataset.id);
   if(!canConfirmHistory(i)){message.textContent='Una cuota cambió. Vuelve a abrir el historial.';return}
   const amount=Number(row.querySelector('[type=number]').value),date=row.querySelector('[type=date]').value;
-  const unit=i.paidAmountRaw!=null?(i.paidCurrencyRaw||'CLP'):currency;
-  const rate=Number(i.ufValueAtOperation||i.manualUfValue||0);
+  const entry=historicalEntry(historyDebt,i),unit=entry.unit;
+  if(entry.error){message.textContent='Cuota '+i.number+': '+entry.error;return}
+  const rate=Number(row.querySelector('[data-history-rate]')?.value||i.manualUfValue||i.ufValueAtOperation||0);
+  if(date&&date>today()){message.textContent='Revisa la fecha futura de la cuota '+i.number+'.';return}
   if(!(amount>0)||!Number.isFinite(amount)){message.textContent='Revisa el monto de la cuota '+i.number+'.';return}
-  if(unit!==currency&&!rate){message.textContent='Completa la UF histórica de la cuota '+i.number+' en Editar.';return}
+  if(unit!==currency&&!(rate>0)){message.textContent='Ingresa la UF histórica junto al monto de la cuota '+i.number+'.';return}
   const normalized=unit===currency?amount:precisionRound(unit==='UF'?amount*rate:amount/rate,currency);
-  changes.push({i,date,amount,unit,rate,normalized});
+  if(entry.partial&&normalized+0.000001<entry.amount){message.textContent='Para completar la cuota '+i.number+' quedan '+money(entry.amount,currency)+'.';return}
+  changes.push({i,date,amount,unit,rate,normalized,entry});
  }
  if(!confirm('¿Confirmas que las '+changes.length+' cuotas seleccionadas fueron pagadas por los montos indicados?'))return;
  formSaving=true;
  try{
   const timestamp=new Date().toISOString();
-  for(const {i,date,amount,unit,rate,normalized} of changes){
-   Object.assign(i,{paid:true,historicalAssumed:false,paidDate:date,paidAmountRaw:amount,paidCurrencyRaw:unit,paidAmount:normalized,historyConfirmedAt:timestamp,dateFromContract:false,amountFromContract:false,
-    paymentRecords:[{date,amount,currency:unit,normalizedAmount:normalized,normalizedCurrency:currency,ufValueAtOperation:rate||null,method:'Confirmación histórica del usuario'}]});
+  for(const {i,date,amount,unit,rate,normalized,entry} of changes){
+   const records=entry.partial?[...(i.paymentRecords||[])]:[];
+   if(entry.partial&&!records.length&&entry.previous>0){
+    records.push({date:i.paidDate||'',amount:i.paidAmountRaw||entry.previous,currency:i.paidAmountRaw?(i.paidCurrencyRaw||'CLP'):currency,
+     normalizedAmount:entry.previous,normalizedCurrency:currency,method:'Abono anterior'});
+   }
+   const original=!entry.partial?i.paymentRecords?.[0]:null;
+   records.push({...original,date,amount,currency:unit,normalizedAmount:normalized,normalizedCurrency:currency,ufValueAtOperation:rate||null,method:'Confirmación histórica del usuario'});
+   Object.assign(i,{paid:true,historicalAssumed:false,reviewStatus:null,paidDate:date,paidAmountRaw:entry.partial?null:amount,paidCurrencyRaw:entry.partial?null:unit,
+    paidAmount:(entry.partial?entry.previous:0)+normalized,historyConfirmedAt:timestamp,dateFromContract:false,amountFromContract:false,paymentRecords:records});
+   if(unit!==currency){i.ufValueAtOperation=rate;i.ufRateDate=date||i.dueDate}
   }
   save();historyDialog.close();
   await confirmFormWrite(()=>{refreshLiveInstallmentDisplays();toast('Pagos históricos guardados y verificados.')});
@@ -2274,6 +2321,7 @@ function debtCardHTML(d){
  return '<article class="debt-card-v22 debt-card-collapsed" data-debt-card-id="'+esc(d.id)+'">'
  +'<button class="debt-compact-head" type="button" data-action="toggleDebtCard" data-id="'+esc(d.id)+'" aria-expanded="false" aria-label="Expandir tarjeta de '+compactTitle+'"><span class="debt-compact-icon" aria-hidden="true">▣</span><span class="debt-compact-copy"><span class="debt-compact-title">'+compactTitle+'</span><span class="debt-compact-subtitle">'+compactSub+'</span></span><span class="debt-compact-balance"><strong>'+compactBalance+'</strong><span>Saldo pendiente</span></span><span class="debt-compact-chevron" aria-hidden="true">⌄</span></button>'
  +'<header class="debt-card-head"><div class="debt-title-wrap"><span class="debt-type-label">'+esc(d.type||'Crédito')+'</span><h3 class="debt-card-title">'+esc(d.title||'Crédito sin nombre')+'</h3></div><button class="debt-collapse-control" type="button" data-action="collapseDebtCard" data-id="'+esc(d.id)+'" aria-label="Contraer tarjeta de '+esc(d.title||'Crédito')+'" title="Contraer tarjeta">⌃</button></header>'
+ +'<button type="button" class="btn small history-shortcut" data-history-debt="'+esc(d.id)+'">Completar cuotas antiguas</button>'
  +debtSummaryCardsHTML(d,capitalSolicitado)
  +'<div class="debt-card-actions">'+act('Descargar PDF','downloadDebtPDF',d.id)+act('Editar deuda','editDebt',d.id)+(d.scheduleToCurrentOnly?act('Actualizar saldo','updateDebtBalance',d.id):'')+act('Añadir cuota manual','addInstallment',d.id)+act('Registrar pago en CLP o UF','payDebt',d.id)+act('Ver cuotas','viewInstallments',d.id)+'<button class="btn small" type="button" data-action="toggleDebtChart" data-id="'+esc(d.id)+'" aria-expanded="false">Gráfico</button>'+act('Eliminar','deleteDebt',d.id,'danger')+'<button class="btn small debt-details-button" type="button" data-action="toggleDebtDetails" data-id="'+esc(d.id)+'" aria-expanded="false">Detalles del crédito</button></div>'
  +installmentProgressHTML(d,counts,paid,planned)
