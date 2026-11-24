@@ -617,7 +617,7 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 #mcfRecoverActions button.primary{background:#204c3c;color:#fff;border-color:#204c3c}
 #mcfRecoverActions button:disabled{opacity:.5;cursor:not-allowed}
 </style></head><body><div id="cloudGate" role="dialog" aria-modal="true" aria-labelledby="cloudGateTitle">
- <div id="cloudGatePanel"><h2 id="cloudGateTitle">Mi Control Financiero · v204</h2>
+ <div id="cloudGatePanel"><h2 id="cloudGateTitle">Mi Control Financiero · v205</h2>
  <p>Elige dónde trabajar. Cada registro se guarda en el archivo elegido, incluidos sus comprobantes.</p>
  <div id="diskChoices" hidden><button type="button" class="btn primary" id="diskOpen">Abrir archivo del PC</button>
  <button type="button" class="btn" id="diskCreate">Crear archivo del PC</button>
@@ -633,6 +633,14 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 
 
 
+<dialog id="pendingDialog" aria-labelledby="pendingTitle" style="max-width:min(32rem,92vw);border:1px solid #9aaea4;border-radius:12px;padding:22px">
+ <h2 id="pendingTitle">Tu cambio sigue pendiente</h2>
+ <p>La actualización está en esta pestaña. Mantenla abierta hasta verificar el guardado.</p>
+ <p id="pendingReason" role="status"></p>
+ <button class="btn primary" type="button" id="pendingRetry">Reintentar guardado</button>
+ <button class="btn" type="button" id="pendingFile">Guardar en otro archivo del PC y continuar allí</button>
+ <button class="btn" type="button" id="pendingExport">Descargar respaldo con el cambio</button>
+ </dialog>
 <div id="mcfRecoverLaunch" hidden><button type="button" id="mcfRecoverOpen">Recuperar créditos y registros anteriores</button></div>
 <section id="mcfRecoverOverlay" role="dialog" aria-modal="true" aria-labelledby="mcfRecoverTitle" hidden>
  <div id="mcfRecoverPanel">
@@ -956,7 +964,51 @@ async function openDisk(create){
 document.getElementById('diskChoices').hidden=!(window.showSaveFilePicker&&window.showOpenFilePicker&&navigator.locks);
 document.getElementById('diskCreate').onclick=()=>openDisk(true);
 document.getElementById('diskOpen').onclick=()=>openDisk(false);
+let pendingForm=null,copyInProgress=false;
+const pendingDialog=document.getElementById('pendingDialog');
+pendingDialog.addEventListener('cancel',event=>event.preventDefault());
+function finishPendingForm(){
+ if(!pendingForm||cloudConfirmedGeneration<pendingForm.revision)return;
+ const finish=pendingForm.finish;
+ pendingForm=null;
+ if(pendingDialog.open)pendingDialog.close();
+ finish();
+}
+async function confirmFormWrite(finish){
+ pendingForm={revision:cloudGeneration,finish};
+ await cloudFlush();
+ finishPendingForm();
+ if(!pendingForm)return;
+ document.getElementById('pendingReason').textContent=cloudLastError;
+ document.getElementById('pendingFile').hidden=!(window.showSaveFilePicker&&navigator.locks);
+ if(!pendingDialog.open)pendingDialog.showModal();
+}
+document.getElementById('pendingRetry').onclick=()=>{
+ if(copyInProgress||cloudSaving)return;
+ document.getElementById('pendingReason').textContent='Reintentando el guardado…';
+ document.getElementById('cloudRetryBtn').click();
+};
+document.getElementById('pendingExport').onclick=cloudExportEmergency;
+document.getElementById('pendingFile').onclick=async()=>{
+ if(copyInProgress||cloudSaving||!pendingForm)return;
+ copyInProgress=true;
+ try{
+  const handle=await showSaveFilePicker({suggestedName:'Mi-Control-Financiero-recuperado-'+today()+'.json'});
+  const file=await handle.getFile();
+  if(file.size)throw new Error('Elige un nombre nuevo para conservar el archivo existente.');
+  const revision=cloudGeneration;
+  const digest=await writeDisk(handle,await digestFile(file),await backupEnvelope(db));
+  diskFile=handle;diskDigest=digest;forgetDriveSession();driveFileId=null;driveSyncArmed=false;
+  cloudConfirmedGeneration=revision;cloudAttempt=null;cloudLastError='';
+  document.getElementById('storageDestination').textContent='Archivo activo: '+destination();
+  renderDriveUi();cloudStatus('Guardado verificado · '+destination(),'ok');
+  finishPendingForm();cloudSchedule();
+ }catch(error){
+  if(error.name!=='AbortError')document.getElementById('pendingReason').textContent=error.message;
+ }finally{copyInProgress=false}
+};
 function cloudStatus(message,state='pending'){
+ if(pendingDialog.open)document.getElementById('pendingReason').textContent=message;
  const bar=document.getElementById('cloudSyncBar'),value=document.getElementById('cloudSyncText');
  if(bar)bar.dataset.state=state;if(value)value.textContent=message;
  const retry=document.getElementById('cloudRetryBtn'),exportBtn=document.getElementById('cloudExportBtn');
@@ -1079,7 +1131,7 @@ function cloudSchedule(){
 function cloudFlush(){
  if(cloudFlushPromise)return cloudFlushPromise;
  if(cloudConfirmedGeneration===cloudGeneration)return;
- if(cloudSaving||!cloudReady||cloudLastError||(!driveAccessToken&&!diskFile))return;
+ if(copyInProgress||cloudSaving||!cloudReady||cloudLastError||(!driveAccessToken&&!diskFile))return;
  cloudFlushPromise=flushPendingSnapshots().finally(()=>{cloudFlushPromise=null});
  return cloudFlushPromise;
 }
@@ -1100,14 +1152,15 @@ async function flushPendingSnapshots(){
   cloudStatus('GUARDADO NO CONFIRMADO: '+cloudLastError+'','error');
   toast('No se pudo confirmar el guardado. Mantén abierta la pestaña y descarga una copia de emergencia.');
  }finally{
-  cloudSaving=false;mcfRecoveryShowLaunch();
+  cloudSaving=false;mcfRecoveryShowLaunch();finishPendingForm();
  }
 }
 async function cloudExportEmergency(){
  try{
   const payload=await backupEnvelope(db);
-  download('mi-control-financiero-v204-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
-  toast('Se inició una copia de emergencia. No cierres hasta verificar la descarga.');
+  download('mi-control-financiero-v205-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
+  const msg='Respaldo con los cambios preparado. Comprueba la descarga antes de cerrar.';
+  if(pendingDialog.open)document.getElementById('pendingReason').textContent=msg;toast(msg);
  }catch(err){toast('No se pudo crear la copia de emergencia: '+err.message)}
 }
 window.addEventListener('beforeunload',event=>{
@@ -1335,7 +1388,7 @@ function toast(msg){
  clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.add('hidden'),3500);
 }
 const names={home:'Resumen general',movements:'Movimientos',movementHistory:'Historial de movimientos',debts:'Mis deudas financieras',personalDebts:'Mis deudas personales',receivables:'Dinero por cobrar',checklist:'Lista de chequeo',budgets:'Presupuestos',reports:'Informes',indicators:'Indicadores económicos',amortization:'Amortización de créditos',settings:'Configuración',settingsLists:'Listas y opciones',form:'Nuevo registro'};
-function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page||(page==='settingsLists'&&b.dataset.page==='settings')));document.getElementById('pageTitle').textContent=names[page]||'Mi Control Financiero';if(page!=='form'){previousPage=page;try{localStorage.setItem(APP_PAGE_KEY,page);sessionStorage.setItem(APP_PAGE_KEY,page);if(location.hash!=='#'+page)history.replaceState(null,'',location.pathname+location.search+'#'+page)}catch(e){}}window.scrollTo({top:0,behavior:'smooth'});if(page!=='form')render();if(page==='indicators'&&(!economicData||Date.now()-new Date(economicData.fetchedAt).getTime()>30*60*1000))refreshEconomicIndicators({silent:true})}
+function go(page){if((pendingForm||formSaving)&&page!=='form'&&formType)return;document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page||(page==='settingsLists'&&b.dataset.page==='settings')));document.getElementById('pageTitle').textContent=names[page]||'Mi Control Financiero';if(page!=='form'){previousPage=page;try{localStorage.setItem(APP_PAGE_KEY,page);sessionStorage.setItem(APP_PAGE_KEY,page);if(location.hash!=='#'+page)history.replaceState(null,'',location.pathname+location.search+'#'+page)}catch(e){}}window.scrollTo({top:0,behavior:'smooth'});if(page!=='form')render();if(page==='indicators'&&(!economicData||Date.now()-new Date(economicData.fetchedAt).getTime()>30*60*1000))refreshEconomicIndicators({silent:true})}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));document.body.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const page=b.dataset.go;if(!page)return;go(page)});document.body.addEventListener('click',e=>{const b=e.target.closest('[data-alert-review]');if(!b)return;const kind=b.dataset.reviewKind,id=b.dataset.recordId;if(kind==='debt-installment'){const debt=db.debts.find(x=>x.id===id),ins=debt?.installments?.find(x=>x.id===b.dataset.installmentId);if(!debt||!ins){toast('No se encontró la cuota pendiente. Actualiza la pantalla e inténtalo de nuevo.');return}showForm('payment',{id:debt.id,kind:'debt',returnPage:debt.debtGroup==='personal'?'personalDebts':'debts',installmentId:ins.id,fromAlert:true});return}if(kind==='debt'){const debt=db.debts.find(x=>x.id===id);if(!debt){toast('No se encontró la deuda pendiente.');return}showForm('payment',{id:debt.id,kind:'debt',returnPage:debt.debtGroup==='personal'?'personalDebts':'debts',fromAlert:true});return}if(kind==='receivable'){const item=db.receivables.find(x=>x.id===id);if(!item){toast('No se encontró el registro por cobrar.');return}showForm('payment',{id:item.id,kind:'receivable',returnPage:'receivables',fromAlert:true});return}const page=b.dataset.reviewPage;if(page)go(page)});
 const field=(label,name,type='text',opts=null,required=false,extra={})=>({label,name,type,opts,required,...extra});
 function isoParts(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?{y:Number(m[1]),m:Number(m[2]),d:Number(m[3])}:null}
@@ -1466,7 +1519,7 @@ specs.recurringTaskPayment={
  ],after:'checklist'
 };
 function captureInstallmentOpenYears(){const out={};document.querySelectorAll('details.installment-year-group[data-installment-debt]').forEach(g=>{const id=String(g.getAttribute('data-installment-debt')||'');if(!id)return;if(!out[id])out[id]=[];if(g.open)out[id].push(String(g.getAttribute('data-installment-year')||'undated'))});return out}
-function showForm(type,context={}){
+function showForm(type,context={}){if(pendingForm||formSaving)return;
  const spec=specs[type];if(!spec)return;document.getElementById('page-form')?.classList.toggle('payment-date-edit-mode',type==='paymentDateCorrection');const submitLabel=document.getElementById('saveForm');if(submitLabel)submitLabel.textContent=type==='paymentDateCorrection'?'Guardar corrección':type==='recurringTaskPayment'?'Confirmar pago':'Guardar registro';const activePage=document.querySelector('.page.active');const currentPage=activePage?.id?.replace('page-','');context={...context,returnPage:context.returnPage||(currentPage&&currentPage!=='form'?currentPage:previousPage),returnScrollY:context.returnScrollY??window.scrollY,returnExpandedInstallments:context.returnExpandedInstallments||[...document.querySelectorAll('[id^="installments-"]')].filter(el=>el.innerHTML.trim()).map(el=>el.id),returnInstallmentOpenYears:context.returnInstallmentOpenYears||captureInstallmentOpenYears(),returnExpandedDetails:context.returnExpandedDetails||[...document.querySelectorAll('.debt-credit-details:not([hidden])')].map(el=>el.id),returnExpandedCharts:context.returnExpandedCharts||[...document.querySelectorAll('.debt-chart-panel:not([hidden])')].map(el=>el.id),returnExpandedDebtCards:context.returnExpandedDebtCards||[...document.querySelectorAll('#debtTable .debt-card-v22:not(.debt-card-collapsed)')].map(el=>el.dataset.debtCardId)};const resetBtn=document.getElementById('resetQuotaDefaultBtn');if(resetBtn){resetBtn.classList.toggle('hidden',!(type==='installment'&&!!context.editId));document.getElementById('genericForm').dataset.resetQuotaToDefault='false';}formType={type,context};document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-form').classList.add('active');document.getElementById('pageTitle').textContent=spec.title;document.getElementById('formTitle').textContent=spec.title;document.getElementById('formSubtitle').textContent=spec.subtitle;const wrap=document.getElementById('formFields');wrap.innerHTML='';
  spec.fields.forEach(f=>{const div=document.createElement('div');div.className='field';if((type==='debt'||type==='personalDebt')&&f.name==='startDate')div.classList.add('debt-agreement-date-field');if((type==='debt'||type==='personalDebt')&&f.name==='dueDate')div.classList.add('debt-final-date-field');div.dataset.fieldName=f.name;const lab=document.createElement('label');lab.textContent=f.label+(f.required?' *':'');let input;if(f.type==='select'){input=document.createElement('select');const opts=f.opts||[];const isCategory=((type==='movement'||type==='budget'||type==='task')&&f.name==='category')||(type==='recurringTaskPayment'&&f.name==='movementCategory');const isPaymentMethod=(type==='movement'||type==='payment'||type==='recurringTaskPayment')&&f.name==='method';const isDebtType=type==='debt'&&f.name==='type';const isAdminChargeChoice=type==='debt'&&f.name==='adminChargeEnabled';if(isAdminChargeChoice){const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona Sí o No';placeholder.selected=true;placeholder.disabled=true;input.append(placeholder);opts.forEach(value=>{const op=document.createElement('option');op.value=value;op.textContent=value;input.append(op)})}else if(isCategory||isPaymentMethod||isDebtType){const listName=isCategory?(type==='task'&&f.name==='category'?'taskCategories':'categories'):isPaymentMethod?'paymentMethods':'debtTypes';const configured=configOptions(listName);const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=isCategory?'Selecciona una categoría':isPaymentMethod?'Selecciona un medio (opcional)':'Selecciona un tipo de deuda';placeholder.selected=true;placeholder.disabled=!!f.required;input.append(placeholder);configured.forEach(value=>{const op=document.createElement('option');op.value=value;op.textContent=value;input.append(op)})}else opts.forEach(value=>{const op=document.createElement('option');op.value=value;op.textContent=value;input.append(op)})}else if(f.type==='textarea'){input=document.createElement('textarea');input.rows=2}else{input=document.createElement('input');input.type=f.type;if(f.placeholder)input.placeholder=f.placeholder;if(f.min!==undefined)input.min=f.min;if(f.max!==undefined)input.max=f.max;if(f.step)input.step=f.step;if(f.value!==undefined)input.value=f.value}input.name=f.name;input.id='f_'+f.name;input.required=!!f.required;if(f.readOnly){input.readOnly=true;input.classList.add('readonly')}lab.htmlFor=input.id;div.append(lab,input);wrap.append(div)});
  if(type==='debt'||type==='personalDebt'){
@@ -1665,13 +1718,23 @@ function showForm(type,context={}){
  window.scrollTo({top:0,behavior:'smooth'})
 }
 function formValues(){const spec=specs[formType.type],v={};spec.fields.forEach(f=>{const el=document.getElementById('f_'+f.name);v[f.name]=el?el.value.trim():''});return v}
-document.getElementById('genericForm').addEventListener('submit',async e=>{e.preventDefault();if(!formType||!cloudReady||formSaving)return;formSaving=true;const submitBtn=document.getElementById('saveForm');if(submitBtn)submitBtn.disabled=true;try{const f=formType;const values=formValues();
+function formValidationNotice(message){
+ const notice=document.getElementById('formNotice');
+ notice.setAttribute('role','alert');
+ notice.textContent=message+' El formulario sigue abierto. El respaldo incluirá esta edición después de corregirla y pulsar Guardar.';
+}
+document.getElementById('genericForm').addEventListener('invalid',event=>{
+ const input=event.target;
+ const label=input.labels?.[0]?.textContent||input.name;
+ formValidationNotice('Revisa «'+label+'». '+input.validationMessage);
+},true);
+document.getElementById('genericForm').addEventListener('submit',async e=>{e.preventDefault();if(!formType||!cloudReady||formSaving||pendingForm)return;formSaving=true;const submitBtn=document.getElementById('saveForm');if(submitBtn)submitBtn.disabled=true;try{const f=formType;const values=formValues();
 
  if(f.type==='recurringTaskPayment'){
   const files=Array.from(document.getElementById('recordAttachmentInput')?.files||[]);
   const success=await registerChecklistPayment(f.context,values,files);
   if(!success)return;
-  formType=null;render();go('checklist');toast('Pago confirmado. El calendario se actualizó según la recurrencia.');return;
+  await confirmFormWrite(()=>{formType=null;render();go('checklist');toast('Pago guardado y verificado.')});return;
  }
  if(f.type==='paymentDateCorrection'){
   const before=JSON.stringify(db);
@@ -1679,10 +1742,10 @@ document.getElementById('genericForm').addEventListener('submit',async e=>{e.pre
   if(!done)return;
   if(!save()){db=JSON.parse(before);throw new Error('No fue posible guardar la corrección. Los datos anteriores se restauraron.')}
   const target=f.context.returnPage||'personalDebts';
-  formType=null;render();go(target);restorePaymentReturnView(f.context);toast('Fecha corregida. Motivo e historial guardados.');return;
+  await confirmFormWrite(()=>{formType=null;render();go(target);restorePaymentReturnView(f.context);toast('Fecha e historial guardados y verificados.')});return;
  }
- const {currency,date}=formCurrencyAndRateDate(f.type,f.context,values);const editRecord=f.type==='movement'&&f.context?.editId?db.movements.find(x=>x.id===f.context.editId):f.type==='debt'&&f.context?.editId?db.debts.find(x=>x.id===f.context.editId):f.type==='personalDebt'&&f.context?.editId?db.debts.find(x=>x.id===f.context.editId):f.type==='receivable'&&f.context?.editId?db.receivables.find(x=>x.id===f.context.editId):null;const editDate=f.type==='movement'?values.date:values.startDate;const recordDate=f.type==='movement'?editRecord?.date:editRecord?.startDate;const keepExistingUF=!!editRecord&&(editRecord.currency||'CLP')===currency&&String(recordDate||'')===String(editDate||'');if(keepExistingUF){values.ufValueAtOperation=editRecord.ufValueAtOperation??null;values.ufRateDate=editRecord.ufRateDate??null;values.ufRateSource=editRecord.ufRateSource??null}const manualUF=Number(values.manualUfValue||0);if(f.type==='installment'&&manualUF>0){if(!(manualUF>=1&&Number.isFinite(manualUF)))throw new Error('Ingresa un valor UF válido mayor que cero.');values.ufValueAtOperation=manualUF;values.ufRateDate=values.paidDate||values.dueDate||date;values.ufRateSource=document.getElementById('f_manualUfValue')?.dataset.autoCalculated==='1'?'Estimación por cuota/pago':'Manual'}else if(!keepExistingUF&&(currency==='CLP'||currency==='UF')){try{const uf=await fetchUFForDate(date);values.ufValueAtOperation=Number(uf.value);values.ufRateDate=uf.date;values.ufRateSource=uf.source}catch(rateError){const proceed=confirm('No se pudo consultar la UF para '+formatISODate(date)+'. La operación puede guardarse, pero quedará sin equivalencia histórica. ¿Quieres guardar de todas formas?');if(!proceed)return;values.ufValueAtOperation=null;values.ufRateDate=null;values.ufRateSource=null}}const formPicked=Array.from(document.getElementById('recordAttachmentInput')?.files||[]);const receiptPicked=f.type==='movement'?Array.from(window.receiptPendingFiles||[]):[];const picked=[...formPicked,...receiptPicked];const pendingFiles=await compressAndStoreFiles(picked);if(formType!==f||!cloudReady)return;for(const fileItem of pendingFiles)await storeAttachmentBlob(fileItem.meta.id,fileItem.blob);specs[f.type].save(values,f.context);if(pendingFiles.length){const record=findNewRecordForAttachments(f.type,f.context);if(record)record.attachments=[...(record.attachments||[]),...pendingFiles.map(item=>item.meta)]}if(!save())return;await cloudFlush();const target=(f.type==='payment'||f.type==='installment'||f.type==='debtBalance')?(f.context?.returnPage ?? specs[f.type].after ?? (f.context?.kind==='debt'?'debts':f.context?.kind==='receivable'?'receivables':'home')):(specs[f.type].after ?? f.context?.returnPage ?? (f.context?.kind==='debt'?'debts':f.context?.kind==='receivable'?'receivables':'home'));formType=null;document.getElementById('ufRatePreview')?.classList.add('hidden');render();go(target);restorePaymentReturnView(f.context);if(f.type==='movement'&&receiptPicked.length){window.receiptPendingFiles=[];const receiptInput=document.getElementById('receiptFiles');if(receiptInput)receiptInput.value='';const receiptList=document.getElementById('receiptFileList');if(receiptList)receiptList.textContent='Comprobantes guardados en el movimiento.'}if(cloudConfirmedGeneration<cloudGeneration)toast('Registro pendiente. Usa Reintentar guardado o descarga una copia de emergencia.')}catch(err){toast(err.message||'No se pudo guardar el registro.')}finally{formSaving=false;if(submitBtn)submitBtn.disabled=false}});
-function cancelGenericForm(){if(formSaving)return;const state=formType?.context||{};const target=state.returnPage||previousPage||'debts';formType=null;go(target);restorePaymentReturnView({...state,returnPage:target})}document.getElementById('resetQuotaDefaultBtn')?.addEventListener('click',()=>{const form=document.getElementById('genericForm');if(!form||!formType||formType.type!=='installment'||!formType.context?.editId)return;if(!confirm('¿Restablecer únicamente esta cuota a su valor contractual predeterminado y dejar «Valor pagado» en 0? Las demás cuotas no se modificarán.'))return;form.dataset.resetQuotaToDefault='true';const control=document.getElementById('f_applyQuotaForward');if(control)control.value='Solo cuota actual';form.requestSubmit();});document.getElementById('cancelForm').onclick=cancelGenericForm;document.getElementById('formBackBtn').onclick=cancelGenericForm;
+ const {currency,date}=formCurrencyAndRateDate(f.type,f.context,values);const editRecord=f.type==='movement'&&f.context?.editId?db.movements.find(x=>x.id===f.context.editId):f.type==='debt'&&f.context?.editId?db.debts.find(x=>x.id===f.context.editId):f.type==='personalDebt'&&f.context?.editId?db.debts.find(x=>x.id===f.context.editId):f.type==='receivable'&&f.context?.editId?db.receivables.find(x=>x.id===f.context.editId):null;const editDate=f.type==='movement'?values.date:values.startDate;const recordDate=f.type==='movement'?editRecord?.date:editRecord?.startDate;const keepExistingUF=!!editRecord&&(editRecord.currency||'CLP')===currency&&String(recordDate||'')===String(editDate||'');if(keepExistingUF){values.ufValueAtOperation=editRecord.ufValueAtOperation??null;values.ufRateDate=editRecord.ufRateDate??null;values.ufRateSource=editRecord.ufRateSource??null}const manualUF=Number(values.manualUfValue||0);if(f.type==='installment'&&manualUF>0){if(!(manualUF>=1&&Number.isFinite(manualUF)))throw new Error('Ingresa un valor UF válido mayor que cero.');values.ufValueAtOperation=manualUF;values.ufRateDate=values.paidDate||values.dueDate||date;values.ufRateSource=document.getElementById('f_manualUfValue')?.dataset.autoCalculated==='1'?'Estimación por cuota/pago':'Manual'}else if(!keepExistingUF&&(currency==='CLP'||currency==='UF')){try{const uf=await fetchUFForDate(date);values.ufValueAtOperation=Number(uf.value);values.ufRateDate=uf.date;values.ufRateSource=uf.source}catch(rateError){const proceed=confirm('No se pudo consultar la UF para '+formatISODate(date)+'. La operación puede guardarse, pero quedará sin equivalencia histórica. ¿Quieres guardar de todas formas?');if(!proceed)return;values.ufValueAtOperation=null;values.ufRateDate=null;values.ufRateSource=null}}const formPicked=Array.from(document.getElementById('recordAttachmentInput')?.files||[]);const receiptPicked=f.type==='movement'?Array.from(window.receiptPendingFiles||[]):[];const picked=[...formPicked,...receiptPicked];const pendingFiles=await compressAndStoreFiles(picked);if(formType!==f||!cloudReady)return;for(const fileItem of pendingFiles)await storeAttachmentBlob(fileItem.meta.id,fileItem.blob);specs[f.type].save(values,f.context);if(pendingFiles.length){const record=findNewRecordForAttachments(f.type,f.context);if(record)record.attachments=[...(record.attachments||[]),...pendingFiles.map(item=>item.meta)]}if(!save())return;await confirmFormWrite(()=>{const target=(f.type==='payment'||f.type==='installment'||f.type==='debtBalance')?(f.context?.returnPage ?? specs[f.type].after ?? (f.context?.kind==='debt'?'debts':f.context?.kind==='receivable'?'receivables':'home')):(specs[f.type].after ?? f.context?.returnPage ?? (f.context?.kind==='debt'?'debts':f.context?.kind==='receivable'?'receivables':'home'));formType=null;document.getElementById('ufRatePreview')?.classList.add('hidden');render();go(target);restorePaymentReturnView(f.context);if(f.type==='movement'&&receiptPicked.length){window.receiptPendingFiles=[];const receiptInput=document.getElementById('receiptFiles');if(receiptInput)receiptInput.value='';const receiptList=document.getElementById('receiptFileList');if(receiptList)receiptList.textContent='Comprobantes guardados en el movimiento.'}})}catch(err){if(!pendingForm)formValidationNotice(err.message||'Revisa el registro.');toast(err.message||'No se pudo guardar el registro.')}finally{formSaving=false;if(submitBtn)submitBtn.disabled=false}});
+function cancelGenericForm(){if(formSaving||pendingForm)return;const state=formType?.context||{};const target=state.returnPage||previousPage||'debts';formType=null;go(target);restorePaymentReturnView({...state,returnPage:target})}document.getElementById('resetQuotaDefaultBtn')?.addEventListener('click',()=>{const form=document.getElementById('genericForm');if(!form||!formType||formType.type!=='installment'||!formType.context?.editId)return;if(!confirm('¿Restablecer únicamente esta cuota a su valor contractual predeterminado y dejar «Valor pagado» en 0? Las demás cuotas no se modificarán.'))return;form.dataset.resetQuotaToDefault='true';const control=document.getElementById('f_applyQuotaForward');if(control)control.value='Solo cuota actual';form.requestSubmit();});document.getElementById('cancelForm').onclick=cancelGenericForm;document.getElementById('formBackBtn').onclick=cancelGenericForm;
 document.getElementById('newMovement').onclick=()=>showForm('movement');document.getElementById('newDebt').onclick=()=>showForm('debt',{group:'financial'});document.getElementById('newPersonalDebt').onclick=()=>showForm('personalDebt');document.getElementById('newReceivable').onclick=()=>showForm('receivable');document.getElementById('newTask').onclick=()=>showForm('task');document.getElementById('newBudget').onclick=()=>showForm('budget');
 function debtPaid(d){return (d.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function receivablePaid(r){return (r.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0)}function remaining(item){return Math.max(0,Number(item.amount||0)-(item.payments||[]).reduce((s,p)=>s+Number(p.normalizedAmount??p.amount),0))}
 function rows(headers,body){if(!body.length)return '<div class="empty">Todavía no hay registros.</div>';return '<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+body.join('')+'</tbody></table></div>'}
