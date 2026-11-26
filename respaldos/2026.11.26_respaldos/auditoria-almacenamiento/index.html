@@ -8,7 +8,7 @@
 <p class="hint">Solo lectura. No se guardan, eliminan ni envían tus datos. Los importes, nombres de créditos y contenidos de tus archivos no se muestran.</p>
 <div class="actions"><button id="scan">Actualizar diagnóstico</button><button id="copy" disabled>Copiar informe</button></div><p id="status" role="status" aria-live="polite">Analizando…</p>
 <section class="card"><h2>Resumen</h2><div class="metrics"><div class="metric">Espacio del sitio (estimado)<strong id="usage">—</strong></div><div class="metric">Base actual del dispositivo<strong id="current">—</strong></div><div class="metric">Copias antiguas LocalStorage<strong id="legacy">—</strong></div><div class="metric">Adjuntos antiguos<strong id="attachments">—</strong></div></div><p class="hint">Los tamaños de datos son bytes UTF-8 o de archivos binarios. El uso real del navegador puede incluir índices, metadatos y codificación interna.</p></section>
-<section class="card"><h2>Copias antiguas</h2><div class="table-wrap"><table><thead><tr><th>Identificador</th><th>Espacio aproximado</th></tr></thead><tbody id="copies"></tbody></table></div><p id="legacyNote" class="hint"></p></section>
+<section class="card"><h2>Copias antiguas</h2><div class="table-wrap"><table><thead><tr><th>Identificador</th><th>Espacio aproximado</th><th>Comparación y registros</th></tr></thead><tbody id="copies"></tbody></table></div><p id="legacyNote" class="hint"></p><p id="comparison" class="hint"></p></section>
 <section class="card"><h2>Otros datos del sitio</h2><div id="other"></div></section>
 <aside><p>La caché HTTP de páginas antiguas, los archivos JSON del PC y los respaldos de Google Drive no pueden medirse desde esta página. La sesión de cada pestaña tiene su propio almacenamiento temporal.</p><p>Los registros históricos pueden ser necesarios para recuperar datos o comprobantes. Este diagnóstico no realiza limpieza.</p><a href="../../../">Volver a Mi Control Financiero</a></aside>
 </main><script>
@@ -17,18 +17,40 @@ const byId=id=>document.getElementById(id);
 const fmt=n=>Number.isFinite(n)?n<1024?n+' B':n<1048576?(n/1024).toLocaleString('es-CL',{maximumFractionDigits:1})+' KB':(n/1048576).toLocaleString('es-CL',{maximumFractionDigits:2})+' MB':'No disponible';
 const bytes=value=>new TextEncoder().encode(String(value)).length;
 const legacyKey=key=>key==='mcf_local_v2'||/^mcf_local_v2_pruebas_v\d+$/.test(key)||/^mcf_revision_v\d+_local$/.test(key);
+function summarizeCopy(value){
+ try{
+  const raw=JSON.parse(value),data=raw?.data||raw;
+  if(!data||!Array.isArray(data.debts)||!Array.isArray(data.movements)||!Array.isArray(data.receivables))return 'Formato no reconocido';
+  const personal=data.debts.filter(d=>d?.debtGroup==='personal').length;
+  const installments=data.debts.reduce((sum,d)=>sum+(Array.isArray(d?.installments)?d.installments.length:0),0);
+  return (data.debts.length-personal)+' créditos · '+personal+' deudas personales · '+installments+' cuotas · '+data.movements.length+' movimientos';
+ }catch{return 'Formato no reconocido'}
+}
 function inspectLocal(storage){
- const copies=[];let settings=0,settingsCount=0,other=0,otherCount=0;
+ const copies=[],groups=new Map();let settings=0,settingsCount=0,other=0,otherCount=0;
  for(let k=0;k<storage.length;k++){
   const key=storage.key(k);if(key===null)continue;
   const value=storage.getItem(key);if(value===null)continue;
   const size=bytes(key)+bytes(value);
-  if(legacyKey(key))copies.push({key,size});
-  else if(/^mcf[_-]/.test(key)){settings+=size;settingsCount++}
+  if(legacyKey(key)){
+   const item={key,size,summary:summarizeCopy(value)};
+   copies.push(item);
+   if(!groups.has(value))groups.set(value,[]);
+   groups.get(value).push(item);
+  }else if(/^mcf[_-]/.test(key)){settings+=size;settingsCount++}
   else {other+=size;otherCount++}
  }
+ let duplicateCount=0,duplicateBytes=0;
+ for(const group of groups.values()){
+  group.sort((a,b)=>a.key==='mcf_local_v2'?-1:b.key==='mcf_local_v2'?1:b.key.localeCompare(a.key,'es',{numeric:true}));
+  for(let index=0;index<group.length;index++){
+   const item=group[index];
+   item.comparison=group.length===1?'Contenido distinto':index===0?'Copia de referencia ('+group.length+' idénticas)':'Idéntica a '+group[0].key;
+   if(index>0){duplicateCount++;duplicateBytes+=item.size}
+  }
+ }
  copies.sort((a,b)=>b.size-a.size);
- return {copies,legacyTotal:copies.reduce((sum,item)=>sum+item.size,0),settings,settingsCount,other,otherCount};
+ return {copies,legacyTotal:copies.reduce((sum,item)=>sum+item.size,0),settings,settingsCount,other,otherCount,uniqueCount:groups.size,duplicateCount,duplicateBytes};
 }
 async function readDatabase(name,store,read){
  if(!window.indexedDB)return {available:false};
@@ -89,9 +111,10 @@ async function scan(){
  byId('copies').replaceChildren();
  if(local?.copies.length)for(const item of local.copies){
   const row=document.createElement('tr'),key=document.createElement('td'),size=document.createElement('td');
-  key.textContent=item.key;size.textContent=fmt(item.size);size.className='num';row.append(key,size);byId('copies').append(row);
- }else{const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=2;cell.textContent=local?'No se encontraron copias antiguas compatibles.':'No fue posible leer LocalStorage.';row.append(cell);byId('copies').append(row)}
+  key.textContent=item.key;size.textContent=fmt(item.size);size.className='num';const comparison=document.createElement('td');comparison.textContent=item.comparison+' · '+item.summary;row.append(key,size,comparison);byId('copies').append(row);
+ }else{const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=3;cell.textContent=local?'No se encontraron copias antiguas compatibles.':'No fue posible leer LocalStorage.';row.append(cell);byId('copies').append(row)}
  byId('legacyNote').textContent=local?local.copies.length+' copias antiguas detectadas.':'';
+ byId('comparison').textContent=local?local.uniqueCount+' conjuntos de contenido distinto · '+local.duplicateCount+' copias idénticas adicionales ('+fmt(local.duplicateBytes)+'). '+(!current.count?'No hay una base local vigente confirmada. Verifica el respaldo de Drive o del PC antes de eliminar copias.':'Conserva al menos una copia de cada conjunto hasta verificar el respaldo.') :'';
  const lines=[
   'Preferencias y datos auxiliares de MCF: '+(local?fmt(local.settings)+' ('+local.settingsCount+' claves)':'No disponible'),
   'Otros datos LocalStorage del mismo sitio: '+(local?fmt(local.other)+' ('+local.otherCount+' claves)':'No disponible'),
@@ -101,7 +124,7 @@ async function scan(){
   'Cuota estimada del navegador: '+fmt(estimate?.quota)
  ];
  byId('other').replaceChildren();for(const line of lines){const p=document.createElement('p');p.textContent=line;byId('other').append(p)}
- report=['Auditoría de almacenamiento · Mi Control Financiero','Fecha: '+new Date().toLocaleString('es-CL'),'Uso estimado del sitio: '+fmt(estimate?.usage),'Copias antiguas: '+(local?local.copies.length+' · '+fmt(local.legacyTotal):'No disponible'),...(local?.copies||[]).map(item=>item.key+' · '+fmt(item.size)),...lines,'La caché HTTP, los archivos del PC y Google Drive no están incluidos.'].join('\n');
+ report=['Auditoría de almacenamiento · Mi Control Financiero','Fecha: '+new Date().toLocaleString('es-CL'),'Uso estimado del sitio: '+fmt(estimate?.usage),'Copias antiguas: '+(local?local.copies.length+' · '+fmt(local.legacyTotal):'No disponible'),...(local?.copies||[]).map(item=>item.key+' · '+fmt(item.size)+' · '+item.comparison+' · '+item.summary),byId('comparison').textContent,...lines,'La caché HTTP, los archivos del PC y Google Drive no están incluidos.'].join('\n');
  byId('status').textContent='Diagnóstico terminado.';byId('scan').disabled=false;byId('copy').disabled=false;
 }
 byId('scan').onclick=scan;
