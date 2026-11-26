@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditoría de almacenamiento · Mi Control Financiero</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px 16px;background:#f4f8f6;color:#193b34;font:15px/1.55 system-ui,sans-serif}main{max-width:820px;margin:auto}h1{font-size:clamp(25px,5vw,34px);margin:0 0 8px}h2{font-size:18px;margin-top:0}.card{background:#fff;border:1px solid #dce7e1;border-radius:12px;padding:20px;margin-top:16px}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.metric{padding:12px;background:#eff5f1;border-radius:8px}.metric strong{font-size:22px;display:block}p{margin:8px 0}small,.hint{color:#586e66}.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;text-align:left}th,td{padding:10px 6px;border-bottom:1px solid #dce7e1;vertical-align:top}td:first-child{overflow-wrap:anywhere}button{font:inherit;padding:10px 16px;border:0;border-radius:8px;background:#193b34;color:white;cursor:pointer;min-height:44px}button:disabled{opacity:.55}aside{margin-top:16px;color:#586e66}.actions{display:flex;gap:8px;flex-wrap:wrap}.num{white-space:nowrap}
+</style></head><body><main>
+<h1>Auditoría de almacenamiento</h1><p>Mi Control Financiero · diagnóstico del navegador y dispositivo que estás usando.</p>
+<p class="hint">Solo lectura. No se guardan, eliminan ni envían tus datos. Los importes, nombres de créditos y contenidos de tus archivos no se muestran.</p>
+<div class="actions"><button id="scan">Actualizar diagnóstico</button><button id="copy" disabled>Copiar informe</button></div><p id="status" role="status" aria-live="polite">Analizando…</p>
+<section class="card"><h2>Resumen</h2><div class="metrics"><div class="metric">Espacio del sitio (estimado)<strong id="usage">—</strong></div><div class="metric">Base actual del dispositivo<strong id="current">—</strong></div><div class="metric">Copias antiguas LocalStorage<strong id="legacy">—</strong></div><div class="metric">Adjuntos antiguos<strong id="attachments">—</strong></div></div><p class="hint">Los tamaños de datos son bytes UTF-8 o de archivos binarios. El uso real del navegador puede incluir índices, metadatos y codificación interna.</p></section>
+<section class="card"><h2>Copias antiguas</h2><div class="table-wrap"><table><thead><tr><th>Identificador</th><th>Espacio aproximado</th></tr></thead><tbody id="copies"></tbody></table></div><p id="legacyNote" class="hint"></p></section>
+<section class="card"><h2>Otros datos del sitio</h2><div id="other"></div></section>
+<aside><p>La caché HTTP de páginas antiguas, los archivos JSON del PC y los respaldos de Google Drive no pueden medirse desde esta página. La sesión de cada pestaña tiene su propio almacenamiento temporal.</p><p>Los registros históricos pueden ser necesarios para recuperar datos o comprobantes. Este diagnóstico no realiza limpieza.</p><a href="../../../">Volver a Mi Control Financiero</a></aside>
+</main><script>
+'use strict';
+const byId=id=>document.getElementById(id);
+const fmt=n=>Number.isFinite(n)?n<1024?n+' B':n<1048576?(n/1024).toLocaleString('es-CL',{maximumFractionDigits:1})+' KB':(n/1048576).toLocaleString('es-CL',{maximumFractionDigits:2})+' MB':'No disponible';
+const bytes=value=>new TextEncoder().encode(String(value)).length;
+const legacyKey=key=>key==='mcf_local_v2'||/^mcf_local_v2_pruebas_v\d+$/.test(key)||/^mcf_revision_v\d+_local$/.test(key);
+function inspectLocal(storage){
+ const copies=[];let settings=0,settingsCount=0,other=0,otherCount=0;
+ for(let k=0;k<storage.length;k++){
+  const key=storage.key(k);if(key===null)continue;
+  const value=storage.getItem(key);if(value===null)continue;
+  const size=bytes(key)+bytes(value);
+  if(legacyKey(key))copies.push({key,size});
+  else if(/^mcf[_-]/.test(key)){settings+=size;settingsCount++}
+  else {other+=size;otherCount++}
+ }
+ copies.sort((a,b)=>b.size-a.size);
+ return {copies,legacyTotal:copies.reduce((sum,item)=>sum+item.size,0),settings,settingsCount,other,otherCount};
+}
+async function readDatabase(name,store,read){
+ if(!window.indexedDB)return {available:false};
+ // Only open known database names; abort immediately if the database does not exist.
+ if(typeof indexedDB.databases==='function'){
+  try{const databases=await indexedDB.databases();if(!databases.some(d=>d.name===name))return {available:true,exists:false};}catch{}
+ }
+ return new Promise(resolve=>{
+  let absent=false;
+  const req=indexedDB.open(name);
+  req.onupgradeneeded=()=>{absent=true;req.transaction.abort()};
+  req.onerror=()=>resolve(absent?{available:true,exists:false}:{available:false});
+  req.onsuccess=()=>{
+   const db=req.result;if(!db.objectStoreNames.contains(store)){db.close();resolve({available:true,exists:false});return}
+   try{
+    const tx=db.transaction(store,'readonly');let result={available:true,exists:true,size:0,count:0};
+    const source=tx.objectStore(store);
+    read(source,result);
+    tx.oncomplete=()=>{db.close();resolve(result)};
+    tx.onabort=tx.onerror=()=>{db.close();resolve({available:false})};
+   }catch{db.close();resolve({available:false})}
+  };
+ });
+}
+function readCurrent(store,result){
+ const req=store.get('current');req.onsuccess=()=>{
+  const item=req.result;
+  if(item&&typeof item.json==='string'){result.size=bytes(item.json);result.count=1}
+ };
+}
+function readAttachments(store,result){
+ const req=store.openCursor();req.onsuccess=()=>{
+  const cursor=req.result;if(!cursor)return;
+  result.count++;
+  const value=cursor.value;
+  if(value instanceof Blob)result.size+=value.size;
+  else if(value instanceof ArrayBuffer||ArrayBuffer.isView(value))result.size+=value.byteLength;
+  else if(typeof value==='string')result.size+=bytes(value);
+  else result.unknown=(result.unknown||0)+1;
+  cursor.continue();
+ };
+}
+function dbLabel(result){return !result.available?'No disponible':!result.exists?'No existe':fmt(result.size)}
+let report='';
+async function scan(){
+ byId('scan').disabled=true;byId('copy').disabled=true;byId('status').textContent='Analizando…';
+ let local=null;try{local=inspectLocal(localStorage)}catch{}
+ const [current,attachments,estimate,cacheCount]=await Promise.all([
+  readDatabase('mcf-device-v1','backup',readCurrent).catch(()=>({available:false})),
+  readDatabase('mcf_attachments_v1','blobs',readAttachments).catch(()=>({available:false})),
+  navigator.storage?.estimate?.().catch(()=>null)??null,
+  window.caches?caches.keys().then(keys=>keys.length).catch(()=>null):null
+ ]);
+ byId('usage').textContent=fmt(estimate?.usage);
+ byId('current').textContent=dbLabel(current);
+ byId('legacy').textContent=local?fmt(local.legacyTotal):'No disponible';
+ byId('attachments').textContent=dbLabel(attachments);
+ byId('copies').replaceChildren();
+ if(local?.copies.length)for(const item of local.copies){
+  const row=document.createElement('tr'),key=document.createElement('td'),size=document.createElement('td');
+  key.textContent=item.key;size.textContent=fmt(item.size);size.className='num';row.append(key,size);byId('copies').append(row);
+ }else{const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=2;cell.textContent=local?'No se encontraron copias antiguas compatibles.':'No fue posible leer LocalStorage.';row.append(cell);byId('copies').append(row)}
+ byId('legacyNote').textContent=local?local.copies.length+' copias antiguas detectadas.':'';
+ const lines=[
+  'Preferencias y datos auxiliares de MCF: '+(local?fmt(local.settings)+' ('+local.settingsCount+' claves)':'No disponible'),
+  'Otros datos LocalStorage del mismo sitio: '+(local?fmt(local.other)+' ('+local.otherCount+' claves)':'No disponible'),
+  'Base de datos vigente: '+dbLabel(current)+(current.count!==undefined?' ('+current.count+' registro)':''),
+  'Adjuntos antiguos: '+dbLabel(attachments)+(attachments.count!==undefined?' ('+attachments.count+' registros)':'')+(attachments.unknown?' · '+attachments.unknown+' registros con tamaño no medible':''),
+  'Contenedores CacheStorage del sitio: '+(cacheCount===null?'No disponible':cacheCount),
+  'Cuota estimada del navegador: '+fmt(estimate?.quota)
+ ];
+ byId('other').replaceChildren();for(const line of lines){const p=document.createElement('p');p.textContent=line;byId('other').append(p)}
+ report=['Auditoría de almacenamiento · Mi Control Financiero','Fecha: '+new Date().toLocaleString('es-CL'),'Uso estimado del sitio: '+fmt(estimate?.usage),'Copias antiguas: '+(local?local.copies.length+' · '+fmt(local.legacyTotal):'No disponible'),...(local?.copies||[]).map(item=>item.key+' · '+fmt(item.size)),...lines,'La caché HTTP, los archivos del PC y Google Drive no están incluidos.'].join('\n');
+ byId('status').textContent='Diagnóstico terminado.';byId('scan').disabled=false;byId('copy').disabled=false;
+}
+byId('scan').onclick=scan;
+byId('copy').onclick=async()=>{try{await navigator.clipboard.writeText(report);byId('status').textContent='Informe copiado.'}catch{byId('status').textContent='No se pudo copiar automáticamente. Selecciona el texto del informe.'}};
+scan();
+</script></body></html>
