@@ -600,14 +600,14 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 #cloudGatePanel p{line-height:1.5;font-size:14px}
 #cloudGatePanel .btn{margin:4px 6px 4px 0}
 #cloudGateMessage{font-weight:600;overflow-wrap:anywhere}
-#cloudSyncBar{position:fixed;right:15px;bottom:15px;z-index:1200;padding:12px 15px;border-radius:12px;background:#173c32;color:white;box-shadow:0 5px 22px #0003;max-width:min(92vw,430px);font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#cloudSyncBar{margin-top:12px;padding:10px 12px;border-radius:9px;background:#173c32;color:white;font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;overflow-wrap:anywhere;min-width:0}
 #cloudSyncBar button{border:1px solid #aec8bb;border-radius:8px;padding:6px 9px;background:white;color:#173c32;cursor:pointer}
 #cloudSyncBar[data-state="error"]{background:#82382f}
 #cloudSyncBar[data-state="pending"]{background:#765a1f}
 </style><style id="mcf-v203-recovery-style">
-#mcfRecoverLaunch{position:fixed;left:15px;bottom:15px;z-index:1300}
+#mcfRecoverLaunch{margin-top:12px}
 #mcfRecoverLaunch[hidden],#mcfRecoverOverlay[hidden]{display:none!important}
-#mcfRecoverLaunch button{border:0;background:#f0c46f;color:#143d32;box-shadow:0 4px 20px #0004;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
+#mcfRecoverLaunch button{max-width:100%;white-space:normal;border:1px solid var(--line);background:var(--surface,#fff);color:var(--ink);border-radius:9px;padding:10px 12px;font-weight:600;cursor:pointer}
 #mcfRecoverOverlay{position:fixed;inset:0;z-index:99998;background:#071b17e8;display:flex;justify-content:center;align-items:center;padding:18px}
 #mcfRecoverPanel{width:min(96vw,720px);max-height:90vh;overflow-y:auto;background:white;color:#193b31;border-radius:16px;padding:24px;box-shadow:0 12px 40px #0005}
 #mcfRecoverPanel h2{margin:0 0 6px;font-size:21px}
@@ -625,7 +625,7 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
  #cloudGatePanel button{margin:4px 0;width:100%}
  #localStorageCard .inline-actions{display:grid;grid-template-columns:minmax(0,1fr)}
  #localStorageCard,#storageDestination,#storageHelp,#cloudSyncText{min-width:0;overflow-wrap:anywhere}
- #cloudSyncBar{position:static;margin:6px 10px;flex-wrap:wrap;max-width:100%;box-sizing:border-box}
+ #cloudSyncBar{margin:10px 0 0;max-width:100%;box-sizing:border-box}
  .recovery-drive-header{flex-wrap:wrap}
 }
 @media (max-width:700px){
@@ -652,9 +652,8 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
 .task-list-controls label{font-size:12px;color:var(--muted)}
 .task-list-controls select{max-width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--ink);background:var(--surface,#fff);font:inherit}
 @media(max-width:520px){.task-list-controls{width:100%}.task-list-controls select{flex:1;min-height:44px}.task-list-controls #taskListCount{flex-basis:100%}}
-</style></head><body class="account-closed"><div id="cloudSyncBar" role="status" data-state="pending" aria-live="polite"><span id="cloudSyncText">Sin conexión a Drive · edición bloqueada</span>
- <button type="button" id="cloudRetryBtn" hidden>Reintentar guardado</button>
- <button type="button" id="cloudExportBtn" hidden>Descargar copia de emergencia</button></div>
+.toast[data-state="pending"]{background:#765a1f}.toast[data-state="error"]{background:#82382f}.toast{overflow-wrap:anywhere;pointer-events:none}
+</style></head><body class="account-closed">
 
 
 
@@ -667,7 +666,7 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
  <button class="btn" type="button" id="pendingFile">Guardar en otro archivo del PC y continuar allí</button>
  <button class="btn" type="button" id="pendingExport">Descargar respaldo con el cambio</button>
  </dialog>
-<div id="mcfRecoverLaunch" hidden><button type="button" id="mcfRecoverOpen">Recuperar créditos y registros anteriores</button></div>
+
 <section id="mcfRecoverOverlay" role="dialog" aria-modal="true" aria-labelledby="mcfRecoverTitle" hidden>
  <div id="mcfRecoverPanel">
   <h2 id="mcfRecoverTitle">Recuperar información anterior</h2>
@@ -872,7 +871,9 @@ button,a,select,input[type="checkbox"],input[type="radio"]{touch-action:manipula
  <p><label>Archivo de Google Drive <select id="driveSource"><option value="official">Respaldo principal</option><option value="previous">Datos recuperados de v203</option></select></label></p>
  <button type="button" class="btn primary" id="cloudConnectBtn">Conectar Google Drive</button>
  <button type="button" class="btn primary" id="cloudCreateBtn" hidden>Crear archivo nuevo en Drive</button>
- <p id="cloudGateMessage" role="status"></p></div></div><button type="button" class="btn" id="switchStorage" hidden>Abrir otro origen</button><p id="storageDestination">Selecciona un archivo para trabajar.</p><div class="inline-actions"><button class="btn" id="linkDevice" hidden>Vincular memoria de este dispositivo</button><button class="btn" id="linkFile" hidden>Vincular archivo local JSON</button><button class="btn" id="linkCloud" hidden>Vincular Google Drive</button></div><p class="muted">La memoria de este dispositivo pertenece a este navegador. Si borras los datos del sitio, se elimina esa copia. Vincula ambos destinos en cada sesión de trabajo.</p><p id="storageHelp" role="status"></p></div></section>
+ <p id="cloudGateMessage" role="status"></p></div></div><button type="button" class="btn" id="switchStorage" hidden>Abrir otro origen</button><p id="storageDestination">Selecciona un archivo para trabajar.</p><div class="inline-actions"><button class="btn" id="linkDevice" hidden>Vincular memoria de este dispositivo</button><button class="btn" id="linkFile" hidden>Vincular archivo local JSON</button><button class="btn" id="linkCloud" hidden>Vincular Google Drive</button></div><p class="muted">La memoria de este dispositivo pertenece a este navegador. Si borras los datos del sitio, se elimina esa copia. Vincula ambos destinos en cada sesión de trabajo.</p><p id="storageHelp" role="status"></p><div id="cloudSyncBar" role="status" data-state="pending" aria-live="polite"><span id="cloudSyncText">Sin conexión a Drive · edición bloqueada</span>
+ <button type="button" id="cloudRetryBtn" hidden>Reintentar guardado</button>
+ <button type="button" id="cloudExportBtn" hidden>Descargar copia de emergencia</button></div><div id="mcfRecoverLaunch" hidden><button type="button" id="mcfRecoverOpen">Recuperar créditos y registros anteriores</button></div></div></section>
 <section class="page" id="page-settingsLists"><div class="section-head"><div><h2>Listas y opciones</h2><p>Personaliza los desplegables que se usan al registrar ingresos, gastos, abonos y presupuestos.</p></div><button class="btn" data-go="settings">← Volver a Configuración</button></div>
 <div class="notice info">Los cambios realizados aquí se aplican a los nuevos registros. Los movimientos anteriores conservan la categoría y el medio guardados originalmente.</div>
 <div class="grid two-col">
@@ -1136,6 +1137,7 @@ function cloudStatus(message,state='pending'){
  const retry=document.getElementById('cloudRetryBtn'),exportBtn=document.getElementById('cloudExportBtn');
  if(retry)retry.hidden=!(state==='error'&&cloudReady);
  if(exportBtn)exportBtn.hidden=!(cloudReady&&(state==='error'||state==='pending'));
+ toast(message,state);
 }
 function cloudGate(message,create=false){
  document.body.classList.toggle('account-closed',!cloudReady);
@@ -1299,7 +1301,7 @@ async function flushPendingSnapshots(){
    cloudAttempt=null;
   }
   renderBackupControl();mcfRecoveryShowLaunch();
-  cloudStatus('Guardado verificado · '+destination(),'ok');toast('Guardado verificado en '+destination());
+  cloudStatus('Guardado verificado · '+destination(),'ok');
  }catch(err){
   cloudLastError=String(err?.message||err);
   cloudStatus('GUARDADO NO CONFIRMADO: '+cloudLastError+'','error');
@@ -1311,7 +1313,7 @@ async function flushPendingSnapshots(){
 async function cloudExportEmergency(){
  try{
   const payload=await backupEnvelope(db);
-  download('mi-control-financiero-v229-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
+  download('mi-control-financiero-v230-emergencia-'+today()+'.json',JSON.stringify(payload,null,2),'application/json');
   const msg='Respaldo con los cambios preparado. Comprueba la descarga antes de cerrar.';
   if(pendingDialog.open)document.getElementById('pendingReason').textContent=msg;toast(msg);
  }catch(err){toast('No se pudo crear la copia de emergencia: '+err.message)}
@@ -1555,15 +1557,15 @@ function save(){
  cloudSchedule();
  return true; // Aceptado para envío, pero todavía no persistido.
 }
-function toast(msg){
+function toast(msg,state){
  let message=String(msg??'');
  const negative=/\b(no se pudo|no pudo|error|fall[oó]|faltan|sin conexi[oó]n|pendiente|cancelad|no se encontr[oó])\b/i.test(message);
  const optimistic=/(guardad|registrad|actualizad|completad|confirmad|cread|realizad|modificad|pagad|agregad|corregid|finalizad)/i.test(message);
- if(cloudReady&&cloudGeneration>cloudConfirmedGeneration&&!negative&&optimistic)
+ if(!state&&cloudReady&&cloudGeneration>cloudConfirmedGeneration&&!negative&&optimistic)
   message='Cambio pendiente de confirmación en el archivo; no cierres esta pestaña.';
  const el=document.getElementById('toast');
  if(!el)return;
- el.textContent=message;el.classList.remove('hidden');
+ el.textContent=message;el.dataset.state=state||'info';el.classList.remove('hidden');
  clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.add('hidden'),3500);
 }
 const names={home:'Resumen general',movements:'Movimientos',movementHistory:'Historial de movimientos',debts:'Mis deudas financieras',personalDebts:'Mis deudas personales',receivables:'Dinero por cobrar',checklist:'Lista de chequeo',budgets:'Presupuestos',reports:'Informes',indicators:'Indicadores económicos',amortization:'Amortización de créditos',settings:'Configuración',settingsLists:'Listas y opciones',form:'Nuevo registro'};
@@ -3809,7 +3811,7 @@ function renderDriveUi(){
   return;
  }
  const auto=document.getElementById('driveAutoBackup');if(auto)auto.checked=driveAutoEnabled;
- if(driveAccessToken)driveStatus(cloudReady?'Almacenamiento principal: Google Drive. Comprueba la barra inferior para saber si los cambios están confirmados.':'Google Drive autorizado. Falta cargar o crear el archivo privado antes de registrar información.', 'info');
+ if(driveAccessToken)driveStatus(cloudReady?'Almacenamiento principal: Google Drive. Consulta el estado del guardado en Almacenamiento principal.':'Google Drive autorizado. Falta cargar o crear el archivo privado antes de registrar información.', 'info');
  else driveStatus('Drive no conectado. En esta revisión no se pueden guardar registros sin conectar el almacenamiento remoto.', 'info');
 }
 function googleDriveErrorMessage(status, text){
